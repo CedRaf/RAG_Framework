@@ -51,7 +51,7 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
                         "embedding": emb.tolist(),
                         "metadata": {
                             "chunk_id": chunk.get("chunk_id", ""),
-                            "source_file": chunked_filename,
+                            "source_file": chunk.get("source_file", file),
                             "ticker": chunk.get("ticker", ""),
                             "form_type": chunk.get("form_type", ""),
                             "start_index": chunk.get("start_index", -1),

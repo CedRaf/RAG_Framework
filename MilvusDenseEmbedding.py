@@ -9,7 +9,7 @@ os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "dense_miniLM"
-EMBEDDED_DIR = "embedded_dense_allMini/10-k-texts/aapl"
+EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL"
 EMBEDDING_DIM = 384  # output dim for all-mini, have to change if we'll use smthn else
 TOP_K = 5 # Number of documents to retrieve
 QUERY = "What are the risks mentioned in Apple's 10-K filing?" # Hard-coded for now, have to change it later on
@@ -124,12 +124,12 @@ def fetch_text(metadata):
         form_type = metadata.get("form_type", "")
         ticker = metadata.get("ticker", "")
         source_file = metadata.get("source_file", "")
-
+        
         base_dir = "chunked_dense"
 
-        form_dir = f"{form_type}-texts" if form_type else ""
+        form_dir = f"{form_type}" if form_type else ""
 
-        chunk_dir = os.path.join(base_dir, form_dir, ticker.lower())
+        chunk_dir = os.path.join(base_dir, form_dir, ticker.upper())
         chunk_file  = os.path.join(chunk_dir, source_file)
 
         with open(chunk_file, 'r', encoding="utf-8") as f:
@@ -212,5 +212,5 @@ def retrieval_test():
 
         print("Results written to retrieval_results.csv")
 
-insert_dense_embedding_milvus()
-#retrieval_test()
+#insert_dense_embedding_milvus()
+retrieval_test()

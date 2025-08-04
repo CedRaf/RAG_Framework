@@ -1,7 +1,7 @@
 from pymilvus import MilvusClient
 
 # Configuration
-COLLECTION_NAME = "sec_chunks_sparse"
+COLLECTION_NAME = "dense_miniLM"
 
 # Connect to Milvus
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")

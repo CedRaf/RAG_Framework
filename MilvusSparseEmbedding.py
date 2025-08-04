@@ -106,25 +106,29 @@ def load_chunks_from_folder(base_path):
 
 
 
+# client.load_collection(COLLECTION_NAME)
 
-results = client.query(
-    collection_name=COLLECTION_NAME,
-    output_fields=["id", "ticker", "chunk_id", "text"],
-    limit=11000
-    
-)
+# results = client.query(
+#     collection_name=COLLECTION_NAME,
+#     output_fields=["id", "ticker", "chunk_id", "form_type", "source_file", "text"],
+#     limit=1000  # make sure this is larger than possible # of entries
+# )
+# print("Number of records found:", len(results))
+# # Save to CSV
+# csv_file = "milvus_results.csv"
+# with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
+#     writer = csv.DictWriter(file, fieldnames=["id", "ticker", "chunk_id", "form_type", "source_file", "text" ])
+#     writer.writeheader()
+#     writer.writerows(results)
 
-# Save to CSV
-csv_file = "milvus_results.csv"
-with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
-    writer = csv.DictWriter(file, fieldnames=["id", "ticker", "chunk_id", "text"])
-    writer.writeheader()
-    writer.writerows(results)
-
-print(f" Results saved to {csv_file}")
-
-
+# print(f" Results saved to {csv_file}")
 
 
-schema = client.describe_collection(COLLECTION_NAME)
-print(schema)
+
+
+# schema = client.describe_collection(COLLECTION_NAME)
+# print(schema)
+
+
+
+

@@ -68,7 +68,7 @@ for dir_name in output_dirs:
 five_years_prior = datetime.now() - timedelta(5*365)
 
 # Function to do the actual retrieval of the nasdaq 100 company filings
-def extract_and_save_tables(dataset_dir="datasets/RAW_FILINGS"):
+def extract_and_save_tables(dataset_dir="edgar-crawler/datasets/RAW_FILINGS"):
     for root, _, files in os.walk(dataset_dir):
         if "8-K" in root:
             continue  # Skip all 8-K folders
@@ -87,8 +87,9 @@ def extract_and_save_tables(dataset_dir="datasets/RAW_FILINGS"):
                     continue
 
                 cik_stripped, form_type, year, accession = parts
+                
                 cik_str = cik_stripped.zfill(10)
-                ticker = CIK_to_ticker.get(cik_str, cik_stripped)  # fallback to CIK if ticker not found
+                ticker = CIK_to_ticker.get(cik_str, cik_stripped)  
 
                 html_path = os.path.join(root, file_name)
                 with open(html_path, "r", encoding="utf-8") as f:
@@ -99,7 +100,7 @@ def extract_and_save_tables(dataset_dir="datasets/RAW_FILINGS"):
                     print(f"No tables found in {file_name}")
                     continue
 
-                form_output_dir = os.path.join("tables_extracted", cik_str, form_type.upper())
+                form_output_dir = os.path.join("tables_extracted", ticker, form_type.upper())
                 os.makedirs(form_output_dir, exist_ok=True)
 
                 for i, table_info in enumerate(tables):
@@ -125,7 +126,7 @@ def extract_and_save_tables(dataset_dir="datasets/RAW_FILINGS"):
                         "source_file": file_name,
                         "company_cik": cik_stripped,
                         "form_type": form_type,
-                        "company_ticker": ticker if ticker != cik_stripped else "",
+                        "company_ticker": ticker if ticker != cik_stripped else "", 
                         "table_index": i,
                         "extraction_date": datetime.now().isoformat(),
                         "column_headers": column_headers,
@@ -150,75 +151,10 @@ def extract_and_save_tables(dataset_dir="datasets/RAW_FILINGS"):
                 print(f"Error processing {file_name}: {e}")
 
 
-extract_and_save_tables()
+#extract_and_save_tables()
 
 
-
-def extract_and_save_spans(base_path=".", input_folders=["10-k_documents", "10-q_documents", "8-k_documents"]):
-    output_base = os.path.join(base_path, "extracted_texts")
-    os.makedirs(output_base, exist_ok=True)
-
-    for folder in input_folders:
-        input_dir = os.path.join(base_path, folder)
-
-        if not os.path.exists(input_dir):
-            print(f"Folder not found: {input_dir}")
-            continue
-
-        form_type = folder.replace("_documents", "").lower() + "-texts"
-        form_output_dir = os.path.join(output_base, form_type)
-        os.makedirs(form_output_dir, exist_ok=True)
-
-        print(f"\nProcessing folder: {input_dir}")
-
-        files = sorted(os.listdir(input_dir))
-        for file in files:  # You can change back to `files[:1]` to limit
-            if not file.endswith(".htm") and not file.endswith(".html"):
-                continue
-
-            # Parse ticker from filename
-            try:
-                base_name = os.path.splitext(file)[0]
-                if "_" in base_name:
-                    ticker = base_name.split("_")[1].split("-")[0].lower()
-                else:
-                    ticker = base_name.split("-")[0].lower()
-
-            except IndexError:
-                print(f"Could not parse ticker from filename: {file}")
-                continue
-
-            ticker_output_dir = os.path.join(form_output_dir, ticker)
-            os.makedirs(ticker_output_dir, exist_ok=True)
-
-            file_path = os.path.join(input_dir, file)
-            try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    soup = BeautifulSoup(f, "html.parser")
-
-                # Remove all tables
-                for table in soup.find_all("table"):
-                    table.decompose()
-
-                # Extract all non-empty span text
-                span_texts = [span.get_text(strip=True) for span in soup.find_all("span") if span.get_text(strip=True)]
-
-                # Save as text file
-                output_file = os.path.splitext(file)[0] + ".txt"
-                output_path = os.path.join(ticker_output_dir, output_file)
-
-                with open(output_path, "w", encoding="utf-8") as out_f:
-                    out_f.write("\n".join(span_texts))
-
-                print(f"Saved: {output_file} ({len(span_texts)} spans) to {ticker_output_dir}")
-
-            except Exception as e:
-                print(f"Error processing {file}: {e}")
-
-
-#extract_and_save_spans()
-
-def segment_dense(base_path=".", input_folders=["10-k_documents", "10-q_documents", "8-k_documents"]):
+def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
     segment_config(
         base_path=base_path,
         input_folders=input_folders,
@@ -228,7 +164,7 @@ def segment_dense(base_path=".", input_folders=["10-k_documents", "10-q_document
     )
 
 
-def segment_sparse(base_path=".", input_folders=["10-k_documents", "10-q_documents", "8-k_documents"]):
+def segment_sparse(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
     segment_config(
         base_path=base_path,
         input_folders=input_folders,
@@ -239,7 +175,7 @@ def segment_sparse(base_path=".", input_folders=["10-k_documents", "10-q_documen
 
 
 def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_overlap):
-    input_base = os.path.join(base_path, "extracted_texts")
+    input_base = os.path.join(base_path, "edgar-crawler", "datasets", "EXTRACTED_FILINGS")
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
@@ -249,7 +185,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
     )
 
     for folder in input_folders:
-        form_type = folder.replace("_documents", "").lower() + "-texts"
+        form_type = folder  # e.g., "10-K", "10-Q", "8-K"
         input_dir = os.path.join(input_base, form_type)
 
         if not os.path.exists(input_dir):
@@ -261,196 +197,77 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
         print(f"\nProcessing {form_type}...")
 
-        for ticker in sorted(os.listdir(input_dir)):
-            ticker_input_dir = os.path.join(input_dir, ticker)
-            if not os.path.isdir(ticker_input_dir):
+        for file in sorted(os.listdir(input_dir)):
+            if not file.endswith(".json"):
                 continue
 
-            ticker_output_dir = os.path.join(output_form_dir, ticker)
-            os.makedirs(ticker_output_dir, exist_ok=True)
+                # Use company name or fallback for output subfolder
+            filename_parts = file.replace(".json", "").split("_")
+            if len(filename_parts) >= 4:
+                cik_stripped = filename_parts[0]
+                cik_padded = cik_stripped.zfill(10)
+                ticker = CIK_to_ticker.get(cik_padded, cik_stripped).upper()
+            else:
+                ticker = "UNKNOWN"
 
-            for file in sorted(os.listdir(ticker_input_dir)):
-                if not file.endswith(".json"):
+            file_path = os.path.join(input_dir, file)
+
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+
+                chunk_objects = []
+
+                if not isinstance(data, dict):
+                    print(f"Skipping non-dict file: {file}")
                     continue
 
-                file_path = os.path.join(ticker_input_dir, file)
+                item_keys = [key for key in data if key.startswith("item_") or key.startswith("parts_")]
+                for item_key in item_keys:
+                    content = data[item_key].strip()
+                    if not content:
+                        continue  # Skip empty items
 
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        data = json.load(f)
+                    # Clean and normalize whitespace
+                    content = re.sub(r"\s+", " ", content)
 
-                    chunk_objects = []
-                    item_keys = [key for key in data if key.startswith("item_")]
+                    # Chunk normally
+                    item_chunks = splitter.split_text(content) if len(content) > chunk_size else [content]
 
-                    for item_key in item_keys:
-                        content = data[item_key].strip()
-                        if not content:
-                            continue
+                    start = 0
+                    for i, chunk in enumerate(item_chunks):
+                        end = start + len(chunk)
+                        chunk_objects.append({
+                            "chunk_id": i + 1,
+                            "item": item_key,
+                            "content": chunk,
+                            "ticker": ticker,
+                            "form_type": data.get("filing_type", form_type),
+                            "filing_date": data.get("filing_date", ""),
+                            "source_file": file,
+                            "start_index": start,
+                            "end_index": end
+                        })
+                        start = end - chunk_overlap
 
-                        # Replace newlines with spaces before chunking
-                        content = content.replace("\n", " ")
+                if not chunk_objects:
+                    print(f"Skipped (no valid chunks): {file}")
+                    continue
 
-                        item_chunks = splitter.split_text(content) if len(content) > chunk_size else [content]
+                ticker_output_dir = os.path.join(output_form_dir, ticker)
+                os.makedirs(ticker_output_dir, exist_ok=True)
 
-                        for i, chunk in enumerate(item_chunks):
-                            chunk_objects.append({
-                                "chunk_id": f"{item_key}_{i + 1}",
-                                "item": item_key,
-                                "content": chunk,
-                                "ticker": data.get("company", ""),
-                                "form_type": data.get("filing_type", ""),
-                                "filing_date": data.get("filing_date", ""),
-                                "source_file": file
-                            })
+                output_filename = os.path.splitext(file)[0] + ".json"
+                output_path = os.path.join(ticker_output_dir, output_filename)
 
-                    output_filename = os.path.splitext(file)[0] + "_chunks.json"
-                    output_path = os.path.join(ticker_output_dir, output_filename)
+                with open(output_path, "w", encoding="utf-8") as json_file:
+                    json.dump(chunk_objects, json_file, indent=2, ensure_ascii=False)
 
-                    with open(output_path, "w", encoding="utf-8") as json_file:
-                        json.dump(chunk_objects, json_file, indent=2, ensure_ascii=False)
+                print(f"Chunked and saved: {file} -> {len(chunk_objects)} chunks")
 
-                    print(f"Chunked and saved: {file} -> {len(chunk_objects)} chunks")
-
-                except Exception as e:
-                    print(f"Error processing {file_path}: {e}")
-
-#segment_dense()
+            except Exception as e:
+                print(f"Error processing {file_path}: {e}")
+segment_dense()
 #segment_sparse()
 
 
-def embed_chunks_bm25(base_path=".", input_folder="chunked_sparse", output_folder="embedded_sparse_bm25"):
-    input_base = os.path.join(base_path, input_folder)
-    output_base = os.path.join(base_path, output_folder)
-    os.makedirs(output_base, exist_ok=True)
-
-    for form_type in os.listdir(input_base):
-        form_input_dir = os.path.join(input_base, form_type)
-        form_output_dir = os.path.join(output_base, form_type)
-        os.makedirs(form_output_dir, exist_ok=True)
-
-        for ticker in os.listdir(form_input_dir):
-            ticker_input_dir = os.path.join(form_input_dir, ticker)
-            ticker_output_dir = os.path.join(form_output_dir, ticker)
-            os.makedirs(ticker_output_dir, exist_ok=True)
-
-            for file in sorted(os.listdir(ticker_input_dir)):
-                output_file = file.replace("_chunks.json", "_embedded.json")
-                output_path = os.path.join(ticker_output_dir, output_file)
-                if os.path.exists(output_path):
-                    print(f"Skipping (already embedded): {file}")
-                    continue
-                if not file.endswith("_chunks.json"):
-                    continue
-
-                file_path = os.path.join(ticker_input_dir, file)
-                with open(file_path, "r", encoding="utf-8") as f:
-                    chunks = json.load(f)
-
-                tokenized_corpus = [word_tokenize(c["content"].lower(), preserve_line=True) for c in chunks]
-
-                bm25 = BM25Okapi(tokenized_corpus)
-
-                embedded = []
-                for i, chunk in enumerate(chunks):
-                    tokens = tokenized_corpus[i]
-                    scores = bm25.get_scores(tokens)
-                    embedded.append({
-                        "chunk_id": chunk["chunk_id"],
-                        "bm25_scores": list(scores),
-                        "metadata": {
-                            "source_file": chunk["source_file"],
-                            "ticker": chunk["ticker"],
-                            "form_type": chunk["form_type"],
-                            "start_index": chunk["start_index"],
-                            "end_index": chunk["end_index"]
-                        }
-                    })
-
-
-                with open(output_path, "w", encoding="utf-8") as out:
-                    json.dump(embedded, out, indent=2, ensure_ascii=False)
-
-                print(f"BM25 embedded: {file} -> {len(embedded)} chunks")
-
-
-def embed_chunks_finbert(base_path=".", input_folder="chunked_dense", output_folder="embedded_dense_finbert", batch_size=256):
-
-    # Create output directories
-    input_base = os.path.join(base_path, input_folder)
-    output_base = os.path.join(base_path, output_folder)
-    os.makedirs(output_base, exist_ok=True)
-
-    # Load model with optimizations
-    model = SentenceTransformer("yiyanghkust/finbert-tone")
-    
-    # FP16 conversion and GPU acceleration
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.half().to(device) if device == "cuda" else model
-
-    # Process each filing type (10-K, 10-Q, etc.)
-    for form_type in os.listdir(input_base):
-        form_input_dir = os.path.join(input_base, form_type)
-        form_output_dir = os.path.join(output_base, form_type)
-        os.makedirs(form_output_dir, exist_ok=True)
-
-        # Process each company (ticker)
-        for ticker in os.listdir(form_input_dir)[:1]:
-            ticker_input_dir = os.path.join(form_input_dir, ticker)
-            ticker_output_dir = os.path.join(form_output_dir, ticker)
-            os.makedirs(ticker_output_dir, exist_ok=True)
-
-            # Process each chunk file
-            for file in sorted(os.listdir(ticker_input_dir))[:3]:
-                if not file.endswith("_chunks.json"):
-                    continue
-
-                file_path = os.path.join(ticker_input_dir, file)
-                with open(file_path, "r", encoding="utf-8") as f:
-                    chunks = json.load(f)
-
-                texts = [chunk["content"] for chunk in chunks]
-                
-                # Generate embeddings with optimizations
-                embeddings = model.encode(
-                    texts,
-                    batch_size=batch_size,
-                    convert_to_numpy=True,
-                    show_progress_bar=True,
-                    convert_to_tensor=True,
-                    device=device
-                )
-
-                # Prepare embedded data structure
-                embedded = []
-                for chunk, emb in zip(chunks, embeddings):
-                    # Convert tensor to list if needed
-                    if hasattr(emb, 'cpu'):
-                        emb = emb.cpu().numpy().tolist()
-                    else:
-                        emb = emb.tolist()
-                        
-                    embedded.append({
-                        "chunk_id": chunk["chunk_id"],
-                        "embedding": emb,
-                        "metadata": {
-                            "source_file": chunk.get("source_file", ""),
-                            "ticker": chunk.get("ticker", ""),
-                            "form_type": chunk.get("form_type", ""),
-                            "start_index": chunk.get("start_index", None),
-                            "end_index": chunk.get("end_index", None)
-                        }
-                    })
-
-                # Save results
-                output_file = file.replace("_chunks.json", "_embedded.json")
-                output_path = os.path.join(ticker_output_dir, output_file)
-                with open(output_path, "w", encoding="utf-8") as out:
-                    json.dump(embedded, out, indent=2, ensure_ascii=False)
-
-                print(f"FinBERT embedded: {file} -> {len(embedded)} chunks")
-
-    print("Embedding process completed.")
-
-
-#embed_chunks_bm25()
-#embed_chunks_finbert()
