@@ -74,10 +74,10 @@ def run_cypher_query(cypher_query: str):
             result = session.run(cypher_query)
             records = result.data()
             if not records:
-                print("No data found.")
-            else:
-                for record in records:
-                    print(record)
+                records = [{"message": "No Data Found"}]
+            
+            return records
+
         except Exception as e:
             print("Error running query:", e)
             print("Query was:", cypher_query)
@@ -85,7 +85,11 @@ def run_cypher_query(cypher_query: str):
 # This function is for the 'JointRetrieval' file
 def execute_graph_retrieval_process(user_query: str):
     cypher_query = generate_cypher_from_query(user_query)
-    run_cypher_query(cypher_query)
+    result = run_cypher_query(cypher_query)
+    return {
+        "cypher_query" : cypher_query,
+        "results": result
+    }
 
 def close_drivers():
     driver.close()

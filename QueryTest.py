@@ -161,10 +161,20 @@ def execute_vector_retrieval(user_query:str):
 
     reranked = rerank(user_query, compiled_results, top_k=5)
 
-    print("\nFinal Reranked Results:")
-    for i, (text, score) in enumerate(reranked):
-        print(f"Rank {i+1} - Score: {score:.4f}")
-        print(text[:300], "...\n", "-"*60)
+    # print("\nFinal Reranked Results:")
+    # for i, (text, score) in enumerate(reranked):
+    #     print(f"Rank {i+1} - Score: {score:.4f}")
+    #     print(text[:300], "...\n", "-"*60)
+
+    # Needed for the joint retrieval
+    
+    texts = [text for text, _ in reranked]
+    scores = [score for _, score in reranked]
+
+    return {
+        "results": texts,
+        "scores": scores
+    }
 
 if __name__ == "__main__":
     user_query = input("Enter your query: ")
