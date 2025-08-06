@@ -2,7 +2,7 @@ import os
 import json
 import torch
 from sentence_transformers import SentenceTransformer
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_folder="embedded_dense_allMini", batch_size=256):
     input_base = os.path.join(base_path, input_folder)
@@ -27,8 +27,8 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
             os.makedirs(ticker_output_dir, exist_ok=True)
 
             for file in sorted(os.listdir(ticker_input_dir)):
-                if not file.endswith("_chunks.json"):
-                    continue
+                # if not file.endswith("_chunks.json"):
+                #     continue
                 
                 file_path = os.path.join(ticker_input_dir, file)
                 with open(file_path, "r", encoding="utf-8") as f:

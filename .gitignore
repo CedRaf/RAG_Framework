@@ -14,3 +14,5 @@ __pycache__/
 old_code_versions/
 .env
 datasets/
+venv312/
+logs/

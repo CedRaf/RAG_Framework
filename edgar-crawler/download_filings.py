@@ -25,7 +25,7 @@ from tqdm import tqdm
 from urllib3.util import Retry
 
 from logger import Logger
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\edgar-crawler-main")
+# os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\edgar-crawler-main")
 
 
 # Python version compatibility for HTML parser

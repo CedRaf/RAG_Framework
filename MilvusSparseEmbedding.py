@@ -3,7 +3,7 @@ import json
 from pymilvus import MilvusClient, DataType, Function, FunctionType
 from tqdm import tqdm
 import csv
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 COLLECTION_NAME = "sec_chunks_sparse"
 CHUNK_BASE_DIR = "chunked_sparse"
 MAX_TEXT_LENGTH = 10000
@@ -91,18 +91,18 @@ def load_chunks_from_folder(base_path):
     return docs
 
 
-# docs = load_chunks_from_folder(CHUNK_BASE_DIR)
-# print(f"Loaded {len(docs)} chunks.")
+docs = load_chunks_from_folder(CHUNK_BASE_DIR)
+print(f"Loaded {len(docs)} chunks.")
 
-# if docs:
-#     print(f"Inserting into '{COLLECTION_NAME}'...")
-#     for i in tqdm(range(0, len(docs), 1000)):
-#         batch = docs[i:i+1000]
-#         client.insert(COLLECTION_NAME, batch)
+if docs:
+    print(f"Inserting into '{COLLECTION_NAME}'...")
+    for i in tqdm(range(0, len(docs), 1000)):
+        batch = docs[i:i+1000]
+        client.insert(COLLECTION_NAME, batch)
 
-#     print("Insertion complete.")
-# else:
-#     print(" No documents found to insert.")
+    print("Insertion complete.")
+else:
+    print(" No documents found to insert.")
 
 
 

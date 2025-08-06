@@ -142,7 +142,7 @@ def rerank(query, passages, top_k=5):
     ranked = sorted(zip(passages, scores.tolist()), key=lambda x: x[1], reverse=True)
     return ranked[:top_k]
 
-def execute_vector_retrieval(user_query:str):
+def vector_retrieval_test(user_query:str):
     psuedo_doc= expand_query(user_query)
     sparse_query= sparse_formatting(user_query, psuedo_doc)
     dense_query= dense_formatting(user_query, psuedo_doc)
@@ -161,12 +161,56 @@ def execute_vector_retrieval(user_query:str):
 
     reranked = rerank(user_query, compiled_results, top_k=5)
 
-    # print("\nFinal Reranked Results:")
-    # for i, (text, score) in enumerate(reranked):
-    #     print(f"Rank {i+1} - Score: {score:.4f}")
-    #     print(text[:300], "...\n", "-"*60)
+    print("\nFinal Reranked Results:")
+    for i, (text, score) in enumerate(reranked):
+        print(f"Rank {i+1} - Score: {score:.4f}")
+        print(text[:300], "...\n", "-"*60)
 
     # Needed for the joint retrieval
+    
+    texts = [text for text, _ in reranked]
+    scores = [score for _, score in reranked]
+
+    # Saving to json file
+    output_data = {
+        "query": user_query,
+        "results": [
+            {
+                "rank": i+1,
+                "score": scores[i],
+                "text": texts[i]
+            }
+            for i in range(len(texts))
+        ]
+        
+    }
+
+    os.makedirs("retrieval_outputs", exist_ok=True)
+    output_path = os.path.join("retrieval_outputs", "retrieved_results.json")
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, ensure_ascii=False, indent=4)
+
+    print(f"Full results saved to {output_path}")
+
+# Same logic as 'vector_retrieval_test' just used as a callable function for other files
+def execute_vector_retrieval(user_query:str):
+    psuedo_doc= expand_query(user_query)
+    sparse_query= sparse_formatting(user_query, psuedo_doc)
+    dense_query= dense_formatting(user_query, psuedo_doc)
+
+    sparse_results= sparse_retrieval_test(sparse_query)
+    dense_results= dense_retrieval_test(dense_query)
+
+    compiled_results = []
+    
+    for result in sparse_results[0]:
+        compiled_results.append(result['entity']['text'])
+
+    for hit in dense_results[0]:
+        text = fetch_text({...})  # Already in your code
+        compiled_results.append(text)
+
+    reranked = rerank(user_query, compiled_results, top_k=5)
     
     texts = [text for text, _ in reranked]
     scores = [score for _, score in reranked]
@@ -178,7 +222,7 @@ def execute_vector_retrieval(user_query:str):
 
 if __name__ == "__main__":
     user_query = input("Enter your query: ")
-    execute_vector_retrieval(user_query)
+    vector_retrieval_test(user_query)
 
 
 

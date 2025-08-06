@@ -17,7 +17,7 @@ from tqdm import tqdm
 from __init__ import DATASET_DIR
 from item_lists import item_list_8k, item_list_8k_obsolete, item_list_10k, item_list_10q
 from logger import Logger
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\edgar-crawler-main")
+# os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\edgar-crawler-main")
 
 # Change the default recursion limit of 1000 to 30000
 sys.setrecursionlimit(30000)

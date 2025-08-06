@@ -5,7 +5,7 @@ import torch
 from sentence_transformers import SentenceTransformer
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import csv
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "dense_miniLM"
@@ -56,19 +56,19 @@ def insert_dense_embedding_milvus():
     all_embeddings = []
 
     for filename in os.listdir(EMBEDDED_DIR):
-        if filename.endswith("_embedded.json"):
-            file_path = os.path.join(EMBEDDED_DIR, filename)
-            with open(file_path, "r", encoding="utf-8") as f:
-                try:
-                    # Load JSON data as list of dictionaries
-                    data = json.load(f)
-                    if isinstance(data, list):
-                        all_embeddings.extend(data)
-                    else:
-                        print(f"File {filename} is not a JSON array")
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding {filename}: {str(e)}")
-                    continue
+    # if filename.endswith("_embedded.json"):
+        file_path = os.path.join(EMBEDDED_DIR, filename)
+        with open(file_path, "r", encoding="utf-8") as f:
+            try:
+                # Load JSON data as list of dictionaries
+                data = json.load(f)
+                if isinstance(data, list):
+                    all_embeddings.extend(data)
+                else:
+                    print(f"File {filename} is not a JSON array")
+            except json.JSONDecodeError as e:
+                print(f"Error decoding {filename}: {str(e)}")
+                continue
 
     if not all_embeddings:
         print("No valid embedded data found to insert.")
