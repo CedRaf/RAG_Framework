@@ -10,7 +10,7 @@ import csv
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "dense_miniLM"
 EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL"
-EMBEDDING_DIM = 384  # output dim for all-mini, have to change if we'll use smthn else
+EMBEDDING_DIM = 384  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
 TOP_K = 5 # Number of documents to retrieve
 QUERY = "What are the risks mentioned in Apple's 10-K filing?" # Hard-coded for now, have to change it later on
 

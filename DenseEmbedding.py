@@ -9,11 +9,10 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    model = SentenceTransformer('all-MiniLM-L6-v2') 
-
+    #model = SentenceTransformer('all-MiniLM-L6-v2') #Uncomment this to use all-miniLM
+    model = SentenceTransformer('BAAI/bge-large-en-v1.5')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-
     model = model.to(device)
 
     for form_type in sorted(os.listdir(input_base))[0:1]:
@@ -27,14 +26,12 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
             os.makedirs(ticker_output_dir, exist_ok=True)
 
             for file in sorted(os.listdir(ticker_input_dir)):
-                # if not file.endswith("_chunks.json"):
-                #     continue
-                
                 file_path = os.path.join(ticker_input_dir, file)
                 with open(file_path, "r", encoding="utf-8") as f:
                     chunks = json.load(f)
                 
-                texts = [chunk["content"] for chunk in chunks]
+                #texts = [chunk["content"] for chunk in chunks] #Uncomment this to use all-miniLM
+                texts = [f"Represent this passage for retrieval: {chunk['content']}" for chunk in chunks]
                 embeddings = model.encode(
                     texts,
                     batch_size=batch_size,
@@ -43,10 +40,8 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
                     device=device
                 )
                 
-                # FIXED: Create list of entries instead of dictionary-of-lists
                 entries = []
                 for chunk, emb in zip(chunks, embeddings):
-                    chunked_filename = file
                     entry = {
                         "embedding": emb.tolist(),
                         "metadata": {
