@@ -15,4 +15,5 @@ old_code_versions/
 .env
 datasets/
 venv312/
-logs/
+retrieval_outputs/
+IMPORTANT.txt

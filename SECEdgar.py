@@ -159,8 +159,8 @@ def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_dense",
-        chunk_size=2048,      # ~512 tokens
-        chunk_overlap=512
+        chunk_size=1300,      # ~300 tokens
+        chunk_overlap=200
     )
 
 

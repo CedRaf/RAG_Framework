@@ -1,8 +1,10 @@
 from pymilvus import connections, MilvusClient, FieldSchema, CollectionSchema, DataType, Collection, utility
 from sentence_transformers import SentenceTransformer
 import json
+from datetime import datetime
 import os
 import torch
+import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
@@ -20,7 +22,7 @@ def sparse_retrieval_test(sparse_query:str):
         collection_name="sec_chunks_sparse",
         data=[sparse_query],  # BM25 function will convert text to sparse vector automatically
         anns_field="sparse",  # Search on the sparse vector field
-        limit=5,  # Number of results to return
+        limit=25,  # Number of results to return
         output_fields=["text", "ticker", "form_type", "source_file", "chunk_id"],
         search_params={
             "metric_type": "BM25",
@@ -50,11 +52,22 @@ def dense_retrieval_test(dense_query:str):
     collection.load()
     print("Collection Loaded")
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    #model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer('BAAI/bge-large-en-v1.5')
+    
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
-    query_embedding = model.encode(dense_query, convert_to_numpy=True)
+    #uncomment this to use all-MiniLM
+    #query_embedding = model.encode(dense_query, convert_to_numpy=True)
+    query_embedding = model.encode(
+        f"Represent this query for retrieval: {dense_query}",
+        convert_to_numpy=True,
+        device=device
+    )
+
+    query_embedding = query_embedding/np.linalg.norm(query_embedding)
+
     print("Query Embedded")
 
     search_params = {
@@ -66,7 +79,7 @@ def dense_retrieval_test(dense_query:str):
         data = [query_embedding.tolist()],
         anns_field="dense_vector",
         param=search_params,
-        limit=5,
+        limit=25,
         output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
     )
 
@@ -107,9 +120,9 @@ def fetch_text(metadata):
 
         base_dir = "chunked_dense"
 
-        form_dir = f"{form_type}-texts" if form_type else ""
+        form_dir = f"{form_type}" if form_type else ""
 
-        chunk_dir = os.path.join(base_dir, form_dir, ticker.lower())
+        chunk_dir = os.path.join(base_dir, form_dir, ticker.upper())
         chunk_file  = os.path.join(chunk_dir, source_file)
 
         with open(chunk_file, 'r', encoding="utf-8") as f:
@@ -186,11 +199,13 @@ def vector_retrieval_test(user_query:str):
     }
 
     os.makedirs("retrieval_outputs", exist_ok=True)
-    output_path = os.path.join("retrieval_outputs", "retrieved_results.json")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_path = os.path.join("retrieval_outputs", f"retrieved_results_{timestamp}.json")
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output_data, f, ensure_ascii=False, indent=4)
 
-    print(f"Full results saved to {output_path}")
+    print(f"Result saved to {output_path}")
 
 # Same logic as 'vector_retrieval_test' just used as a callable function for other files
 def execute_vector_retrieval(user_query:str):

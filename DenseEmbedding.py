@@ -2,6 +2,7 @@ import os
 import json
 import torch
 from sentence_transformers import SentenceTransformer
+import numpy as np
 #os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_folder="embedded_dense_allMini", batch_size=256):
@@ -39,6 +40,8 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
                     show_progress_bar=True,
                     device=device
                 )
+
+                embeddings = embeddings/np.linalg.norm(embeddings, axis=1, keepdims=True)
                 
                 entries = []
                 for chunk, emb in zip(chunks, embeddings):

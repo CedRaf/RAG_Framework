@@ -1,0 +1,33 @@
+08-05-2025 16:33 - download_filings - INFO - Saving log to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\logs
+
+08-05-2025 16:33 - download_filings - INFO - Downloading index files from SEC...
+08-05-2025 16:33 - download_filings - INFO - 2019_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2019_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2019_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2019_QTR4.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2020_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2020_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2020_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2020_QTR4.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2021_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2021_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2021_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2021_QTR4.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2022_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2022_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2022_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2022_QTR4.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2023_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2023_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2023_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2023_QTR4.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2024_QTR1.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2024_QTR2.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2024_QTR3.tsv downloaded
+08-05-2025 16:33 - download_filings - INFO - 2024_QTR4.tsv downloaded
+08-05-2025 16:34 - download_filings - INFO - 
+Downloading 75 filings directly from EDGAR...
+
+08-05-2025 16:34 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-05-2025 16:35 - download_filings - INFO - 
+Filings metadata exported to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\datasets\FILINGS_METADATA.csv
