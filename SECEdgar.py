@@ -18,7 +18,7 @@ import nltk
 #nltk.download("punkt")  needed to be run once only
 from extract_html_tables import extract_html_tables # Look/Change extract_html_tables.py file 
 
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # Opening the OG dataset with all companies in SEC EDGAR
 with open("company_tickers_exchange.json", "r") as f:

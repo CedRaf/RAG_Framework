@@ -9,8 +9,13 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
 
-reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-base")  # or large
-reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-base")
+# This is what we were using initially
+# reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-base")
+# reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-base")
+
+reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
+reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+
 reranker_model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
@@ -22,7 +27,7 @@ def sparse_retrieval_test(sparse_query:str):
         collection_name="sec_chunks_sparse",
         data=[sparse_query],  # BM25 function will convert text to sparse vector automatically
         anns_field="sparse",  # Search on the sparse vector field
-        limit=25,  # Number of results to return
+        limit=50,  # Number of results to return
         output_fields=["text", "ticker", "form_type", "source_file", "chunk_id"],
         search_params={
             "metric_type": "BM25",
@@ -79,7 +84,7 @@ def dense_retrieval_test(dense_query:str):
         data = [query_embedding.tolist()],
         anns_field="dense_vector",
         param=search_params,
-        limit=25,
+        limit=50,
         output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
     )
 
@@ -150,7 +155,6 @@ def rerank(query, passages, top_k=5):
 
     with torch.no_grad():
         scores = reranker_model(**inputs).logits.squeeze(-1)
-        scores = F.softmax(scores, dim=0)
 
     ranked = sorted(zip(passages, scores.tolist()), key=lambda x: x[1], reverse=True)
     return ranked[:top_k]

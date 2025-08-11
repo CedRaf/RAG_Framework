@@ -11,8 +11,6 @@ import csv
 COLLECTION_NAME = "dense_miniLM"
 EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL"
 EMBEDDING_DIM = 1024  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
-TOP_K = 5 # Number of documents to retrieve
-QUERY = "What are the risks mentioned in Apple's 10-K filing?" # Hard-coded for now, have to change it later on
 
 connections.connect(host="localhost", ports="19530")
 
@@ -118,99 +116,4 @@ def insert_dense_embedding_milvus():
 
     print(f"Inserted {len(vectors)} dense vectors into collection '{COLLECTION_NAME}'.")
 
-
-def fetch_text(metadata):
-    try:
-        form_type = metadata.get("form_type", "")
-        ticker = metadata.get("ticker", "")
-        source_file = metadata.get("source_file", "")
-        
-        base_dir = "chunked_dense"
-
-        form_dir = f"{form_type}" if form_type else ""
-
-        chunk_dir = os.path.join(base_dir, form_dir, ticker.upper())
-        chunk_file  = os.path.join(chunk_dir, source_file)
-
-        with open(chunk_file, 'r', encoding="utf-8") as f:
-            chunks = json.load(f)
-        
-        chunk_id = metadata.get("chunk_id", "")
-        for chunk in chunks:
-            if str(chunk.get("chunk_id", "")) == str(chunk_id):
-                return chunk.get("content", "")
-        
-        return "Chunk not found"
-    except FileNotFoundError:
-        return f"File not found: {chunk_file}"
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-
-def retrieval_test():
-
-    collection = Collection(COLLECTION_NAME)
-    collection.load()
-    print("Collection Loaded")
-
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.to(device)
-
-    query_embedding = model.encode(QUERY, convert_to_numpy=True)
-    print("Query Embedded")
-
-    search_params = {
-        "metric_type": "L2", 
-        "params": {"ef": 32}
-    }
-
-    results = collection.search(
-        data = [query_embedding.tolist()],
-        anns_field="dense_vector",
-        param=search_params,
-        limit=TOP_K,
-        output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
-    )
-
-    if not results:
-        print("No results found, exiting...")
-        exit()
-    
-    print(f"\n Top {TOP_K} results for: '{QUERY}' \n")
-    print("-" * 80)
-    csv_data = []
-
-    for i, hit in enumerate(results[0]):
-        entity = hit.entity
-        text_chunk = fetch_text({
-            "form_type": entity.get("form_type", ""),
-            "ticker": entity.get("ticker", ""),
-            "source_file": entity.get("source_file", ""),
-            "chunk_id": entity.get("chunk_id", "")
-        })
-        snippet = text_chunk[:200]
-        print(f"Result #{i+1}: {text_chunk[:200]}...")
-
-        csv_data.append({
-            "Rank": i + 1,
-            "Score": hit.distance,
-            "Ticker": entity.get("ticker", ""),
-            "Form Type": entity.get("form_type", ""),
-            "Source File": entity.get("source_file", ""),
-            "Chunk ID": entity.get("chunk_id", ""),
-            "Start Index": entity.get("start_index", ""),
-            "End Index": entity.get("end_index", ""),
-            "Text Snippet": snippet
-        })
-
-        with open("retrieval_results.csv", "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = ["Rank", "Score", "Ticker", "Form Type", "Source File", "Chunk ID", "Start Index", "End Index", "Text Snippet"]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(csv_data)
-
-        print("Results written to retrieval_results.csv")
-
 insert_dense_embedding_milvus()
-#retrieval_test()

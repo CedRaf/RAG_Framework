@@ -18,8 +18,6 @@ if COLLECTION_NAME not in client.list_collections():
     schema.add_field("text", DataType.VARCHAR, max_length=MAX_TEXT_LENGTH, enable_analyzer=True)
     schema.add_field("sparse", DataType.SPARSE_FLOAT_VECTOR)
 
-
-
     # Metadata fields
     schema.add_field("chunk_id", DataType.INT64)
     schema.add_field("start_index", DataType.INT64)
@@ -90,7 +88,6 @@ def load_chunks_from_folder(base_path):
                         print(f"Error reading {file_path}: {e}")
     return docs
 
-
 docs = load_chunks_from_folder(CHUNK_BASE_DIR)
 print(f"Loaded {len(docs)} chunks.")
 
@@ -105,29 +102,6 @@ else:
     print(" No documents found to insert.")
 
 
-
-# client.load_collection(COLLECTION_NAME)
-
-# results = client.query(
-#     collection_name=COLLECTION_NAME,
-#     output_fields=["id", "ticker", "chunk_id", "form_type", "source_file", "text"],
-#     limit=1000  # make sure this is larger than possible # of entries
-# )
-# print("Number of records found:", len(results))
-# # Save to CSV
-# csv_file = "milvus_results.csv"
-# with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
-#     writer = csv.DictWriter(file, fieldnames=["id", "ticker", "chunk_id", "form_type", "source_file", "text" ])
-#     writer.writeheader()
-#     writer.writerows(results)
-
-# print(f" Results saved to {csv_file}")
-
-
-
-
-# schema = client.describe_collection(COLLECTION_NAME)
-# print(schema)
 
 
 
