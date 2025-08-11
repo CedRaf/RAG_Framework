@@ -1,0 +1,12 @@
+08-10-2025 02:43 - download_filings - INFO - Saving log to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler\logs
+
+08-10-2025 02:43 - download_filings - INFO - Downloading index files from SEC...
+08-10-2025 02:43 - download_filings - INFO - Skipping 2023_QTR1.tsv
+08-10-2025 02:43 - download_filings - INFO - Skipping 2023_QTR2.tsv
+08-10-2025 02:43 - download_filings - INFO - Skipping 2023_QTR3.tsv
+08-10-2025 02:43 - download_filings - INFO - Skipping 2023_QTR4.tsv
+08-10-2025 02:43 - download_filings - INFO - 
+Reading filings metadata...
+
+08-10-2025 02:43 - download_filings - INFO - 
+There are no more filings to download for the given years, quarters and companies

@@ -3,7 +3,7 @@ import json
 import torch
 from sentence_transformers import SentenceTransformer
 import numpy as np
-#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_folder="embedded_dense_allMini", batch_size=256):
     input_base = os.path.join(base_path, input_folder)

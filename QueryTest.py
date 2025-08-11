@@ -198,9 +198,36 @@ def vector_retrieval_test(user_query:str):
                 "text": texts[i]
             }
             for i in range(len(texts))
+        ],
+        "sparse_top_50": [
+            {
+                "rank": i+1,
+                "score": result['distance'],
+                "ticker": result['entity']['ticker'],
+                "form_type": result['entity']['form_type'],
+                "source_file": result['entity']['source_file'],
+                "text": result['entity']['text']
+            }
+            for i, result in enumerate(sparse_results[0])
+        ],
+        "dense_top_50": [
+            {
+                "rank": i+1,
+                "score": hit['distance'],
+                "ticker": hit['entity']['ticker'],
+                "form_type": hit['entity']['form_type'],
+                "source_file": hit['entity']['source_file'],
+                "text": fetch_text({
+                    "form_type": hit.entity.get("form_type", ""),
+                    "ticker": hit.entity.get("ticker", ""),
+                    "source_file": hit.entity.get("source_file", ""),
+                    "chunk_id": hit.entity.get("chunk_id", "")
+                })
+            }
+            for i, hit in enumerate(dense_results[0])
         ]
-        
     }
+
 
     os.makedirs("retrieval_outputs", exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
