@@ -16,7 +16,7 @@ ds = load_dataset("intfloat/query2doc_msmarco", split="train")
 def expand_query(query, k=4, model="sonar-pro"):
     few_shot_examples = random.sample(list(ds), k)
     
-    prompt = "Write a passage that answers the given query:\n\n"
+    prompt = "Write only the answer to the final query, in the same style as the examples.\n\n"
     for example in few_shot_examples:
         prompt += f"Q: {example['query']}\nA: {example['pseudo_doc']}\n\n"
     prompt += f"Q: {query}\nA:"
@@ -44,8 +44,8 @@ def expand_query(query, k=4, model="sonar-pro"):
     result = response.json()
     return result["choices"][0]["message"]["content"].strip()
 
-query = "how many shares of common stock were issued and outstanding as of October 16, 2020"
-psuedo_doc= expand_query(query)
+
+
 
 
 def sparse_formatting(og_query, pseudo_doc, n=5):
@@ -60,8 +60,10 @@ def dense_formatting(og_query, pseudo_doc):
     return result
 
 
-
-
+query = "how many shares of common stock were issued and outstanding as of October 16, 2020"
+psuedo_doc= expand_query(query)
+final_output= sparse_formatting(query, psuedo_doc)
+print(final_output)
 __all__ = ["expand_query", "sparse_formatting", "dense_formatting"]
 
 

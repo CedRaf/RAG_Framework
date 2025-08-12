@@ -179,6 +179,7 @@ def vector_retrieval_test(user_query:str):
     reranked = rerank(user_query, compiled_results, top_k=5)
 
     print("\nFinal Reranked Results:")
+    print(f"Appended psuedo doc: {psuedo_doc}") 
     for i, (text, score) in enumerate(reranked):
         print(f"Rank {i+1} - Score: {score:.4f}")
         print(text[:300], "...\n", "-"*60)
