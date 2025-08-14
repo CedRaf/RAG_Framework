@@ -27,7 +27,6 @@ with open("company_tickers_exchange.json", "r") as f:
 CIK_df = pd.DataFrame(CIK_dict["data"], columns=CIK_dict["fields"])
 CIK_to_ticker = {str(row["cik"]).zfill(10): row["ticker"] for _, row in CIK_df.iterrows()}
 nasdaq_df = CIK_df[CIK_df["exchange"] == "Nasdaq"]
-
 # Ticker list so that can find the nasdaq 100 companies since OG json dataset doesn't specify
 nasdaq_100_tickers = [
     'AAPL', 'MSFT', 'NVDA', 'AMZN', 'META', 'GOOGL', 'GOOG', 'TSLA', 'ADBE', 'AMD',

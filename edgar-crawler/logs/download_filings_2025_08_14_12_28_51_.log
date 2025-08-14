@@ -1,0 +1,44 @@
+08-14-2025 20:28 - download_filings - INFO - Saving log to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\logs
+
+08-14-2025 20:28 - download_filings - INFO - Downloading index files from SEC...
+08-14-2025 20:28 - download_filings - INFO - Skipping 2019_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2019_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2019_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2019_QTR4.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2020_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2020_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2020_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2020_QTR4.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2021_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2021_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2021_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2021_QTR4.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2022_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2022_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2022_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2022_QTR4.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2023_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2023_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2023_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2023_QTR4.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2024_QTR1.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2024_QTR2.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2024_QTR3.tsv
+08-14-2025 20:28 - download_filings - INFO - Skipping 2024_QTR4.tsv
+08-14-2025 20:29 - download_filings - INFO - 
+Reading filings metadata...
+
+08-14-2025 20:29 - download_filings - INFO - 
+Downloading 96 filings directly from EDGAR...
+
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:29 - charset_normalizer - DEBUG - Encoding detection: ascii is most likely the one.
+08-14-2025 20:31 - download_filings - INFO - 
+Filings metadata exported to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\datasets\FILINGS_METADATA.csv

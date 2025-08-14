@@ -1,0 +1,5 @@
+08-14-2025 21:04 - ExtractItems - INFO - Starting the structured JSON extraction from 110 unstructured EDGAR filings.
+08-14-2025 21:05 - ExtractItems - INFO - 
+Item extraction is completed successfully.
+08-14-2025 21:05 - ExtractItems - INFO - 103 files were processed.
+08-14-2025 21:05 - ExtractItems - INFO - Extracted filings are saved to: C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\datasets\EXTRACTED_FILINGS
