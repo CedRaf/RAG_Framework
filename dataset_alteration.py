@@ -9,7 +9,7 @@ from sentence_transformers import SentenceTransformer, util
 # Config
 CORPUS_DIRECTORY = r"chunked_dense\10-K"
 DATASET = "Financial-QA-10k.csv"
-OUTPUT_FILE = "hard_negatives.jsonl"
+OUTPUT_FILE = "training_dataset.jsonl"
 TOP_K = 10       
 SIMILARITY_THRESHOLD = 0.8
 MAX_NEGATIVES = 4  
