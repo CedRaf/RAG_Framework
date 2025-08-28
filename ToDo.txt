@@ -1,0 +1,8 @@
+The things we still have to do before this RAG pipeline is completed. (Add to list if something's still missing)
+
+1. In the InsertDenseData.py file, make the EMBEDDED_DIR dynamic and not hardcoded.
+2. Write logic for combining of results to let LLM create the final answer. 
+3. OmniEval 
+4. Test with data from all companies (?)
+5. Test the JointRetrieval.py file
+6. Add the data from FinnHub API

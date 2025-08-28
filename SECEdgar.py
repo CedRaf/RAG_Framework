@@ -16,7 +16,7 @@ import torch
 from sentence_transformers import SentenceTransformer
 import nltk
 #nltk.download("punkt")  needed to be run once only
-from extract_html_tables import extract_html_tables # Look/Change extract_html_tables.py file 
+from ExtractHTMLTables import extract_html_tables # Look/Change extract_html_tables.py file 
 
 #os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 

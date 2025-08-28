@@ -11,7 +11,8 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
     os.makedirs(output_base, exist_ok=True)
 
     #model = SentenceTransformer('all-MiniLM-L6-v2') #Uncomment this to use all-miniLM
-    model = SentenceTransformer('BAAI/bge-large-en-v1.5')
+    #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
+    model = SentenceTransformer('models/bge_dense_finetuned_triplet')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)

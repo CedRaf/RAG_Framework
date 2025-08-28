@@ -16,4 +16,5 @@ old_code_versions/
 datasets/
 venv312/
 retrieval_outputs/
+models/
 IMPORTANT.txt

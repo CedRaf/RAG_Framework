@@ -9,7 +9,7 @@ import csv
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "dense_miniLM"
-EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL"
+EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL" # This is still hard coded, have to change
 EMBEDDING_DIM = 1024  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
 
 connections.connect(host="localhost", ports="19530")
