@@ -5,13 +5,13 @@ import torch
 from sentence_transformers import SentenceTransformer
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import csv
-#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "dense_miniLM"
 EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL" # This is still hard coded, have to change
 EMBEDDING_DIM = 1024  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
-
+MAIN_DIR = "embedded_dense_allMini"
 connections.connect(host="localhost", ports="19530")
 
 def insert_dense_embedding_milvus():
@@ -53,20 +53,22 @@ def insert_dense_embedding_milvus():
     # read embedded json files
     all_embeddings = []
 
-    for filename in os.listdir(EMBEDDED_DIR):
-    # if filename.endswith("_embedded.json"):
-        file_path = os.path.join(EMBEDDED_DIR, filename)
-        with open(file_path, "r", encoding="utf-8") as f:
-            try:
-                # Load JSON data as list of dictionaries
-                data = json.load(f)
-                if isinstance(data, list):
-                    all_embeddings.extend(data)
-                else:
-                    print(f"File {filename} is not a JSON array")
-            except json.JSONDecodeError as e:
-                print(f"Error decoding {filename}: {str(e)}")
-                continue
+    
+
+    for root, dirs, files in os.walk(MAIN_DIR):
+        for filename in files:
+            if filename.endswith(".json"):  # optional
+                file_path = os.path.join(root, filename)
+                with open(file_path, "r", encoding="utf-8") as f:
+                    try:
+                        data = json.load(f)
+                        if isinstance(data, list):
+                            all_embeddings.extend(data)
+                        else:
+                            print(f"File {file_path} is not a JSON array")
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding {file_path}: {str(e)}")
+                        continue
 
     if not all_embeddings:
         print("No valid embedded data found to insert.")

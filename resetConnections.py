@@ -1,13 +1,15 @@
-from pymilvus import MilvusClient
+from pymilvus import connections, MilvusClient
 
-# Configuration
-COLLECTION_NAME = "dense_miniLM"
 
-# Connect to Milvus
-client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+COLLECTION_NAME = "news_articles"
+connections.disconnect("default")
 
-# Delete if it exists
-if COLLECTION_NAME in client.list_collections():
+connections.connect("default", host="localhost", port="19530")
+
+client = MilvusClient("http://localhost:19530", token="root:Milvus")
+
+
+if client.has_collection(COLLECTION_NAME):
     print(f"Dropping collection '{COLLECTION_NAME}'...")
     client.drop_collection(COLLECTION_NAME)
     print(f"Collection '{COLLECTION_NAME}' dropped.")

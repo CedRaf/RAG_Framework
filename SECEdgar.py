@@ -17,8 +17,7 @@ from sentence_transformers import SentenceTransformer
 import nltk
 #nltk.download("punkt")  needed to be run once only
 from ExtractHTMLTables import extract_html_tables # Look/Change extract_html_tables.py file 
-
-#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # Opening the OG dataset with all companies in SEC EDGAR
 with open("company_tickers_exchange.json", "r") as f:
@@ -211,6 +210,17 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
             file_path = os.path.join(input_dir, file)
 
+            ticker_output_dir = os.path.join(output_form_dir, ticker)
+            os.makedirs(ticker_output_dir, exist_ok=True)
+
+            output_filename = os.path.splitext(file)[0] + ".json"
+            output_path = os.path.join(ticker_output_dir, output_filename)
+
+            # File existing check
+            if os.path.exists(output_path):
+                print(f"Skipping already chunked file: {output_path}")
+                continue
+
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -253,11 +263,11 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                     print(f"Skipped (no valid chunks): {file}")
                     continue
 
-                ticker_output_dir = os.path.join(output_form_dir, ticker)
-                os.makedirs(ticker_output_dir, exist_ok=True)
+                # ticker_output_dir = os.path.join(output_form_dir, ticker)
+                # os.makedirs(ticker_output_dir, exist_ok=True)
 
-                output_filename = os.path.splitext(file)[0] + ".json"
-                output_path = os.path.join(ticker_output_dir, output_filename)
+                # output_filename = os.path.splitext(file)[0] + ".json"
+                # output_path = os.path.join(ticker_output_dir, output_filename)
 
                 with open(output_path, "w", encoding="utf-8") as json_file:
                     json.dump(chunk_objects, json_file, indent=2, ensure_ascii=False)
@@ -266,7 +276,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
-segment_dense()
-#segment_sparse()
+#segment_dense()
+segment_sparse()
 
 

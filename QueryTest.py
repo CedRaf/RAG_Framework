@@ -7,7 +7,7 @@ import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
-from QueryExpansion import expand_query, sparse_formatting, dense_formatting
+from queryExpansion import expand_query, sparse_formatting, dense_formatting
 
 # This is what we were using initially
 # reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-base")
@@ -59,7 +59,8 @@ def dense_retrieval_test(dense_query:str):
 
     #model = SentenceTransformer("all-MiniLM-L6-v2")
     #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
-    model = SentenceTransformer('models/bge_dense_finetuned_triplet')
+    # model = SentenceTransformer('models/bge_dense_finetuned_triplet')
+    model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)

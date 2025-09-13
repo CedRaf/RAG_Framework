@@ -60,10 +60,10 @@ def dense_formatting(og_query, pseudo_doc):
     return result
 
 
-query = "how many shares of common stock were issued and outstanding as of October 16, 2020"
-psuedo_doc= expand_query(query)
-final_output= sparse_formatting(query, psuedo_doc)
-print(final_output)
+# query = "how many shares of common stock were issued and outstanding as of October 16, 2020"
+# psuedo_doc= expand_query(query)
+# final_output= sparse_formatting(query, psuedo_doc)
+# print(final_output)
 __all__ = ["expand_query", "sparse_formatting", "dense_formatting"]
 
 
