@@ -8,10 +8,9 @@ import csv
 os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
-COLLECTION_NAME = "dense_miniLM"
-EMBEDDED_DIR = "embedded_dense_allMini/10-K/AAPL" # This is still hard coded, have to change
+COLLECTION_NAME = "sec_chunks_dense"
 EMBEDDING_DIM = 1024  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
-MAIN_DIR = "embedded_dense_allMini"
+MAIN_DIR = "dense_embeddings"
 connections.connect(host="localhost", ports="19530")
 
 def insert_dense_embedding_milvus():

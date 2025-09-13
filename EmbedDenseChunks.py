@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
-def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_folder="embedded_dense_allMini", batch_size=256):
+def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="dense_embeddings", batch_size=256):
     input_base = os.path.join(base_path, input_folder)
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
@@ -78,4 +78,4 @@ def embed_chunks_allMiniLM (base_path=".", input_folder="chunked_dense", output_
     print("Embedding Complete")
 
 
-embed_chunks_allMiniLM()
+embed_chunks()
