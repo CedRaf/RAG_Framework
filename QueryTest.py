@@ -1,5 +1,5 @@
 from pymilvus import connections, MilvusClient, FieldSchema, CollectionSchema, DataType, Collection, utility
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, models
 import json
 from datetime import datetime
 import os
@@ -53,28 +53,36 @@ def sparse_retrieval_test(sparse_query:str):
 #DENSE SEARCH
 def dense_retrieval_test(dense_query:str):
 
-    collection = Collection(COLLECTION_NAME)
+    collection = Collection("sec_chunks_dense")
     collection.load()
     print("Collection Loaded")
 
+    word_embedding_model = models.Transformer("nlpaueb/sec-bert-base")
+    pooling_model = models.Pooling(
+        word_embedding_model.get_word_embedding_dimension(),
+        pooling_mode_mean_tokens=True,
+        pooling_mode_cls_token=True,
+        pooling_mode_max_tokens=False,
+    )
+
+    model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+
     #model = SentenceTransformer("all-MiniLM-L6-v2")
     #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
-    # model = SentenceTransformer('models/bge_dense_finetuned_triplet')
-    model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
+    #model = SentenceTransformer('models/bge_dense_finetuned_triplet')
+    #model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
-    #uncomment this to use all-MiniLM
-    #query_embedding = model.encode(dense_query, convert_to_numpy=True)
-    query_embedding = model.encode(
-        f"Represent this query for retrieval: {dense_query}",
-        convert_to_numpy=True,
-        device=device
-    )
+    query_embedding = model.encode(dense_query, convert_to_numpy=True, device=device)
+    # query_embedding = model.encode(
+    #     f"Represent this query for retrieval: {dense_query}",
+    #     convert_to_numpy=True,
+    #     device=device
+    # )
 
     query_embedding = query_embedding/np.linalg.norm(query_embedding)
-
     print("Query Embedded")
 
     search_params = {
@@ -97,7 +105,6 @@ def dense_retrieval_test(dense_query:str):
     
     print(f"\n Dense Results: \n' \n")
     print("-" * 80)
-    csv_data = []
 
     for i, hit in enumerate(results[0]):
         entity = hit.entity
@@ -118,7 +125,6 @@ def dense_retrieval_test(dense_query:str):
     
     return results
 
-COLLECTION_NAME = "dense_miniLM"
 def fetch_text(metadata):
     try:
         form_type = metadata.get("form_type", "")
@@ -186,8 +192,7 @@ def vector_retrieval_test(user_query:str):
         print(f"Rank {i+1} - Score: {score:.4f}")
         print(text[:300], "...\n", "-"*60)
 
-    # Needed for the joint retrieval
-    
+    #Needed for the joint retrieval
     texts = [text for text, _ in reranked]
     scores = [score for _, score in reranked]
 
@@ -230,7 +235,6 @@ def vector_retrieval_test(user_query:str):
             for i, hit in enumerate(dense_results[0])
         ]
     }
-
 
     os.makedirs("retrieval_outputs", exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

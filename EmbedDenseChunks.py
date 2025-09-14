@@ -1,7 +1,7 @@
 import os
 import json
 import torch
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, models
 import numpy as np
 os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
@@ -10,9 +10,19 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    #model = SentenceTransformer('all-MiniLM-L6-v2') #Uncomment this to use all-miniLM
+    # This section is essential to use SEC-BERT-BASE bc its not inherently supported by SentenceTransformer
+    word_embedding_model = models.Transformer("nlpaueb/sec-bert-base")
+    pooling_model = models.Pooling(
+        word_embedding_model.get_word_embedding_dimension(),
+        pooling_mode_mean_tokens=True,
+        pooling_mode_cls_token=True,
+        pooling_mode_max_tokens=False,
+    )
+
+    model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+    #model = SentenceTransformer('all-MiniLM-L6-v2') 
     #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
-    model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
+    #model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
@@ -29,20 +39,19 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
 
             for file in sorted(os.listdir(ticker_input_dir)):
                 file_path = os.path.join(ticker_input_dir, file)
-                
-
                 output_file = file.replace("_chunks.json", "_embedded.json")
                 output_path = os.path.join(ticker_output_dir, output_file)
 
-                # Skip if already embedded
                 if os.path.exists(output_path):
                     print(f"Skipping already embedded file: {output_path}")
                     continue
+
                 with open(file_path, "r", encoding="utf-8") as f:
                     chunks = json.load(f)
+                                
+                #texts = [f"Represent this passage for retrieval: {chunk['content']}" for chunk in chunks] #this is for bge-large
+                texts = [chunk["content"] for chunk in chunks]
                 
-                #texts = [chunk["content"] for chunk in chunks] #Uncomment this to use all-miniLM
-                texts = [f"Represent this passage for retrieval: {chunk['content']}" for chunk in chunks]
                 embeddings = model.encode(
                     texts,
                     batch_size=batch_size,
@@ -68,14 +77,11 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
                     }
                     entries.append(entry)
                 
-                # output_file = file.replace("_chunks.json", "_embedded.json")
-                # output_path = os.path.join(ticker_output_dir, output_file)
                 with open(output_path, "w", encoding="utf-8") as out:
                     json.dump(entries, out, indent=2, ensure_ascii=False)
                 
                 print(f"Embedded: {file} -> {len(embeddings)} vectors")
 
     print("Embedding Complete")
-
 
 embed_chunks()

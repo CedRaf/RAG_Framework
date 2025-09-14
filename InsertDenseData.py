@@ -52,8 +52,6 @@ def insert_dense_embedding_milvus():
     # read embedded json files
     all_embeddings = []
 
-    
-
     for root, dirs, files in os.walk(MAIN_DIR):
         for filename in files:
             if filename.endswith(".json"):  # optional
