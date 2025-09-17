@@ -9,7 +9,7 @@ import csv
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "sec_chunks_dense"
-EMBEDDING_DIM = 1024  
+EMBEDDING_DIM = 768 
 MAIN_DIR = "dense_embeddings"
 connections.connect(host="localhost", ports="19530")
 
@@ -34,7 +34,7 @@ def insert_dense_embedding_milvus():
         # create index immediately after collection creation
         index_params = {
             "index_type": "HNSW",
-            "metric_type": "L2",
+            "metric_type": "COSINE",
             "params": {"M": 8, "efConstruction": 64}
         }
         collection.create_index(field_name="dense_vector", index_params=index_params)
