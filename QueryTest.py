@@ -9,10 +9,6 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
 
-# This is what we were using initially
-# reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-base")
-# reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-base")
-
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
 reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
 
@@ -57,37 +53,24 @@ def dense_retrieval_test(dense_query:str):
     collection.load()
     print("Collection Loaded")
 
-    word_embedding_model = models.Transformer("nlpaueb/sec-bert-base")
-    pooling_model = models.Pooling(
-        word_embedding_model.get_word_embedding_dimension(),
-        pooling_mode_mean_tokens=True,
-        pooling_mode_cls_token=True,
-        pooling_mode_max_tokens=False,
-    )
-
-    model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
-
-    #model = SentenceTransformer("all-MiniLM-L6-v2")
-    #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
-    #model = SentenceTransformer('models/bge_dense_finetuned_triplet')
-    #model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
+    model = SentenceTransformer("dunzhang/stella_en_400M_v5", trust_remote_code=True)
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
-    query_embedding = model.encode(dense_query, convert_to_numpy=True, device=device)
-    # query_embedding = model.encode(
-    #     f"Represent this query for retrieval: {dense_query}",
-    #     convert_to_numpy=True,
-    #     device=device
-    # )
+    query_embedding= model.encode(
+        dense_query,
+        prompt_name="s2p_query",
+        convert_to_numpy=True,
+        device=device
+    )
 
     query_embedding = query_embedding/np.linalg.norm(query_embedding)
     print("Query Embedded")
 
     search_params = {
-        "metric_type": "L2", 
-        "params": {"ef": 32}
+        "metric_type": "COSINE", 
+        "params": {"ef": 64}
     }
 
     results = collection.search(

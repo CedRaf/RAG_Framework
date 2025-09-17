@@ -1,7 +1,7 @@
 from pymilvus import connections, MilvusClient
 
 
-COLLECTION_NAME = "news_articles"
+COLLECTION_NAME = "sec_chunks_dense"
 connections.disconnect("default")
 
 connections.connect("default", host="localhost", port="19530")

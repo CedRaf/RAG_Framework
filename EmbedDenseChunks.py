@@ -15,7 +15,7 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
     pooling_model = models.Pooling(
         word_embedding_model.get_word_embedding_dimension(),
         pooling_mode_mean_tokens=True,
-        pooling_mode_cls_token=True,
+        pooling_mode_cls_token=False,
         pooling_mode_max_tokens=False,
     )
 
