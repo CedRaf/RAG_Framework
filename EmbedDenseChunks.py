@@ -10,19 +10,7 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    # This section is essential to use SEC-BERT-BASE bc its not inherently supported by SentenceTransformer
-    word_embedding_model = models.Transformer("nlpaueb/sec-bert-base")
-    pooling_model = models.Pooling(
-        word_embedding_model.get_word_embedding_dimension(),
-        pooling_mode_mean_tokens=True,
-        pooling_mode_cls_token=False,
-        pooling_mode_max_tokens=False,
-    )
-
-    model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
-    #model = SentenceTransformer('all-MiniLM-L6-v2') 
-    #model = SentenceTransformer('BAAI/bge-large-en-v1.5')
-    #model = SentenceTransformer(r"D:\models\bge_dense_finetuned_triplet")
+    model = SentenceTransformer("dunzhang/stella_en_400M_v5", trust_remote_code=True)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
@@ -43,25 +31,29 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
                 output_path = os.path.join(ticker_output_dir, output_file)
 
                 if os.path.exists(output_path):
-                    print(f"Skipping already embedded file: {output_path}")
+                    print(f"Skipping already embedded file: {file}")
                     continue
 
                 with open(file_path, "r", encoding="utf-8") as f:
                     chunks = json.load(f)
-                                
-                #texts = [f"Represent this passage for retrieval: {chunk['content']}" for chunk in chunks] #this is for bge-large
+
                 texts = [chunk["content"] for chunk in chunks]
-                
+
+                # Use s2s_query prompt for financial document passages
                 embeddings = model.encode(
                     texts,
+                    prompt_name="s2p_query",  # Best for financial document passages
                     batch_size=batch_size,
                     convert_to_numpy=True,
                     show_progress_bar=True,
-                    device=device
+                    device=device,
+                    normalize_embeddings=True  # Built-in normalization
                 )
 
-                embeddings = embeddings/np.linalg.norm(embeddings, axis=1, keepdims=True)
-                
+                # Note: embeddings are already normalized by the model when normalize_embeddings=True
+                # But keeping manual normalization as backup
+                embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+
                 entries = []
                 for chunk, emb in zip(chunks, embeddings):
                     entry = {
@@ -72,15 +64,15 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
                             "ticker": chunk.get("ticker", ""),
                             "form_type": chunk.get("form_type", ""),
                             "start_index": chunk.get("start_index", -1),
-                            "end_index": chunk.get("end_index", -1)
+                            "end_index": chunk.get("end_index", -1),
                         }
                     }
                     entries.append(entry)
-                
+
                 with open(output_path, "w", encoding="utf-8") as out:
                     json.dump(entries, out, indent=2, ensure_ascii=False)
-                
-                print(f"Embedded: {file} -> {len(embeddings)} vectors")
+
+                print(f"Embedded: {file} -> {len(embeddings)} vectors (dim: {embeddings.shape[1]})")
 
     print("Embedding Complete")
 

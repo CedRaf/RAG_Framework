@@ -62,7 +62,8 @@ def dense_retrieval_test(dense_query:str):
         dense_query,
         prompt_name="s2p_query",
         convert_to_numpy=True,
-        device=device
+        normalize_embeddings=True,
+        device=device,
     )
 
     query_embedding = query_embedding/np.linalg.norm(query_embedding)
