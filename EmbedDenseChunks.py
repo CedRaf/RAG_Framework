@@ -39,20 +39,15 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
 
                 texts = [chunk["content"] for chunk in chunks]
 
-                # Use s2s_query prompt for financial document passages
                 embeddings = model.encode(
                     texts,
-                    prompt_name="s2p_query",  # Best for financial document passages
+                    prompt_name="s2p_query",
                     batch_size=batch_size,
                     convert_to_numpy=True,
                     show_progress_bar=True,
                     device=device,
-                    normalize_embeddings=True  # Built-in normalization
+                    normalize_embeddings=True  
                 )
-
-                # Note: embeddings are already normalized by the model when normalize_embeddings=True
-                # But keeping manual normalization as backup
-                embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
 
                 entries = []
                 for chunk, emb in zip(chunks, embeddings):
