@@ -7,7 +7,12 @@ import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
+from huggingface_hub import login
+from dotenv import load_dotenv
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
+
+load_dotenv()
+HF_KEY = os.getenv("HF_KEY")
 
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
 reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
@@ -49,24 +54,24 @@ def sparse_retrieval_test(sparse_query:str):
 #DENSE SEARCH
 def dense_retrieval_test(dense_query:str):
 
+    login(HF_KEY)
     collection = Collection("sec_chunks_dense")
     collection.load()
     print("Collection Loaded")
 
-    model = SentenceTransformer("dunzhang/stella_en_400M_v5", trust_remote_code=True)
+    model = SentenceTransformer("google/embeddinggemma-300m")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
     query_embedding= model.encode(
         dense_query,
-        prompt_name="s2p_query",
+        prompt_name="Retrieval-query",
         convert_to_numpy=True,
         normalize_embeddings=True,
         device=device,
     )
 
-    query_embedding = query_embedding/np.linalg.norm(query_embedding)
     print("Query Embedded")
 
     search_params = {
