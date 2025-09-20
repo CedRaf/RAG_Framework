@@ -7,12 +7,7 @@ import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
-from huggingface_hub import login
-from dotenv import load_dotenv
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
-
-load_dotenv()
-HF_KEY = os.getenv("HF_KEY")
 
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
 reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
@@ -38,35 +33,24 @@ def sparse_retrieval_test(sparse_query:str):
         }
     )
 
-    # Display results
-    print("Sparse Results: \n\n")
-    for i, result in enumerate(sparse_results[0]):
-        print(f"Result {i+1}:")
-        print(f"Score: {result['distance']}")
-        print(f"Ticker: {result['entity']['ticker']}")
-        print(f"Form Type: {result['entity']['form_type']}")
-        print(f"Source File: {result['entity']['source_file']}")
-        print(f"Text: {result['entity']['text'][:200]}...")
-        print("-" * 50)
+    print("Sparse Results Generated")
 
     return sparse_results
 
 #DENSE SEARCH
 def dense_retrieval_test(dense_query:str):
 
-    login(HF_KEY)
     collection = Collection("sec_chunks_dense")
     collection.load()
     print("Collection Loaded")
 
-    model = SentenceTransformer("google/embeddinggemma-300m")
+    model = SentenceTransformer("FinLang/finance-embeddings-investopedia")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
     query_embedding= model.encode(
         dense_query,
-        prompt_name="Retrieval-query",
         convert_to_numpy=True,
         normalize_embeddings=True,
         device=device,
@@ -92,25 +76,7 @@ def dense_retrieval_test(dense_query:str):
         exit()
     
     
-    print(f"\n Dense Results: \n' \n")
-    print("-" * 80)
-
-    for i, hit in enumerate(results[0]):
-        entity = hit.entity
-        text_chunk = fetch_text({
-            "form_type": entity.get("form_type", ""),
-            "ticker": entity.get("ticker", ""),
-            "source_file": entity.get("source_file", ""),
-            "chunk_id": entity.get("chunk_id", "")
-        })
-        snippet = text_chunk[:200]
-        print(f"Result {i+1}:")
-        print(f"Score: {hit['distance']}")
-        print(f"Ticker: {hit['entity']['ticker']}")
-        print(f"Form Type: {hit['entity']['form_type']}")
-        print(f"Source File: {hit['entity']['source_file']}")
-        print(f"Text: {snippet}...")
-        print("-" * 50)
+    print("\nDense Results Generated")
     
     return results
 

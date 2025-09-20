@@ -3,20 +3,14 @@ import json
 import torch
 from sentence_transformers import SentenceTransformer, models
 import numpy as np
-from huggingface_hub import login
-from dotenv import load_dotenv
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
-
-load_dotenv()
-HF_KEY = os.getenv("HF_KEY")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="dense_embeddings", batch_size=128):
-    login(HF_KEY)
     input_base = os.path.join(base_path, input_folder)
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    model = SentenceTransformer("google/embeddinggemma-300m")
+    model = SentenceTransformer("FinLang/finance-embeddings-investopedia")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
@@ -47,15 +41,12 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
 
                 embeddings = model.encode(
                     texts,
-                    prompt_name="Retrieval-document",
                     batch_size=batch_size,
                     convert_to_numpy=True,
                     show_progress_bar=True,
                     normalize_embeddings=True,
                     device=device,
                 )
-
-                embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
 
                 entries = []
                 for chunk, emb in zip(chunks, embeddings):
