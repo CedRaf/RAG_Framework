@@ -9,7 +9,7 @@ import csv
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "sec_chunks_dense"
-EMBEDDING_DIM = 768 
+EMBEDDING_DIM = 1024
 MAIN_DIR = "dense_embeddings"
 connections.connect(host="localhost", ports="19530")
 

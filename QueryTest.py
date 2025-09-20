@@ -44,13 +44,15 @@ def dense_retrieval_test(dense_query:str):
     collection.load()
     print("Collection Loaded")
 
-    model = SentenceTransformer("FinLang/finance-embeddings-investopedia")
+    model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
 
+    query = f"Task: Financial retrieval. Query: {dense_query}"
+
     query_embedding= model.encode(
-        dense_query,
+        query,
         convert_to_numpy=True,
         normalize_embeddings=True,
         device=device,
