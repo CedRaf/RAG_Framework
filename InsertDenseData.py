@@ -35,7 +35,7 @@ def insert_dense_embedding_milvus():
         index_params = {
             "index_type": "HNSW",
             "metric_type": "COSINE",
-            "params": {"M": 8, "efConstruction": 64}
+            "params": {"M": 64, "efConstruction": 512}
         }
         collection.create_index(field_name="dense_vector", index_params=index_params)
         print("Index created.")

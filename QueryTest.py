@@ -60,7 +60,7 @@ def dense_retrieval_test(dense_query:str):
 
     search_params = {
         "metric_type": "COSINE", 
-        "params": {"ef": 64}
+        "params": {"ef": 128}
     }
 
     results = collection.search(
