@@ -1,0 +1,345 @@
+{
+  "ticker": "NVDA",
+  "balance_sheet": [
+    {
+      "concept": "us-gaap_AssetsAbstract",
+      "label": "Assets",
+      "2025-01-26": "",
+      "2024-01-28": "",
+      "2023-01-29": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AssetsCurrentAbstract",
+      "label": "Current assets:",
+      "2025-01-26": "",
+      "2024-01-28": "",
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashAndCashEquivalentsAtCarryingValue",
+      "label": "Cash and Cash Equivalents",
+      "2025-01-26": 8589000000.0,
+      "2024-01-28": 7280000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_MarketableSecuritiesCurrent",
+      "label": "Current Marketable Securities",
+      "2025-01-26": 34621000000.0,
+      "2024-01-28": 18704000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccountsReceivableNetCurrent",
+      "label": "Accounts Receivable",
+      "2025-01-26": 23065000000.0,
+      "2024-01-28": 9999000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_InventoryNet",
+      "label": "Inventory",
+      "2025-01-26": 10080000000.0,
+      "2024-01-28": 5282000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PrepaidExpenseAndOtherAssetsCurrent",
+      "label": "Prepaid Expenses",
+      "2025-01-26": 3771000000.0,
+      "2024-01-28": 3080000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AssetsCurrent",
+      "label": "Total Current Assets",
+      "2025-01-26": 80126000000.0,
+      "2024-01-28": 44345000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PropertyPlantAndEquipmentNet",
+      "label": "Property, Plant and Equipment",
+      "2025-01-26": 6283000000.0,
+      "2024-01-28": 3914000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingLeaseRightOfUseAsset",
+      "label": "Operating lease assets",
+      "2025-01-26": 1793000000.0,
+      "2024-01-28": 1346000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Goodwill",
+      "label": "Goodwill",
+      "2025-01-26": 5188000000.0,
+      "2024-01-28": 4430000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IntangibleAssetsNetExcludingGoodwill",
+      "label": "Intangible Assets",
+      "2025-01-26": 807000000.0,
+      "2024-01-28": 1112000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_DeferredIncomeTaxAssetsNet",
+      "label": "Deferred Tax Assets",
+      "2025-01-26": 10979000000.0,
+      "2024-01-28": 6081000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherAssetsNoncurrent",
+      "label": "Other Non Current Assets",
+      "2025-01-26": 6425000000.0,
+      "2024-01-28": 4500000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Assets",
+      "label": "Total Assets",
+      "2025-01-26": 111601000000.0,
+      "2024-01-28": 65728000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesAndStockholdersEquityAbstract",
+      "label": "Liabilities and Shareholders' Equity",
+      "2025-01-26": "",
+      "2024-01-28": "",
+      "2023-01-29": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesCurrentAbstract",
+      "label": "Current liabilities:",
+      "2025-01-26": "",
+      "2024-01-28": "",
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccountsPayableCurrent",
+      "label": "Accounts Payable",
+      "2025-01-26": 6310000000.0,
+      "2024-01-28": 2699000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccruedLiabilitiesCurrent",
+      "label": "Accrued Liabilities",
+      "2025-01-26": 11737000000.0,
+      "2024-01-28": 6682000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_DebtCurrent",
+      "label": "Short Term Debt",
+      "2025-01-26": 0.0,
+      "2024-01-28": 1250000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesCurrent",
+      "label": "Total Current Liabilities",
+      "2025-01-26": 18047000000.0,
+      "2024-01-28": 10631000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LongTermDebtNoncurrent",
+      "label": "Long Term Debt",
+      "2025-01-26": 8463000000.0,
+      "2024-01-28": 8459000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingLeaseLiabilityNoncurrent",
+      "label": "Long-term operating lease liabilities",
+      "2025-01-26": 1519000000.0,
+      "2024-01-28": 1119000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherLiabilitiesNoncurrent",
+      "label": "Other Non Current Liabilities",
+      "2025-01-26": 4245000000.0,
+      "2024-01-28": 2541000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Liabilities",
+      "label": "Total Liabilities",
+      "2025-01-26": 32274000000.0,
+      "2024-01-28": 22750000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CommitmentsAndContingencies",
+      "label": "Commitments and contingencies - see Note 12",
+      "2025-01-26": 0.0,
+      "2024-01-28": 0.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterestAbstract",
+      "label": "Shareholders\u2019 equity:",
+      "2025-01-26": "",
+      "2024-01-28": "",
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PreferredStockValueOutstanding",
+      "label": "Preferred stock, $0.001 par value; 20 shares authorized; none issued",
+      "2025-01-26": 0.0,
+      "2024-01-28": 0.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CommonStockValue",
+      "label": "Common Stock",
+      "2025-01-26": 24000000.0,
+      "2024-01-28": 25000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AdditionalPaidInCapital",
+      "label": "Additional paid-in capital",
+      "2025-01-26": 11237000000.0,
+      "2024-01-28": 13109000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+      "label": "Accumulated Other Comprehensive Income/Loss",
+      "2025-01-26": 28000000.0,
+      "2024-01-28": 27000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RetainedEarningsAccumulatedDeficit",
+      "label": "Retained Earnings",
+      "2025-01-26": 68038000000.0,
+      "2024-01-28": 29817000000.0,
+      "2023-01-29": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_StockholdersEquity",
+      "label": "Total Stockholders' Equity",
+      "2025-01-26": 79327000000.0,
+      "2024-01-28": 42978000000.0,
+      "2023-01-29": 22101000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesAndStockholdersEquity",
+      "label": "Total Liabilities and Stockholders' Equity",
+      "2025-01-26": 111601000000.0,
+      "2024-01-28": 65728000000.0,
+      "2023-01-29": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}

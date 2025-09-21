@@ -1,0 +1,485 @@
+{
+  "ticker": "MSFT",
+  "income_statement": [
+    {
+      "concept": "srt_ProductOrServiceAxis",
+      "label": "Product and Service",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "srt_ProductsAndServicesDomain",
+      "label": "Product and Service",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProductMember",
+      "label": "Product",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ServiceOtherMember",
+      "label": "Service and Other",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Contract Revenue",
+      "2025-06-30": 281724000000.0,
+      "2024-06-30": 245122000000.0,
+      "2023-06-30": 211915000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Productivity and Business Processes",
+      "2025-06-30": 120810000000.0,
+      "2024-06-30": 106820000000.0,
+      "2023-06-30": 94151000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Dynamics Products and Cloud Services",
+      "2025-06-30": 7827000000.0,
+      "2024-06-30": 6831000000.0,
+      "2023-06-30": 5796000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "LinkedIn",
+      "2025-06-30": 17812000000.0,
+      "2024-06-30": 16372000000.0,
+      "2023-06-30": 14989000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Search and News Advertising",
+      "2025-06-30": 13878000000.0,
+      "2024-06-30": 12306000000.0,
+      "2023-06-30": 12125000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Service and Other",
+      "2025-06-30": 217778000000.0,
+      "2024-06-30": 180349000000.0,
+      "2023-06-30": 147216000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Enterprise and Partner Services",
+      "2025-06-30": 7760000000.0,
+      "2024-06-30": 7594000000.0,
+      "2023-06-30": 7900000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Intelligent Cloud",
+      "2025-06-30": 106265000000.0,
+      "2024-06-30": 87464000000.0,
+      "2023-06-30": 72944000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Windows and Devices",
+      "2025-06-30": 17314000000.0,
+      "2024-06-30": 17026000000.0,
+      "2023-06-30": 17147000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Other Countries",
+      "2025-06-30": 137178000000.0,
+      "2024-06-30": 120418000000.0,
+      "2023-06-30": 105171000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Microsoft 365 Consumer Products and Cloud Services",
+      "2025-06-30": 7404000000.0,
+      "2024-06-30": 6648000000.0,
+      "2023-06-30": 6417000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "More Personal Computing",
+      "2025-06-30": 54649000000.0,
+      "2024-06-30": 50838000000.0,
+      "2023-06-30": 44820000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Other",
+      "2025-06-30": 72000000.0,
+      "2024-06-30": 45000000.0,
+      "2023-06-30": 119000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Microsoft 365 Commercial Products and Cloud Services",
+      "2025-06-30": 87767000000.0,
+      "2024-06-30": 76969000000.0,
+      "2023-06-30": 66949000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Gaming",
+      "2025-06-30": 23455000000.0,
+      "2024-06-30": 21503000000.0,
+      "2023-06-30": 15466000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Product",
+      "2025-06-30": 63946000000.0,
+      "2024-06-30": 64773000000.0,
+      "2023-06-30": 64699000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Microsoft Cloud",
+      "2025-06-30": 168900000000.0,
+      "2024-06-30": 137700000000.0,
+      "2023-06-30": 111600000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "United States",
+      "2025-06-30": 144546000000.0,
+      "2024-06-30": 124704000000.0,
+      "2023-06-30": 106744000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Server Products and Cloud Services",
+      "2025-06-30": 98435000000.0,
+      "2024-06-30": 79828000000.0,
+      "2023-06-30": 65007000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Cost of Goods and Services Sold",
+      "2025-06-30": -87831000000.0,
+      "2024-06-30": -74114000000.0,
+      "2023-06-30": -65863000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Productivity and Business Processes",
+      "2025-06-30": -22422000000.0,
+      "2024-06-30": -19611000000.0,
+      "2023-06-30": -17202000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Service and Other",
+      "2025-06-30": -74330000000.0,
+      "2024-06-30": -58842000000.0,
+      "2023-06-30": -48059000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Intelligent Cloud",
+      "2025-06-30": -40171000000.0,
+      "2024-06-30": -29611000000.0,
+      "2023-06-30": -24109000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "More Personal Computing",
+      "2025-06-30": -25238000000.0,
+      "2024-06-30": -24892000000.0,
+      "2023-06-30": -24552000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Product",
+      "2025-06-30": -13501000000.0,
+      "2024-06-30": -15272000000.0,
+      "2023-06-30": -17804000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_GrossProfit",
+      "label": "Gross Profit",
+      "2025-06-30": 193893000000.0,
+      "2024-06-30": 171008000000.0,
+      "2023-06-30": 146052000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ResearchAndDevelopmentExpense",
+      "label": "Research and Development Expense",
+      "2025-06-30": 32488000000.0,
+      "2024-06-30": 29510000000.0,
+      "2023-06-30": 27195000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_SellingAndMarketingExpense",
+      "label": "Selling Expense",
+      "2025-06-30": 25654000000.0,
+      "2024-06-30": 24456000000.0,
+      "2023-06-30": 22759000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_GeneralAndAdministrativeExpense",
+      "label": "General and Administrative Expense",
+      "2025-06-30": 7223000000.0,
+      "2024-06-30": 7609000000.0,
+      "2023-06-30": 7575000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Operating Income",
+      "2025-06-30": 128528000000.0,
+      "2024-06-30": 109433000000.0,
+      "2023-06-30": 88523000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Productivity and Business Processes",
+      "2025-06-30": 69773000000.0,
+      "2024-06-30": 59661000000.0,
+      "2023-06-30": 50074000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Intelligent Cloud",
+      "2025-06-30": 44589000000.0,
+      "2024-06-30": 37813000000.0,
+      "2023-06-30": 28411000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "More Personal Computing",
+      "2025-06-30": 14166000000.0,
+      "2024-06-30": 11959000000.0,
+      "2023-06-30": 10038000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NonoperatingIncomeExpense",
+      "label": "Nonoperating Income/Expense",
+      "2025-06-30": -4901000000.0,
+      "2024-06-30": -1646000000.0,
+      "2023-06-30": 788000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "label": "Income Before Tax from Continuing Operations",
+      "2025-06-30": 123627000000.0,
+      "2024-06-30": 107787000000.0,
+      "2023-06-30": 89311000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "Income Tax Expense",
+      "2025-06-30": 21795000000.0,
+      "2024-06-30": 19651000000.0,
+      "2023-06-30": 16950000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Net Income",
+      "2025-06-30": 101832000000.0,
+      "2024-06-30": 88136000000.0,
+      "2023-06-30": 72361000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Retained earnings",
+      "2025-06-30": 101832000000.0,
+      "2024-06-30": 88136000000.0,
+      "2023-06-30": 72361000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareAbstract",
+      "label": "Earnings Per Share",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "label": "Earnings Per Share (Basic)",
+      "2025-06-30": 13.7,
+      "2024-06-30": 11.86,
+      "2023-06-30": 9.72,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "label": "Earnings Per Share (Diluted)",
+      "2025-06-30": 13.64,
+      "2024-06-30": 11.8,
+      "2023-06-30": 9.68,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingAbstract",
+      "label": "Shares Outstanding",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+      "label": "Shares Outstanding (Basic)",
+      "2025-06-30": 7433000000.0,
+      "2024-06-30": 7431000000.0,
+      "2023-06-30": 7446000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+      "label": "Shares Outstanding (Diluted)",
+      "2025-06-30": 7465000000.0,
+      "2024-06-30": 7469000000.0,
+      "2023-06-30": 7472000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}

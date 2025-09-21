@@ -1,0 +1,435 @@
+{
+  "ticker": "AAPL",
+  "income_statement": [
+    {
+      "concept": "us-gaap_ProductMember",
+      "label": "Products",
+      "2024-09-28": "",
+      "2023-09-30": "",
+      "2022-09-24": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ServiceMember",
+      "label": "Services",
+      "2024-09-28": "",
+      "2023-09-30": "",
+      "2022-09-24": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Contract Revenue",
+      "2024-09-28": 391035000000.0,
+      "2023-09-30": 383285000000.0,
+      "2022-09-24": 394328000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Products",
+      "2024-09-28": 294866000000.0,
+      "2023-09-30": 298085000000.0,
+      "2022-09-24": 316199000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Services",
+      "2024-09-28": 96169000000.0,
+      "2023-09-30": 85200000000.0,
+      "2022-09-24": 78129000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "iPhone",
+      "2024-09-28": 201183000000.0,
+      "2023-09-30": 200583000000.0,
+      "2022-09-24": 205489000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Mac",
+      "2024-09-28": 29984000000.0,
+      "2023-09-30": 29357000000.0,
+      "2022-09-24": 40177000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "iPad",
+      "2024-09-28": 26694000000.0,
+      "2023-09-30": 28300000000.0,
+      "2022-09-24": 29292000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Wearables, Home and Accessories",
+      "2024-09-28": 37005000000.0,
+      "2023-09-30": 39845000000.0,
+      "2022-09-24": 41241000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Americas",
+      "2024-09-28": 167045000000.0,
+      "2023-09-30": 162560000000.0,
+      "2022-09-24": 169658000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Europe",
+      "2024-09-28": 101328000000.0,
+      "2023-09-30": 94294000000.0,
+      "2022-09-24": 95118000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Japan",
+      "2024-09-28": 25052000000.0,
+      "2023-09-30": 24257000000.0,
+      "2022-09-24": 25977000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Rest of Asia Pacific",
+      "2024-09-28": 30658000000.0,
+      "2023-09-30": 29615000000.0,
+      "2022-09-24": 29375000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "U.S.",
+      "2024-09-28": 142196000000.0,
+      "2023-09-30": 138573000000.0,
+      "2022-09-24": 147859000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "China",
+      "2024-09-28": 66952000000.0,
+      "2023-09-30": 72559000000.0,
+      "2022-09-24": 74200000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Other countries",
+      "2024-09-28": 181887000000.0,
+      "2023-09-30": 172153000000.0,
+      "2022-09-24": 172269000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Cost of Goods and Services Sold",
+      "2024-09-28": -210352000000.0,
+      "2023-09-30": -214137000000.0,
+      "2022-09-24": -223546000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Products",
+      "2024-09-28": -185233000000.0,
+      "2023-09-30": -189282000000.0,
+      "2022-09-24": -201471000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Services",
+      "2024-09-28": -25119000000.0,
+      "2023-09-30": -24855000000.0,
+      "2022-09-24": -22075000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_GrossProfit",
+      "label": "Gross Profit",
+      "2024-09-28": 180683000000.0,
+      "2023-09-30": 169148000000.0,
+      "2022-09-24": 170782000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingExpensesAbstract",
+      "label": "Operating expenses:",
+      "2024-09-28": "",
+      "2023-09-30": "",
+      "2022-09-24": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ResearchAndDevelopmentExpense",
+      "label": "Research and Development Expense",
+      "2024-09-28": 31370000000.0,
+      "2023-09-30": 29915000000.0,
+      "2022-09-24": 26251000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ResearchAndDevelopmentExpense",
+      "label": "Segment reconciling items",
+      "2024-09-28": 31370000000.0,
+      "2023-09-30": 29915000000.0,
+      "2022-09-24": 26251000000.0,
+      "level": 5,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_SellingGeneralAndAdministrativeExpense",
+      "label": "Selling, General and Administrative Expense",
+      "2024-09-28": 26097000000.0,
+      "2023-09-30": 24932000000.0,
+      "2022-09-24": 25094000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingExpenses",
+      "label": "Operating Expenses",
+      "2024-09-28": 57467000000.0,
+      "2023-09-30": 54847000000.0,
+      "2022-09-24": 51345000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Operating Income",
+      "2024-09-28": 123216000000.0,
+      "2023-09-30": 114301000000.0,
+      "2022-09-24": 119437000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Americas",
+      "2024-09-28": 67656000000.0,
+      "2023-09-30": 60508000000.0,
+      "2022-09-24": 62683000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Europe",
+      "2024-09-28": 41790000000.0,
+      "2023-09-30": 36098000000.0,
+      "2022-09-24": 35233000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Greater China",
+      "2024-09-28": 27082000000.0,
+      "2023-09-30": 30328000000.0,
+      "2022-09-24": 31153000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Japan",
+      "2024-09-28": 12454000000.0,
+      "2023-09-30": 11888000000.0,
+      "2022-09-24": 12257000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Rest of Asia Pacific",
+      "2024-09-28": 13062000000.0,
+      "2023-09-30": 12066000000.0,
+      "2022-09-24": 11569000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Operating segments",
+      "2024-09-28": 162044000000.0,
+      "2023-09-30": 150888000000.0,
+      "2022-09-24": 152895000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NonoperatingIncomeExpense",
+      "label": "Nonoperating Income/Expense",
+      "2024-09-28": 269000000.0,
+      "2023-09-30": -565000000.0,
+      "2022-09-24": -334000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "label": "Income Before Tax from Continuing Operations",
+      "2024-09-28": 123485000000.0,
+      "2023-09-30": 113736000000.0,
+      "2022-09-24": 119103000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "Income Tax Expense",
+      "2024-09-28": 29749000000.0,
+      "2023-09-30": 16741000000.0,
+      "2022-09-24": 19300000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Net Income",
+      "2024-09-28": 93736000000.0,
+      "2023-09-30": 96995000000.0,
+      "2022-09-24": 99803000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Retained earnings/(Accumulated deficit)",
+      "2024-09-28": 93736000000.0,
+      "2023-09-30": 96995000000.0,
+      "2022-09-24": 99803000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareAbstract",
+      "label": "Earnings Per Share",
+      "2024-09-28": "",
+      "2023-09-30": "",
+      "2022-09-24": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "label": "Earnings Per Share (Basic)",
+      "2024-09-28": 6.11,
+      "2023-09-30": 6.16,
+      "2022-09-24": 6.15,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "label": "Earnings Per Share (Diluted)",
+      "2024-09-28": 6.08,
+      "2023-09-30": 6.13,
+      "2022-09-24": 6.11,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingAbstract",
+      "label": "Shares Outstanding",
+      "2024-09-28": "",
+      "2023-09-30": "",
+      "2022-09-24": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+      "label": "Shares Outstanding (Basic)",
+      "2024-09-28": 15343783000.0,
+      "2023-09-30": 15744231000.0,
+      "2022-09-24": 16215963000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+      "label": "Shares Outstanding (Diluted)",
+      "2024-09-28": 15408095000.0,
+      "2023-09-30": 15812547000.0,
+      "2022-09-24": 16325819000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}

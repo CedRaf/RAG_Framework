@@ -8,6 +8,7 @@ import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
+from TickerFilter import get_tickers
 
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
 reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
@@ -65,11 +66,18 @@ def dense_retrieval_test(dense_query:str):
         "params": {"ef": 128}
     }
 
+    detected_tickers = get_tickers(dense_query)
+    expr = None
+    if detected_tickers:
+        ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
+        expr = f'ticker in [{ticker_filter}]'
+
     results = collection.search(
         data = [query_embedding.tolist()],
         anns_field="dense_vector",
         param=search_params,
         limit=50,
+        expr=expr,
         output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
     )
 

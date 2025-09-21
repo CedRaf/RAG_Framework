@@ -1,0 +1,365 @@
+{
+  "ticker": "MSFT",
+  "balance_sheet": [
+    {
+      "concept": "us-gaap_AssetsAbstract",
+      "label": "Assets",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AssetsCurrentAbstract",
+      "label": "Current assets:",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashAndCashEquivalentsAtCarryingValue",
+      "label": "Cash and Cash Equivalents",
+      "2025-06-30": 30242000000.0,
+      "2024-06-30": 18315000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ShortTermInvestments",
+      "label": "Short-term investments",
+      "2025-06-30": 64323000000.0,
+      "2024-06-30": 57228000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashCashEquivalentsAndShortTermInvestments",
+      "label": "Cash and Cash Equivalents",
+      "2025-06-30": 94565000000.0,
+      "2024-06-30": 75543000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccountsReceivableNetCurrent",
+      "label": "Accounts Receivable",
+      "2025-06-30": 69905000000.0,
+      "2024-06-30": 56924000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_InventoryNet",
+      "label": "Inventory",
+      "2025-06-30": 938000000.0,
+      "2024-06-30": 1246000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherAssetsCurrent",
+      "label": "Other Current Assets",
+      "2025-06-30": 25723000000.0,
+      "2024-06-30": 26021000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AssetsCurrent",
+      "label": "Total Current Assets",
+      "2025-06-30": 191131000000.0,
+      "2024-06-30": 159734000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PropertyPlantAndEquipmentNet",
+      "label": "Property, Plant and Equipment",
+      "2025-06-30": 204966000000.0,
+      "2024-06-30": 135591000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingLeaseRightOfUseAsset",
+      "label": "Operating lease right-of-use assets",
+      "2025-06-30": 24823000000.0,
+      "2024-06-30": 18961000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LongTermInvestments",
+      "label": "Long-Term Investments",
+      "2025-06-30": 15405000000.0,
+      "2024-06-30": 14600000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Goodwill",
+      "label": "Goodwill",
+      "2025-06-30": 119509000000.0,
+      "2024-06-30": 119220000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_FiniteLivedIntangibleAssetsNet",
+      "label": "Intangible Assets",
+      "2025-06-30": 22604000000.0,
+      "2024-06-30": 27597000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherAssetsNoncurrent",
+      "label": "Other Non Current Assets",
+      "2025-06-30": 40565000000.0,
+      "2024-06-30": 36460000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Assets",
+      "label": "Total Assets",
+      "2025-06-30": 619003000000.0,
+      "2024-06-30": 512163000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesAndStockholdersEquityAbstract",
+      "label": "Liabilities and stockholders\u2019 equity",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesCurrentAbstract",
+      "label": "Current liabilities:",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccountsPayableCurrent",
+      "label": "Accounts Payable",
+      "2025-06-30": 27724000000.0,
+      "2024-06-30": 21996000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CommercialPaper",
+      "label": "Short-term debt",
+      "2025-06-30": 0.0,
+      "2024-06-30": 6693000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LongTermDebtCurrent",
+      "label": "Short Term Debt",
+      "2025-06-30": 2999000000.0,
+      "2024-06-30": 2249000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EmployeeRelatedLiabilitiesCurrent",
+      "label": "Accrued Liabilities",
+      "2025-06-30": 13709000000.0,
+      "2024-06-30": 12564000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccruedIncomeTaxesCurrent",
+      "label": "Short-term income taxes",
+      "2025-06-30": 7211000000.0,
+      "2024-06-30": 5017000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ContractWithCustomerLiabilityCurrent",
+      "label": "Short-term unearned revenue",
+      "2025-06-30": 64555000000.0,
+      "2024-06-30": 57582000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherLiabilitiesCurrent",
+      "label": "Other Current Liabilities",
+      "2025-06-30": 25020000000.0,
+      "2024-06-30": 19185000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesCurrent",
+      "label": "Total Current Liabilities",
+      "2025-06-30": 141218000000.0,
+      "2024-06-30": 125286000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LongTermDebtNoncurrent",
+      "label": "Long Term Debt",
+      "2025-06-30": 40152000000.0,
+      "2024-06-30": 42688000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccruedIncomeTaxesNoncurrent",
+      "label": "Long-term income taxes",
+      "2025-06-30": 25986000000.0,
+      "2024-06-30": 27931000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ContractWithCustomerLiabilityNoncurrent",
+      "label": "Long-term unearned revenue",
+      "2025-06-30": 2710000000.0,
+      "2024-06-30": 2602000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_DeferredIncomeTaxLiabilitiesNet",
+      "label": "Deferred income taxes",
+      "2025-06-30": -2835000000.0,
+      "2024-06-30": -2618000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingLeaseLiabilityNoncurrent",
+      "label": "Operating lease liabilities",
+      "2025-06-30": 17437000000.0,
+      "2024-06-30": 15497000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherLiabilitiesNoncurrent",
+      "label": "Other Non Current Liabilities",
+      "2025-06-30": 45186000000.0,
+      "2024-06-30": 27064000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_Liabilities",
+      "label": "Total Liabilities",
+      "2025-06-30": 275524000000.0,
+      "2024-06-30": 243686000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CommitmentsAndContingencies",
+      "label": "Commitments and contingencies",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_StockholdersEquityAbstract",
+      "label": "Stockholders\u2019 equity:",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CommonStocksIncludingAdditionalPaidInCapital",
+      "label": "Common Stock",
+      "2025-06-30": 109095000000.0,
+      "2024-06-30": 100923000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RetainedEarningsAccumulatedDeficit",
+      "label": "Retained Earnings",
+      "2025-06-30": 237731000000.0,
+      "2024-06-30": 173144000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+      "label": "Accumulated Other Comprehensive Income/Loss",
+      "2025-06-30": -3347000000.0,
+      "2024-06-30": -5590000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_StockholdersEquity",
+      "label": "Total Stockholders' Equity",
+      "2025-06-30": 343479000000.0,
+      "2024-06-30": 268477000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_LiabilitiesAndStockholdersEquity",
+      "label": "Total Liabilities and Stockholders' Equity",
+      "2025-06-30": 619003000000.0,
+      "2024-06-30": 512163000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}

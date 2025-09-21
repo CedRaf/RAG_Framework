@@ -1,0 +1,575 @@
+{
+  "ticker": "AMZN",
+  "income_statement": [
+    {
+      "concept": "us-gaap_ProductMember",
+      "label": "Net product sales",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ServiceMember",
+      "label": "Net service sales",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Contract Revenue",
+      "2024-12-31": 637959000000.0,
+      "2023-12-31": 574785000000.0,
+      "2022-12-31": 513983000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Net product sales",
+      "2024-12-31": 272311000000.0,
+      "2023-12-31": 255887000000.0,
+      "2022-12-31": 242901000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Net service sales",
+      "2024-12-31": 365648000000.0,
+      "2023-12-31": 318898000000.0,
+      "2022-12-31": 271082000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "North America",
+      "2024-12-31": 387497000000.0,
+      "2023-12-31": 352828000000.0,
+      "2022-12-31": 315880000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "International",
+      "2024-12-31": 142906000000.0,
+      "2023-12-31": 131200000000.0,
+      "2022-12-31": 118007000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Online stores",
+      "2024-12-31": 247029000000.0,
+      "2023-12-31": 231872000000.0,
+      "2022-12-31": 220004000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Physical stores",
+      "2024-12-31": 21215000000.0,
+      "2023-12-31": 20030000000.0,
+      "2022-12-31": 18963000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Third-party seller services",
+      "2024-12-31": 156146000000.0,
+      "2023-12-31": 140053000000.0,
+      "2022-12-31": 117716000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Advertising services",
+      "2024-12-31": 56214000000.0,
+      "2023-12-31": 46906000000.0,
+      "2022-12-31": 37739000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Subscription services",
+      "2024-12-31": 44374000000.0,
+      "2023-12-31": 40209000000.0,
+      "2022-12-31": 35218000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "AWS",
+      "2024-12-31": 107556000000.0,
+      "2023-12-31": 90757000000.0,
+      "2022-12-31": 80096000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Other",
+      "2024-12-31": 5425000000.0,
+      "2023-12-31": 4958000000.0,
+      "2022-12-31": 4247000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "United States",
+      "2024-12-31": 438015000000.0,
+      "2023-12-31": 395637000000.0,
+      "2022-12-31": 356113000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Germany",
+      "2024-12-31": 40856000000.0,
+      "2023-12-31": 37588000000.0,
+      "2022-12-31": 33598000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "United Kingdom",
+      "2024-12-31": 37855000000.0,
+      "2023-12-31": 33591000000.0,
+      "2022-12-31": 30074000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Japan",
+      "2024-12-31": 27401000000.0,
+      "2023-12-31": 26002000000.0,
+      "2022-12-31": 24396000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Rest of world",
+      "2024-12-31": 93832000000.0,
+      "2023-12-31": 81967000000.0,
+      "2022-12-31": 69802000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostsAndExpensesAbstract",
+      "label": "Operating expenses:",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "label": "Cost of Goods and Services Sold",
+      "2024-12-31": 326288000000.0,
+      "2023-12-31": 304739000000.0,
+      "2022-12-31": 288831000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "amzn_FulfillmentExpense",
+      "label": "Fulfillment",
+      "2024-12-31": 98505000000.0,
+      "2023-12-31": 90619000000.0,
+      "2022-12-31": 84299000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "amzn_TechnologyAndInfrastructureExpense",
+      "label": "Technology and infrastructure",
+      "2024-12-31": 88544000000.0,
+      "2023-12-31": 85622000000.0,
+      "2022-12-31": 73213000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_MarketingExpense",
+      "label": "Marketing Expense",
+      "2024-12-31": 43907000000.0,
+      "2023-12-31": 44370000000.0,
+      "2022-12-31": 42238000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_GeneralAndAdministrativeExpense",
+      "label": "General and Administrative Expense",
+      "2024-12-31": 11359000000.0,
+      "2023-12-31": 11816000000.0,
+      "2022-12-31": 11891000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherOperatingIncomeExpenseNet",
+      "label": "Other operating expense (income), net",
+      "2024-12-31": 763000000.0,
+      "2023-12-31": 767000000.0,
+      "2022-12-31": 1263000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CostsAndExpenses",
+      "label": "Costs and Expenses",
+      "2024-12-31": -569366000000.0,
+      "2023-12-31": -537933000000.0,
+      "2022-12-31": -501735000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CostsAndExpenses",
+      "label": "North America",
+      "2024-12-31": -362530000000.0,
+      "2023-12-31": -337951000000.0,
+      "2022-12-31": -318727000000.0,
+      "level": 5,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostsAndExpenses",
+      "label": "International",
+      "2024-12-31": -139114000000.0,
+      "2023-12-31": -133856000000.0,
+      "2022-12-31": -125753000000.0,
+      "level": 5,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_CostsAndExpenses",
+      "label": "AWS",
+      "2024-12-31": -67722000000.0,
+      "2023-12-31": -66126000000.0,
+      "2022-12-31": -57255000000.0,
+      "level": 5,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "Operating Income",
+      "2024-12-31": 68593000000.0,
+      "2023-12-31": 36852000000.0,
+      "2022-12-31": 12248000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "North America",
+      "2024-12-31": 24967000000.0,
+      "2023-12-31": 14877000000.0,
+      "2022-12-31": -2847000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "International",
+      "2024-12-31": 3792000000.0,
+      "2023-12-31": -2656000000.0,
+      "2022-12-31": -7746000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "label": "AWS",
+      "2024-12-31": 39834000000.0,
+      "2023-12-31": 24631000000.0,
+      "2022-12-31": 22841000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_InvestmentIncomeInterest",
+      "label": "Interest income",
+      "2024-12-31": 4677000000.0,
+      "2023-12-31": 2949000000.0,
+      "2022-12-31": 989000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_InterestExpenseNonoperating",
+      "label": "Interest Expense (non-operating)",
+      "2024-12-31": -2406000000.0,
+      "2023-12-31": -3182000000.0,
+      "2022-12-31": -2367000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_OtherNonoperatingIncomeExpense",
+      "label": "Other income (expense), net",
+      "2024-12-31": -2250000000.0,
+      "2023-12-31": 938000000.0,
+      "2022-12-31": -16806000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NonoperatingIncomeExpense",
+      "label": "Nonoperating Income/Expense",
+      "2024-12-31": 21000000.0,
+      "2023-12-31": 705000000.0,
+      "2022-12-31": -18184000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "label": "Income (loss) before income taxes",
+      "2024-12-31": 68614000000.0,
+      "2023-12-31": 37557000000.0,
+      "2022-12-31": -5936000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "Income Tax Expense",
+      "2024-12-31": -9265000000.0,
+      "2023-12-31": -7120000000.0,
+      "2022-12-31": 3217000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "U.S. Federal",
+      "2024-12-31": -4938000000.0,
+      "2023-12-31": -3147000000.0,
+      "2022-12-31": 4511000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "U.S. State",
+      "2024-12-31": -1656000000.0,
+      "2023-12-31": -1660000000.0,
+      "2022-12-31": 228000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "label": "International",
+      "2024-12-31": -2671000000.0,
+      "2023-12-31": -2313000000.0,
+      "2022-12-31": -1522000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_IncomeLossFromEquityMethodInvestments",
+      "label": "Equity-method investment activity, net of tax",
+      "2024-12-31": -101000000.0,
+      "2023-12-31": -12000000.0,
+      "2022-12-31": -3000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Net Income",
+      "2024-12-31": 59248000000.0,
+      "2023-12-31": 30425000000.0,
+      "2022-12-31": -2722000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Retained Earnings",
+      "2024-12-31": 59248000000.0,
+      "2023-12-31": 30425000000.0,
+      "2022-12-31": -2722000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Change In Property And Equipment Useful Life",
+      "2024-12-31": 2500000000.0,
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Forecast - Change In Property And Equipment Useful Life - Heavy equipment",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Forecast - Change In Property And Equipment Useful Life - Servers and Networking Equipment",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Forecast - Early Retirement - Servers and Networking Equipment",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "label": "Earnings Per Share (Basic)",
+      "2024-12-31": 5.66,
+      "2023-12-31": 2.95,
+      "2022-12-31": -0.27,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "label": "Change In Property And Equipment Useful Life",
+      "2024-12-31": 0.23,
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "label": "Earnings Per Share (Diluted)",
+      "2024-12-31": 5.53,
+      "2023-12-31": 2.9,
+      "2022-12-31": -0.27,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "label": "Change In Property And Equipment Useful Life",
+      "2024-12-31": 0.23,
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 4,
+      "abstract": false,
+      "dimension": true
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingAbstract",
+      "label": "Shares Outstanding",
+      "2024-12-31": "",
+      "2023-12-31": "",
+      "2022-12-31": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+      "label": "Shares Outstanding (Basic)",
+      "2024-12-31": 10473000000.0,
+      "2023-12-31": 10304000000.0,
+      "2022-12-31": 10189000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+      "label": "Shares Outstanding (Diluted)",
+      "2024-12-31": 10721000000.0,
+      "2023-12-31": 10492000000.0,
+      "2022-12-31": 10189000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}

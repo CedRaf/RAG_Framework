@@ -66,5 +66,9 @@ def query_endpoint(request: QueryRequest):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+if _name_ == "_main_":
+    import uvicorn
+    uvicorn.run("JointRetrieval:app", host="127.0.0.1", port=8000, reload=True)
 
 

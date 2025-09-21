@@ -1,0 +1,395 @@
+{
+  "ticker": "MSFT",
+  "cash_flow": [
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInOperatingActivitiesAbstract",
+      "label": "Operations",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetIncomeLoss",
+      "label": "Net Income",
+      "2025-06-30": 101832000000.0,
+      "2024-06-30": 88136000000.0,
+      "2023-06-30": 72361000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract",
+      "label": "Adjustments to reconcile net income to net cash from operations:",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "msft_DepreciationAmortizationAndOther",
+      "label": "Depreciation, amortization, and other",
+      "2025-06-30": 34153000000.0,
+      "2024-06-30": 22287000000.0,
+      "2023-06-30": 13861000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ShareBasedCompensation",
+      "label": "Stock-based compensation expense",
+      "2025-06-30": 11974000000.0,
+      "2024-06-30": 10734000000.0,
+      "2023-06-30": 9611000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "msft_GainLossOnInvestmentsAndDerivativeInstruments",
+      "label": "Net recognized losses on investments and derivatives",
+      "2025-06-30": 609000000.0,
+      "2024-06-30": 305000000.0,
+      "2023-06-30": 196000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_DeferredIncomeTaxExpenseBenefit",
+      "label": "Deferred income taxes",
+      "2025-06-30": -7056000000.0,
+      "2024-06-30": -4738000000.0,
+      "2023-06-30": -6059000000.0,
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInOperatingCapitalAbstract",
+      "label": "Changes in operating assets and liabilities:",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 3,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInAccountsReceivable",
+      "label": "Accounts receivable",
+      "2025-06-30": -10581000000.0,
+      "2024-06-30": -7191000000.0,
+      "2023-06-30": -4087000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInInventories",
+      "label": "Inventories",
+      "2025-06-30": 309000000.0,
+      "2024-06-30": 1284000000.0,
+      "2023-06-30": 1242000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInOtherCurrentAssets",
+      "label": "Other current assets",
+      "2025-06-30": -3044000000.0,
+      "2024-06-30": -1648000000.0,
+      "2023-06-30": -1991000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInOtherNoncurrentAssets",
+      "label": "Other long-term assets",
+      "2025-06-30": -2950000000.0,
+      "2024-06-30": -6817000000.0,
+      "2023-06-30": -2833000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInAccountsPayable",
+      "label": "Accounts payable",
+      "2025-06-30": 569000000.0,
+      "2024-06-30": 3545000000.0,
+      "2023-06-30": -2721000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInContractWithCustomerLiability",
+      "label": "Unearned revenue",
+      "2025-06-30": 5438000000.0,
+      "2024-06-30": 5348000000.0,
+      "2023-06-30": 5535000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInAccruedIncomeTaxesPayable",
+      "label": "Income taxes",
+      "2025-06-30": -38000000.0,
+      "2024-06-30": 1687000000.0,
+      "2023-06-30": -358000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInOtherCurrentLiabilities",
+      "label": "Other current liabilities",
+      "2025-06-30": 5922000000.0,
+      "2024-06-30": 4867000000.0,
+      "2023-06-30": 2272000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_IncreaseDecreaseInOtherNoncurrentLiabilities",
+      "label": "Other long-term liabilities",
+      "2025-06-30": -975000000.0,
+      "2024-06-30": 749000000.0,
+      "2023-06-30": 553000000.0,
+      "level": 4,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+      "label": "Net Cash from Operating Activities",
+      "2025-06-30": 136162000000.0,
+      "2024-06-30": 118548000000.0,
+      "2023-06-30": 87582000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInFinancingActivitiesAbstract",
+      "label": "Financing",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProceedsFromRepaymentsOfShortTermDebtMaturingInThreeMonthsOrLess",
+      "label": "Proceeds from issuance (repayments) of debt, maturities of 90 days or less, net",
+      "2025-06-30": -5746000000.0,
+      "2024-06-30": 5250000000.0,
+      "2023-06-30": 0.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProceedsFromDebtMaturingInMoreThanThreeMonths",
+      "label": "Proceeds from issuance of debt",
+      "2025-06-30": 0.0,
+      "2024-06-30": 24395000000.0,
+      "2023-06-30": 0.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_RepaymentsOfDebtMaturingInMoreThanThreeMonths",
+      "label": "Repayments of debt",
+      "2025-06-30": -3216000000.0,
+      "2024-06-30": -29070000000.0,
+      "2023-06-30": -2750000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProceedsFromIssuanceOfCommonStock",
+      "label": "Proceeds from Issuance of Common Stock",
+      "2025-06-30": 2056000000.0,
+      "2024-06-30": 2002000000.0,
+      "2023-06-30": 1866000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PaymentsForRepurchaseOfCommonStock",
+      "label": "Common stock repurchased",
+      "2025-06-30": -18420000000.0,
+      "2024-06-30": -17254000000.0,
+      "2023-06-30": -22245000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PaymentsOfDividendsCommonStock",
+      "label": "Common stock cash dividends paid",
+      "2025-06-30": -24082000000.0,
+      "2024-06-30": -21771000000.0,
+      "2023-06-30": -19800000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProceedsFromPaymentsForOtherFinancingActivities",
+      "label": "Other, net",
+      "2025-06-30": -2291000000.0,
+      "2024-06-30": -1309000000.0,
+      "2023-06-30": -1006000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+      "label": "Net Cash from Financing Activities",
+      "2025-06-30": -51699000000.0,
+      "2024-06-30": -37757000000.0,
+      "2023-06-30": -43935000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInInvestingActivitiesAbstract",
+      "label": "Investing",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PaymentsToAcquirePropertyPlantAndEquipment",
+      "label": "Payments for Property, Plant and Equipment",
+      "2025-06-30": -64551000000.0,
+      "2024-06-30": -44477000000.0,
+      "2023-06-30": -28107000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "msft_AcquisitionsNetOfCashAcquiredAndPurchasesOfIntangibleAndOtherAssets",
+      "label": "Acquisition of companies, net of cash acquired and divestitures, and purchases of intangible and other assets",
+      "2025-06-30": -5978000000.0,
+      "2024-06-30": -69132000000.0,
+      "2023-06-30": -1670000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PaymentsToAcquireInvestments",
+      "label": "Purchases of investments",
+      "2025-06-30": -29775000000.0,
+      "2024-06-30": -17732000000.0,
+      "2023-06-30": -37651000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_ProceedsFromMaturitiesPrepaymentsAndCallsOfAvailableForSaleSecurities",
+      "label": "Proceeds from Maturities, Prepayments and Calls of Securities",
+      "2025-06-30": 16079000000.0,
+      "2024-06-30": 24775000000.0,
+      "2023-06-30": 33510000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "msft_ProceedsFromInvestments",
+      "label": "Sales of investments",
+      "2025-06-30": 9309000000.0,
+      "2024-06-30": 10894000000.0,
+      "2023-06-30": 14354000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_PaymentsForProceedsFromOtherInvestingActivities",
+      "label": "Other, net",
+      "2025-06-30": 2317000000.0,
+      "2024-06-30": -1298000000.0,
+      "2023-06-30": -3116000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_NetCashProvidedByUsedInInvestingActivities",
+      "label": "Net Cash from Investing Activities",
+      "2025-06-30": -72599000000.0,
+      "2024-06-30": -96970000000.0,
+      "2023-06-30": -22680000000.0,
+      "level": 2,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsIncludingDisposalGroupAndDiscontinuedOperations",
+      "label": "Effect of foreign exchange rates on cash and cash equivalents",
+      "2025-06-30": 63000000.0,
+      "2024-06-30": -210000000.0,
+      "2023-06-30": -194000000.0,
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+      "label": "Net Change in Cash",
+      "2025-06-30": 11927000000.0,
+      "2024-06-30": -16389000000.0,
+      "2023-06-30": 20773000000.0,
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+      "label": "Cash and cash equivalents, end of period",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    },
+    {
+      "concept": "us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+      "label": "Cash and cash equivalents, end of period",
+      "2025-06-30": "",
+      "2024-06-30": "",
+      "2023-06-30": "",
+      "level": 1,
+      "abstract": false,
+      "dimension": false
+    }
+  ]
+}
