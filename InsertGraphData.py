@@ -1,163 +1,111 @@
-import json
 import os
 import re
-from langchain_perplexity import ChatPerplexity
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from neo4j import GraphDatabase, basic_auth
+import json
+from neo4j import GraphDatabase
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv()  # load environment variables
 
 URI = os.getenv("NEO4J_URI")
-username = os.getenv("NEO4J_USER")
-password = os.getenv("NEO4J_PASS")
-PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
-JSON_DIR = "tables_extracted/320193/10-Q"
+USERNAME = os.getenv("NEO4J_USER")
+PASSWORD = os.getenv("NEO4J_PASS")
 
-chat = ChatPerplexity(
-    temperature=0,
-    model="sonar-pro",
-    pplx_api_key=PERPLEXITY_API_KEY,
-)
+# Use your absolute directory path
+JSON_DIR = r"C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-tools"
 
-driver = GraphDatabase.driver(URI, auth=basic_auth(username, password))
+driver = GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))
 
-TITLE_PROMPT_TEMPLATE = """
-You are a helpful assistant. Based on the inputs below, generate a short, concise, and clear **table title** (5–15 words maximum). Avoid using redundant phrases or long explanations.
-
-### Inputs
-- Previous Span: {prev_span}
-- Next Span: {next_span}
-- Section Header: {section_header}
-
-### Guidelines:
-- Prefer phrasing like "Summary of...", "Breakdown of...", "Overview of...", etc.
-- Avoid legal-style or overly verbose text.
-- Skip unnecessary context like “read in conjunction with” or regulatory language.
-
-### Output:
-Return ONLY the concise title — no markdown, no commentary, no quotes.
-"""
-
-
-def extract_year_from_filename(filename):
-    match = re.search(r"-(\d{4})", filename)
-    return match.group(1) if match else None
-
-def clean_column_name(col):
-    col = col.strip().replace(" ", "_")
-    col = re.sub(r"[:%$(),]", "", col)
-    if re.match(r"^\d", col):
-        col = f"year_{col}"
-    return col
-
-def parse_numeric_value(value):
-    if isinstance(value, str):
-        match = re.search(r"[-\d.,]+", value.replace(",", ""))
-        if match:
-            try:
-                return float(match.group()), value
-            except ValueError:
-                return None, value
-    return None, value
-
-def generate_title(prev_span: str, next_span: str, section_header: str) -> str:
-    prompt = ChatPromptTemplate.from_template(TITLE_PROMPT_TEMPLATE)
-    chain = prompt | chat | StrOutputParser()
-    title = chain.invoke({
-        "prev_span": prev_span,
-        "next_span": next_span,
-        "section_header": section_header
-    })
-    return title.strip()
-
-
-def insert_table_data(json_data):
-    metadata = json_data["metadata"]
-    data_rows = json_data["data"]
-
-    company_ticker = metadata["company_ticker"]
-    form_type = metadata["form_type"]
-    year = extract_year_from_filename(metadata["source_file"])
-    title = generate_title(
-    metadata.get("prev_span", ""),
-    metadata.get("next_span", ""),
-    metadata.get("section_header", "")
-)
+def load_financials_from_json(driver, directory=JSON_DIR):
+    year_pattern = re.compile(r"(\d{4})-\d{2}-\d{2}")  # YYYY
+    # Fix regex to allow -10K.json OR .json-10K.json patterns
+    filename_pattern = re.compile(r"([a-z]+)_.*[-_]?(10K|10Q)\.json$", re.IGNORECASE)
 
     with driver.session() as session:
-        # Match existing year node
-        result = session.run("""
-            MATCH (c:Company {company_ticker: $company_ticker})
-            -[:HAS_FILING]->(f:FilingType {form_type: $form_type})
-            -[:HAS_YEAR]->(y:Year {filing_year: $year})
-            RETURN y
-        """, {"company_ticker": company_ticker, "form_type": form_type, "year": year})
+        for filename in os.listdir(directory):
+            filepath = os.path.join(directory, filename)
 
-        year_node = result.single()
-        if not year_node:
-            print(f"Year node not found for {company_ticker} {form_type} {year}")
-            return
+            if not filename.endswith(".json"):
+                continue
 
-        # Create Table node
-        table_params = {
-            "source_file": metadata["source_file"],
-            "company_ticker": company_ticker,
-            "form_type": form_type,
-            "table_index": metadata["table_index"],
-            "extraction_date": metadata["extraction_date"],
-            "title": title
-        }
-        session.run("""
-            MERGE (t:Table {
-                source_file: $source_file,
-                company_ticker: $company_ticker,
-                form_type: $form_type,
-                table_index: $table_index
-            })
-            SET t.extraction_date = $extraction_date,
-                t.title = $title
-        """, table_params)
+            # only process 10-Ks for now
+            match = filename_pattern.search(filename)
+            if not match:
+                print(f"Skipping (no match): {filename}")
+                continue
+            ticker, filing_type = match.groups()
+            ticker = ticker.upper()
+            if filing_type.upper() == "10K":
+                filing_type = "10-K"
+            elif filing_type.upper() == "10Q":
+                filing_type = "10-Q"
+            if filing_type != "10-K":
+                print(f"Skipping 10-Q file: {filename}")
+                continue
 
-        # Link Table to Year
-        session.run("""
-            MATCH (t:Table {source_file: $source_file, company_ticker: $company_ticker, form_type: $form_type, table_index: $table_index})
-            MATCH (c:Company {company_ticker: $company_ticker})-[:HAS_FILING]->(:FilingType {form_type: $form_type})-[:HAS_YEAR]->(y:Year {filing_year: $year})
-            MERGE (y)-[:HAS_TABLE]->(t)
-        """, {**table_params, "year": year})
+            print(f"Processing {filename} for {ticker} ({filing_type})")
 
-        # Clean column headers
-        headers = [clean_column_name(h) for h in metadata["column_headers"] if not h.startswith("col_") and h.strip() != ""]
+            with open(filepath, "r") as f:
+                data = json.load(f)
 
-        for row in data_rows:
-            props = {}
-            for key, val in row.items():
-                clean_key = clean_column_name(key)
-                if clean_key in headers:
-                    parsed_val, original_val = parse_numeric_value(val)
-                    props[clean_key] = parsed_val if parsed_val is not None else val
-                    props[f"{clean_key}_original"] = original_val
+            table_key = next((k for k in data.keys() if k.startswith("multi_")), None)
+            if not table_key:
+                print(f"No multi_* key found in {filename}")
+                continue
 
-            session.run("""
-                MATCH (t:Table {source_file: $source_file, company_ticker: $company_ticker, form_type: $form_type, table_index: $table_index})
-                CREATE (d:DataRow $props)
-                CREATE (t)-[:HAS_DATA]->(d)
-            """, {"source_file": metadata["source_file"],
-                  "company_ticker": company_ticker,
-                  "form_type": form_type,
-                  "table_index": metadata["table_index"],
-                  "props": props})
+            # Determine table type
+            table_type = (
+                "IncomeStatement" if "income" in table_key else
+                "BalanceSheet" if "balance" in table_key else
+                "CashFlowStatement" if "cash" in table_key else "FinancialTable"
+            )
 
-def process_all_files():
-    for filename in sorted(os.listdir(JSON_DIR)):
-        if filename.endswith(".json"):
-            filepath = os.path.join(JSON_DIR, filename)
-            with open(filepath, 'r') as f:
-                json_data = json.load(f)
-                insert_table_data(json_data)
-                print(f"Processed {filename}")
+            rows = data[table_key]
+
+            for row in rows:
+                label = row.get("label")
+
+                for key, value in row.items():
+                    year_match = year_pattern.match(key)
+                    if year_match:
+                        filing_year = year_match.group(1)
+
+                        session.run(f"""
+                            MERGE (c:Company {{company_ticker:$ticker}})
+                            MERGE (c)-[:HAS_FILING]->(f:FilingType {{
+                                form_type:$form_type,
+                                company_ticker:$ticker
+                            }})
+                            MERGE (f)-[:HAS_YEAR]->(y:Year {{
+                                filing_year:$filing_year,
+                                form_type:$form_type,
+                                company_ticker:$ticker
+                            }})
+                            MERGE (y)-[:HAS_TABLE]->(t:{table_type} {{
+                                table_type:$table_type,
+                                filing_year:$filing_year,
+                                company_ticker:$ticker,
+                                form_type:$form_type
+                            }})
+                            CREATE (item:LineItem {{
+                                label:$label,
+                                value:$value,
+                                filing_year:$filing_year,
+                                company_ticker:$ticker,
+                                form_type:$form_type,
+                                table_type:$table_type
+                            }})
+                            MERGE (t)-[:HAS_ITEM]->(item)
+                        """, {
+                            "ticker": ticker,
+                            "form_type": filing_type,
+                            "filing_year": filing_year,
+                            "table_type": table_type,
+                            "label": label,
+                            "value": value
+                        })
+
+    print("Finished loading 10-K financials into Neo4j.")
 
 if __name__ == "__main__":
-    process_all_files()
+    load_financials_from_json(driver, directory=JSON_DIR)
     driver.close()

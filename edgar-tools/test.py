@@ -1,6 +1,8 @@
 from edgar import Company
 from edgar import *
 import json
+import os
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG/edgar-tools")
 
 set_identity("rhenzgerard0@gmail.com")
 

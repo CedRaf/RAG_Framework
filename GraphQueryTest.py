@@ -27,40 +27,52 @@ driver = GraphDatabase.driver(URI, auth=basic_auth(username, password))
 QUERY_PROMPT_TEMPLATE = """
 You are a Cypher expert. Given a user query that includes:
 
-- A company name (may not be exact),
-- A form type (e.g., 10-K),
-- A year,
-- And a financial question (e.g., about revenue, net income, etc.),
+- A company name (may not be exact) OR ticker,
+- A year (always provided),
+- Optionally a quarter (if quarter mentioned → use "10-Q", otherwise default to "10-K"),
+- And a financial metric (e.g., revenue, net income, assets, liabilities, cash flow, etc.),
 
-Generate a Cypher query to retrieve relevant data using the following graph schema:
+Generate a Cypher query to retrieve the relevant data using the following graph schema:
 
 Graph Schema:
-- (Company)-[:HAS_FILING]->(FilingType)-[:HAS_YEAR]->(Year)-[:HAS_TABLE]->(Table)-[:HAS_DATA]->(DataRow)
+- (Company)-[:HAS_FILING]->(FilingType)-[:HAS_YEAR]->(Year)-[:HAS_TABLE]->(IncomeStatement|BalanceSheet|CashFlowStatement)-[:HAS_ITEM]->(LineItem)
 
 Node properties:
 - Company: company_name, company_ticker
 - FilingType: form_type
 - Year: filing_year
-- Table: title
-- DataRow: column names vary (e.g., Category, year_2020, etc.)
+- LineItem: label, value
 
 Rules:
-- Match company nodes using:
-  `toLower(c.company_name) CONTAINS ...` or `toLower(c.company_ticker) = ...`
-- If the user query **does not explicitly mention** the form type or year:
-  - Do not include those conditions in the query
-  - Do not assume or guess a default form_type like "10-K"
-  - Use OPTIONAL MATCH if needed, or sort years using `ORDER BY y.filing_year DESC LIMIT 1`
-- When form_type or filing_year are known, match them exactly. Wrap filing_year in double quotes (e.g., "2020").
-- Use `toLower(toString(...))` for fields like Category or table values to ensure compatibility.
-- Return table.title, row, or specific fields as needed.
-- Output the Cypher query only — do NOT include markdown formatting, backticks, or the word "cypher".
+1. Always normalize case when comparing strings (use `toLower()` or `toUpper()`).
+   - Match companies with:  
+     `(toLower(c.company_name) CONTAINS ...) OR (toLower(c.company_ticker) = ...)`
+   - Match `form_type` using `toUpper(f.form_type) = "10-K"` or `"10-Q"`.
+   - Match table type (IncomeStatement, BalanceSheet, CashFlowStatement) using `toUpper(labels(t))`.
+   - Match `LineItem.label` with `CONTAINS` (not exact match), e.g., `toUpper(li.label) CONTAINS "NET INCOME"`.
+2. Always filter by the given `filing_year`.
+3. Decide which table(s) to search:
+   - Income-related metrics → `IncomeStatement`
+   - Balance-related metrics (assets, liabilities, equity) → `BalanceSheet`
+   - Cash-related metrics → `CashFlowStatement`
+   - If unclear, search across all three.
+4. Return:
+c.company_ticker AS ticker,
+c.company_name AS name,
+f.form_type AS filing_type,
+y.filing_year AS year,
+labels(t)[0] AS table_type,
+li.label AS line_item,
+li.value AS value
 
 User Query:
 \"\"\"{user_query}\"\"\"
 
 Cypher Query:
 """
+
+
+
 
 def generate_cypher_from_query(user_query: str) -> str:
     prompt = ChatPromptTemplate.from_template(QUERY_PROMPT_TEMPLATE)

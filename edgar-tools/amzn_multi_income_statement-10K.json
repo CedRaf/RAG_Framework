@@ -1,0 +1,221 @@
+{
+  "ticker": "AMZN",
+  "multi_income_statement": [
+    {
+      "label": "Contract Revenue",
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "2024-12-31": 637959000000.0,
+      "2023-12-31": 574785000000.0,
+      "2022-12-31": 513983000000.0,
+      "2021-12-31": 469822000000.0,
+      "2020-12-31": 386064000000.0
+    },
+    {
+      "label": "Fulfillment",
+      "concept": "amzn_FulfillmentExpense",
+      "2024-12-31": 98505000000.0,
+      "2023-12-31": 90619000000.0,
+      "2022-12-31": 84299000000.0,
+      "2021-12-31": 75111000000.0,
+      "2020-12-31": 58517000000.0
+    },
+    {
+      "label": "Technology and infrastructure",
+      "concept": "amzn_TechnologyAndInfrastructureExpense",
+      "2024-12-31": 88544000000.0,
+      "2023-12-31": 85622000000.0,
+      "2022-12-31": null,
+      "2021-12-31": null,
+      "2020-12-31": null
+    },
+    {
+      "label": "Other operating expense (income), net",
+      "concept": "us-gaap_OtherOperatingIncomeExpenseNet",
+      "2024-12-31": 763000000.0,
+      "2023-12-31": 767000000.0,
+      "2022-12-31": 1263000000.0,
+      "2021-12-31": 62000000.0,
+      "2020-12-31": -75000000.0
+    },
+    {
+      "label": "Cost of Goods and Services Sold",
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "2024-12-31": 326288000000.0,
+      "2023-12-31": 304739000000.0,
+      "2022-12-31": 288831000000.0,
+      "2021-12-31": 272344000000.0,
+      "2020-12-31": 233307000000.0
+    },
+    {
+      "label": "Costs and Expenses",
+      "concept": "us-gaap_CostsAndExpenses",
+      "2024-12-31": -569366000000.0,
+      "2023-12-31": -537933000000.0,
+      "2022-12-31": -501735000000.0,
+      "2021-12-31": -444943000000.0,
+      "2020-12-31": -363165000000.0
+    },
+    {
+      "label": "Technology and content",
+      "concept": "amzn_TechnologyAndContentExpense",
+      "2024-12-31": null,
+      "2023-12-31": null,
+      "2022-12-31": 73213000000.0,
+      "2021-12-31": 56052000000.0,
+      "2020-12-31": 42740000000.0
+    },
+    {
+      "label": "Income (loss) before income taxes",
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "2024-12-31": 68614000000.0,
+      "2023-12-31": 37557000000.0,
+      "2022-12-31": -5936000000.0,
+      "2021-12-31": null,
+      "2020-12-31": null
+    },
+    {
+      "label": "Income before income taxes",
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "2024-12-31": null,
+      "2023-12-31": null,
+      "2022-12-31": null,
+      "2021-12-31": 38151000000.0,
+      "2020-12-31": 24178000000.0
+    },
+    {
+      "label": "Equity-method investment activity, net of tax",
+      "concept": "us-gaap_IncomeLossFromEquityMethodInvestments",
+      "2024-12-31": -101000000.0,
+      "2023-12-31": -12000000.0,
+      "2022-12-31": -3000000.0,
+      "2021-12-31": 4000000.0,
+      "2020-12-31": 16000000.0
+    },
+    {
+      "label": "General and Administrative Expense",
+      "concept": "us-gaap_GeneralAndAdministrativeExpense",
+      "2024-12-31": 11359000000.0,
+      "2023-12-31": 11816000000.0,
+      "2022-12-31": 11891000000.0,
+      "2021-12-31": 8823000000.0,
+      "2020-12-31": 6668000000.0
+    },
+    {
+      "label": "Marketing Expense",
+      "concept": "us-gaap_MarketingExpense",
+      "2024-12-31": 43907000000.0,
+      "2023-12-31": 44370000000.0,
+      "2022-12-31": 42238000000.0,
+      "2021-12-31": 32551000000.0,
+      "2020-12-31": 22008000000.0
+    },
+    {
+      "label": "Operating Income",
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "2024-12-31": 68593000000.0,
+      "2023-12-31": 36852000000.0,
+      "2022-12-31": 12248000000.0,
+      "2021-12-31": 24879000000.0,
+      "2020-12-31": 22899000000.0
+    },
+    {
+      "label": "Interest Expense",
+      "concept": "us-gaap_InterestExpense",
+      "2024-12-31": null,
+      "2023-12-31": -3182000000.0,
+      "2022-12-31": -2367000000.0,
+      "2021-12-31": -1809000000.0,
+      "2020-12-31": -1647000000.0
+    },
+    {
+      "label": "Interest Expense (non-operating)",
+      "concept": "us-gaap_InterestExpenseNonoperating",
+      "2024-12-31": -2406000000.0,
+      "2023-12-31": null,
+      "2022-12-31": null,
+      "2021-12-31": null,
+      "2020-12-31": null
+    },
+    {
+      "label": "Interest income",
+      "concept": "us-gaap_InvestmentIncomeInterest",
+      "2024-12-31": 4677000000.0,
+      "2023-12-31": 2949000000.0,
+      "2022-12-31": 989000000.0,
+      "2021-12-31": 448000000.0,
+      "2020-12-31": 555000000.0
+    },
+    {
+      "label": "Other income (expense), net",
+      "concept": "us-gaap_OtherNonoperatingIncomeExpense",
+      "2024-12-31": -2250000000.0,
+      "2023-12-31": 938000000.0,
+      "2022-12-31": -16806000000.0,
+      "2021-12-31": 14633000000.0,
+      "2020-12-31": 2371000000.0
+    },
+    {
+      "label": "Nonoperating Income/Expense",
+      "concept": "us-gaap_NonoperatingIncomeExpense",
+      "2024-12-31": 21000000.0,
+      "2023-12-31": 705000000.0,
+      "2022-12-31": -18184000000.0,
+      "2021-12-31": 13272000000.0,
+      "2020-12-31": 1279000000.0
+    },
+    {
+      "label": "Income Tax Expense",
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "2024-12-31": -9265000000.0,
+      "2023-12-31": -7120000000.0,
+      "2022-12-31": 3217000000.0,
+      "2021-12-31": -4791000000.0,
+      "2020-12-31": -2863000000.0
+    },
+    {
+      "label": "Net Income",
+      "concept": "us-gaap_NetIncomeLoss",
+      "2024-12-31": 59248000000.0,
+      "2023-12-31": 30425000000.0,
+      "2022-12-31": -2722000000.0,
+      "2021-12-31": 33364000000.0,
+      "2020-12-31": 21331000000.0
+    },
+    {
+      "label": "Earnings Per Share (Basic)",
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "2024-12-31": 5.66,
+      "2023-12-31": 2.95,
+      "2022-12-31": -0.27,
+      "2021-12-31": 65.96,
+      "2020-12-31": 42.64
+    },
+    {
+      "label": "Earnings Per Share (Diluted)",
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "2024-12-31": 5.53,
+      "2023-12-31": 2.9,
+      "2022-12-31": -0.27,
+      "2021-12-31": 64.81,
+      "2020-12-31": 41.83
+    },
+    {
+      "label": "Shares Outstanding (Basic)",
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+      "2024-12-31": 10473000000.0,
+      "2023-12-31": 10304000000.0,
+      "2022-12-31": 10189000000.0,
+      "2021-12-31": 506000000.0,
+      "2020-12-31": 500000000.0
+    },
+    {
+      "label": "Shares Outstanding (Diluted)",
+      "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+      "2024-12-31": 10721000000.0,
+      "2023-12-31": 10492000000.0,
+      "2022-12-31": 10189000000.0,
+      "2021-12-31": 515000000.0,
+      "2020-12-31": 510000000.0
+    }
+  ]
+}
