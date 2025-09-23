@@ -27,20 +27,9 @@ def handle_textual(query):
     result = execute_vector_retrieval(query)
     return result
 
-def handle_both(query): # This function still iffy, cuz im not sure how the retrieval process will work
-    graph_result = handle_tabular(query)
-    text_result = handle_textual(query)
-    return {
-        "type" : "BOTH",
-        "cypher_query": graph_result["cypher_query"],
-        "graph_results": graph_result["results"],
-        "textual_results": text_result["results"]
-    }
-
 classification_handlers = {
     "TEXTUAL": handle_textual,
-    "TABLE": handle_tabular,
-    "BOTH": handle_both,
+    "TABLE": handle_tabular
 }
 
 def route_based_on_classification(classification: str, query: str):
