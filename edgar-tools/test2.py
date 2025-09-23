@@ -78,9 +78,9 @@ for ticker in companies:
     cashflow_json = json.loads(cash_flow_df.to_json(orient='records'))
 
     # Save as JSON files
-    with open(f"{ticker.lower()}_multi_balance_sheet-10Q-testlocal.json", 'w') as f:
+    with open(f"{ticker.lower()}_multi_balance_sheet-10Q.json", 'w') as f:
         json.dump({"ticker": ticker, "multi_balance_sheet": balance_json}, f, indent=2)
-    with open(f"{ticker.lower()}_multi_income_statement-10Q-testlocal.json", 'w') as f:
+    with open(f"{ticker.lower()}_multi_income_statement-10Q.json", 'w') as f:
         json.dump({"ticker": ticker, "multi_income_statement": income_json}, f, indent=2)
-    with open(f"{ticker.lower()}_multi_cash_flow.json-10Q-testlocal.json", 'w') as f:
+    with open(f"{ticker.lower()}_multi_cash_flow.json-10Q.json", 'w') as f:
         json.dump({"ticker": ticker, "multi_cash_flow": cashflow_json}, f, indent=2)

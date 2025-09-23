@@ -39,31 +39,36 @@ Graph Schema:
 
 Node properties:
 - Company: company_name, company_ticker
-- FilingType: form_type
-- Year: filing_year
-- LineItem: label, value
+- FilingType: form_type, company_ticker
+- Year: filing_year, form_type, company_ticker
+- IncomeStatement/BalanceSheet/CashFlowStatement: table_type, filing_year, company_ticker, form_type
+- LineItem: label, value, filing_year, company_ticker, form_type, table_type
 
 Rules:
 1. Always normalize case when comparing strings (use `toLower()` or `toUpper()`).
    - Match companies with:  
-     `(toLower(c.company_name) CONTAINS ...) OR (toLower(c.company_ticker) = ...)`
-   - Match `form_type` using `toUpper(f.form_type) = "10-K"` or `"10-Q"`.
-   - Match table type (IncomeStatement, BalanceSheet, CashFlowStatement) using `toUpper(labels(t))`.
-   - Match `LineItem.label` with `CONTAINS` (not exact match), e.g., `toUpper(li.label) CONTAINS "NET INCOME"`.
-2. Always filter by the given `filing_year`.
-3. Decide which table(s) to search:
-   - Income-related metrics → `IncomeStatement`
-   - Balance-related metrics (assets, liabilities, equity) → `BalanceSheet`
-   - Cash-related metrics → `CashFlowStatement`
-   - If unclear, search across all three.
-4. Return:
-c.company_ticker AS ticker,
-c.company_name AS name,
-f.form_type AS filing_type,
-y.filing_year AS year,
-labels(t)[0] AS table_type,
-li.label AS line_item,
-li.value AS value
+     `(toLower(c.company_name) CONTAINS toLower("company_input")) OR (toUpper(c.company_ticker) = toUpper("ticker_input"))`
+   - Match `form_type` using `f.form_type = "10-K"` or `f.form_type = "10-Q"`.
+   - Match `LineItem.label` with `CONTAINS` (not exact match), e.g., `toUpper(li.label) CONTAINS toUpper("net income")`.
+2. Always filter by the given `filing_year` as a string.
+3. If no quarter is mentioned in the query, default to form_type = "10-K".
+4. Decide which table(s) to search based on the financial metric:
+   - Revenue, income, profit, loss, operating expenses → `IncomeStatement`
+   - Assets, liabilities, equity, debt, inventory → `BalanceSheet` 
+   - Cash flow, operating cash, investing cash, financing cash → `CashFlowStatement`
+   - If unclear, search across all three table types.
+5. Use appropriate table labels in the MATCH clause:
+   - For IncomeStatement: `(t:IncomeStatement)`
+   - For BalanceSheet: `(t:BalanceSheet)`
+   - For CashFlowStatement: `(t:CashFlowStatement)`
+   - For all tables: `(t)` where `t:IncomeStatement OR t:BalanceSheet OR t:CashFlowStatement`
+6. Return only:
+   c.company_ticker AS ticker,
+   c.company_name AS name,
+   f.form_type AS filing_type,
+   y.filing_year AS year,
+   li.label AS line_item,
+   li.value AS value
 
 User Query:
 \"\"\"{user_query}\"\"\"
