@@ -1,6 +1,7 @@
 from QueryRouting import classify_query
 from GraphQueryTest import execute_graph_retrieval_process, close_drivers
 from QueryTest import execute_vector_retrieval
+from GenerateFinalAnswer import GenerateFinalAnswer
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -10,11 +11,8 @@ class QueryRequest(BaseModel):
     user_query: str
 
 class QueryResponse(BaseModel):
-     classification: str
-     cypher_query: str | None = None
-     graph_results: list | None = None
-     textual_results: dict | None = None
-
+    classification: str
+    results: list[any] | None = None
 
 def handle_tabular(query):
     print("Routing to Neo4j (GRAPH)")
@@ -46,17 +44,19 @@ def query_endpoint(request: QueryRequest):
 
         response_data = {
             "classification": classification,
-            "cypher_query": result.get("cypher_query"),
-            "graph_results": result.get("results") if classification.upper() == "TABLE" else result.get("graph_results"),
-            "textual_results": result.get("results") if classification.upper() == "TEXTUAL" else result.get("textual_results"),
+            "results": result.get("results")
         }
+
+        # Commented out for now because still haven't tested if it works
+        #finalAnswer = GenerateFinalAnswer(result, request.user_query)
+        #return(finalAnswer)
 
         return QueryResponse(**response_data)
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-if _name_ == "_main_":
+if __name__ == "_main_":
     import uvicorn
     uvicorn.run("JointRetrieval:app", host="127.0.0.1", port=8000, reload=True)
 
