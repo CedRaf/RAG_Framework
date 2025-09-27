@@ -15,9 +15,10 @@ for ticker in companies:
 
     company = Company(ticker)
 
-
     filings = company.get_filings(form="10-Q")
     filings_recent = [f for f in filings if f.filing_date.year >= 2020]
+    # There is a limit to how far back you can go because of the way the logic works.
+    # Earlier 10-Q filings don't follow the same format of having a 'statements' dict, so the logic won't work
 
     for filing in filings_recent:
         try:
