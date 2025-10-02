@@ -22,7 +22,7 @@ def insert_dense_embedding_milvus():
             FieldSchema(name="source_file", dtype=DataType.VARCHAR, max_length=512),
             FieldSchema(name="ticker", dtype=DataType.VARCHAR, max_length=32),
             FieldSchema(name="form_type", dtype=DataType.VARCHAR, max_length=16),
-            FieldSchema(name="chunk_id", dtype=DataType.INT64),
+            FieldSchema(name="chunk_id", dtype=DataType.VARCHAR, max_length=1000),
             FieldSchema(name="start_index", dtype=DataType.INT64),
             FieldSchema(name="end_index", dtype=DataType.INT64)
         ]

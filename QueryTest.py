@@ -225,6 +225,7 @@ def vector_retrieval_test(user_query:str):
                 "ticker": result['entity']['ticker'],
                 "form_type": result['entity']['form_type'],
                 "source_file": result['entity']['source_file'],
+                "chunk_id":  result['entity']['chunk_id'],
                 "text": result['entity']['text']
             }
             for i, result in enumerate(sparse_results[0])
@@ -236,6 +237,7 @@ def vector_retrieval_test(user_query:str):
                 "ticker": hit['entity']['ticker'],
                 "form_type": hit['entity']['form_type'],
                 "source_file": hit['entity']['source_file'],
+                "chunk_id": hit['entity']['chunk_id'],
                 "text": fetch_text({
                     "form_type": hit.entity.get("form_type", ""),
                     "ticker": hit.entity.get("ticker", ""),
@@ -280,10 +282,39 @@ def execute_vector_retrieval(user_query:str):
         texts = [text for text, _ in reranked]
         scores = [score for _, score in reranked]
 
-        return {
-            "results": texts,
-            "scores": scores
+        output_data = {
+            "sparse_top_10": [
+            {
+                "rank": i+1,
+                "score": result['distance'],
+                "ticker": result['entity']['ticker'],
+                "form_type": result['entity']['form_type'],
+                "source_file": result['entity']['source_file'],
+                "chunk_id":  result['entity']['chunk_id'],
+                "text": result['entity']['text']
+            }
+                for i, result in enumerate(sparse_results[0][:10])
+            ],
+            "dense_top_10": [
+            {
+                "rank": i+1,
+                "score": hit['distance'],
+                "ticker": hit['entity']['ticker'],
+                "form_type": hit['entity']['form_type'],
+                "source_file": hit['entity']['source_file'],
+                "chunk_id": hit['entity']['chunk_id'],
+                "text": fetch_text({
+                "form_type": hit.entity.get("form_type", ""),
+                "ticker": hit.entity.get("ticker", ""),
+                "source_file": hit.entity.get("source_file", ""),
+                "chunk_id": hit.entity.get("chunk_id", "")
+                })
+            }
+                for i, hit in enumerate(dense_results[0][:10])
+            ]
         }
+
+        return output_data
     
     finally:
         if torch.cuda.is_available():

@@ -19,7 +19,7 @@ if COLLECTION_NAME not in client.list_collections():
     schema.add_field("sparse", DataType.SPARSE_FLOAT_VECTOR)
 
     # Metadata fields
-    schema.add_field("chunk_id", DataType.INT64)
+    schema.add_field("chunk_id", DataType.VARCHAR, max_length=MAX_TEXT_LENGTH)
     schema.add_field("start_index", DataType.INT64)
     schema.add_field("end_index", DataType.INT64)
     schema.add_field("ticker", DataType.VARCHAR, max_length=100)

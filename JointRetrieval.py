@@ -13,7 +13,7 @@ class QueryResponse(BaseModel):
      classification: str
      cypher_query: str | None = None
      graph_results: list | None = None
-     textual_results: list | None = None
+     textual_results: dict | None = None
 
 FORCE_TEXTUAL_ONLY = True
 
