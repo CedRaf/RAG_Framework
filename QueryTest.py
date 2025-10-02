@@ -10,6 +10,14 @@ import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 
+
+embedding_model = None
+reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3") 
+reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+reranker_model.eval().to("cpu")  # Start on CPU
+
+
+
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
 reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
 
@@ -18,6 +26,21 @@ reranker_model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", ports="19530")
 
+
+
+def initialize_models():
+    """Initialize models once and keep them on CPU"""
+    global embedding_model, reranker_model, reranker_tokenizer
+    
+    if embedding_model is None:
+        embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
+        embedding_model = embedding_model.to("cpu")  # Keep on CPU initially
+    
+    if reranker_model is None:
+        reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
+        reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+        reranker_model.eval().to("cpu")  # Keep on CPU initially
+        
 # SPARSE SEARCH
 def sparse_retrieval_test(sparse_query:str):
     sparse_results = client.search(
@@ -39,56 +62,66 @@ def sparse_retrieval_test(sparse_query:str):
     return sparse_results
 
 #DENSE SEARCH
-def dense_retrieval_test(dense_query:str):
 
+def dense_retrieval_test(dense_query: str):
+    global embedding_model
+    
+    # Initialize models if needed
+    initialize_models()
+    
     collection = Collection("sec_chunks_dense")
     collection.load()
     print("Collection Loaded")
 
-    model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
-    
+    # Move embedding model to GPU only when needed
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.to(device)
-
-    query = f"Task: Financial retrieval. Query: {dense_query}"
-
-    query_embedding= model.encode(
-        query,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-        device=device,
-    )
-
-    print("Query Embedded")
-
-    search_params = {
-        "metric_type": "COSINE", 
-        "params": {"ef": 128}
-    }
-
-    detected_tickers = get_tickers(dense_query)
-    expr = None
-    if detected_tickers:
-        ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
-        expr = f'ticker in [{ticker_filter}]'
-
-    results = collection.search(
-        data = [query_embedding.tolist()],
-        anns_field="dense_vector",
-        param=search_params,
-        limit=50,
-        expr=expr,
-        output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
-    )
-
-    if not results:
-        print("No results found, exiting...")
-        exit()
+    embedding_model = embedding_model.to(device)
     
-    
-    print("\nDense Results Generated")
-    
-    return results
+    try:
+        query = f"Task: Financial retrieval. Query: {dense_query}"
+
+        query_embedding = embedding_model.encode(
+            query,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+            device=device,
+        )
+
+        print("Query Embedded")
+
+        search_params = {
+            "metric_type": "COSINE", 
+            "params": {"ef": 128}
+        }
+
+        detected_tickers = get_tickers(dense_query)
+        expr = None
+        if detected_tickers:
+            ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
+            expr = f'ticker in [{ticker_filter}]'
+
+        results = collection.search(
+            data=[query_embedding.tolist()],
+            anns_field="dense_vector",
+            param=search_params,
+            limit=50,
+            expr=expr,
+            output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
+        )
+
+        if not results:
+            print("No results found, exiting...")
+            return []
+        
+        print("\nDense Results Generated")
+        return results
+        
+    finally:
+        # Move model back to CPU and clear cache
+        embedding_model = embedding_model.to("cpu")
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
 
 def fetch_text(metadata):
     try:
@@ -97,11 +130,9 @@ def fetch_text(metadata):
         source_file = metadata.get("source_file", "")
 
         base_dir = "chunked_dense"
-
         form_dir = f"{form_type}" if form_type else ""
-
         chunk_dir = os.path.join(base_dir, form_dir, ticker.upper())
-        chunk_file  = os.path.join(chunk_dir, source_file)
+        chunk_file = os.path.join(chunk_dir, source_file)
 
         with open(chunk_file, 'r', encoding="utf-8") as f:
             chunks = json.load(f)
@@ -118,19 +149,34 @@ def fetch_text(metadata):
         return f"Error: {str(e)}"
 
 def rerank(query, passages, top_k=5):
-    inputs = reranker_tokenizer(
-        [query] * len(passages),
-        passages,
-        padding=True,
-        truncation=True,
-        return_tensors="pt"
-    ).to(reranker_model.device)
+    global reranker_model, reranker_tokenizer
+    
+    # Initialize models if needed
+    initialize_models()
+    # Move reranker to GPU only when needed
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    reranker_model = reranker_model.to(device)
+    
+    try:
+        inputs = reranker_tokenizer(
+            [query] * len(passages),
+            passages,
+            padding=True,
+            truncation=True,
+            return_tensors="pt"
+        ).to(device)
 
-    with torch.no_grad():
-        scores = reranker_model(**inputs).logits.squeeze(-1)
+        with torch.no_grad():
+            scores = reranker_model(**inputs).logits.squeeze(-1)
 
-    ranked = sorted(zip(passages, scores.tolist()), key=lambda x: x[1], reverse=True)
-    return ranked[:top_k]
+        ranked = sorted(zip(passages, scores.tolist()), key=lambda x: x[1], reverse=True)
+        return ranked[:top_k]
+        
+    finally:
+        # Move model back to CPU and clear cache
+        reranker_model = reranker_model.to("cpu")
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
 def vector_retrieval_test(user_query:str):
     psuedo_doc= expand_query(user_query)
@@ -212,31 +258,37 @@ def vector_retrieval_test(user_query:str):
 
 # Same logic as 'vector_retrieval_test' just used as a callable function for other files
 def execute_vector_retrieval(user_query:str):
-    psuedo_doc= expand_query(user_query)
-    sparse_query= sparse_formatting(user_query, psuedo_doc)
-    dense_query= dense_formatting(user_query, psuedo_doc)
+    try:
+        psuedo_doc= expand_query(user_query)
+        sparse_query= sparse_formatting(user_query, psuedo_doc)
+        dense_query= dense_formatting(user_query, psuedo_doc)
 
-    sparse_results= sparse_retrieval_test(sparse_query)
-    dense_results= dense_retrieval_test(dense_query)
+        sparse_results= sparse_retrieval_test(sparse_query)
+        dense_results= dense_retrieval_test(dense_query)
 
-    compiled_results = []
+        compiled_results = []
+        
+        for result in sparse_results[0]:
+            compiled_results.append(result['entity']['text'])
+
+        for hit in dense_results[0]:
+            text = fetch_text({...})  # Already in your code
+            compiled_results.append(text)
+
+        reranked = rerank(user_query, compiled_results, top_k=5)
+        
+        texts = [text for text, _ in reranked]
+        scores = [score for _, score in reranked]
+
+        return {
+            "results": texts,
+            "scores": scores
+        }
     
-    for result in sparse_results[0]:
-        compiled_results.append(result['entity']['text'])
+    finally:
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
-    for hit in dense_results[0]:
-        text = fetch_text({...})  # Already in your code
-        compiled_results.append(text)
-
-    reranked = rerank(user_query, compiled_results, top_k=5)
-    
-    texts = [text for text, _ in reranked]
-    scores = [score for _, score in reranked]
-
-    return {
-        "results": texts,
-        "scores": scores
-    }
 
 if __name__ == "__main__":
     user_query = input("Enter your query: ")
