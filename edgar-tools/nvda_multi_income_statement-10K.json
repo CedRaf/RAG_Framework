@@ -1,0 +1,212 @@
+{
+  "ticker": "NVDA",
+  "multi_income_statement": [
+    {
+      "label": "Contract Revenue",
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "2025-01-26": null,
+      "2024-01-28": null,
+      "2023-01-29": null,
+      "2022-01-30": null,
+      "2021-01-31": 16675000000.0
+    },
+    {
+      "label": "Revenue",
+      "concept": "us-gaap_Revenues",
+      "2025-01-26": 130497000000.0,
+      "2024-01-28": 60922000000.0,
+      "2023-01-29": 26974000000.0,
+      "2022-01-30": 26914000000.0,
+      "2021-01-31": null
+    },
+    {
+      "label": "Acquisition termination cost",
+      "concept": "nvda_BusinessCombinationAdvancedConsiderationWrittenOff",
+      "2025-01-26": 0.0,
+      "2024-01-28": 0.0,
+      "2023-01-29": 1353000000.0,
+      "2022-01-30": null,
+      "2021-01-31": null
+    },
+    {
+      "label": "Total Cost of Revenue",
+      "concept": "us-gaap_CostOfRevenue",
+      "2025-01-26": -32639000000.0,
+      "2024-01-28": -16621000000.0,
+      "2023-01-29": -11618000000.0,
+      "2022-01-30": -9439000000.0,
+      "2021-01-31": null
+    },
+    {
+      "label": "Cost of Goods and Services Sold",
+      "concept": "us-gaap_CostOfGoodsAndServicesSold",
+      "2025-01-26": null,
+      "2024-01-28": null,
+      "2023-01-29": null,
+      "2022-01-30": null,
+      "2021-01-31": -6279000000.0
+    },
+    {
+      "label": "Gross Profit",
+      "concept": "us-gaap_GrossProfit",
+      "2025-01-26": 97858000000.0,
+      "2024-01-28": 44301000000.0,
+      "2023-01-29": 15356000000.0,
+      "2022-01-30": 17475000000.0,
+      "2021-01-31": 10396000000.0
+    },
+    {
+      "label": "Research and Development Expense",
+      "concept": "us-gaap_ResearchAndDevelopmentExpense",
+      "2025-01-26": 12914000000.0,
+      "2024-01-28": 8675000000.0,
+      "2023-01-29": 7339000000.0,
+      "2022-01-30": 5268000000.0,
+      "2021-01-31": 3924000000.0
+    },
+    {
+      "label": "Selling, General and Administrative Expense",
+      "concept": "us-gaap_SellingGeneralAndAdministrativeExpense",
+      "2025-01-26": 3491000000.0,
+      "2024-01-28": 2654000000.0,
+      "2023-01-29": 2440000000.0,
+      "2022-01-30": 2166000000.0,
+      "2021-01-31": 1940000000.0
+    },
+    {
+      "label": "Operating Expenses",
+      "concept": "us-gaap_OperatingExpenses",
+      "2025-01-26": 16405000000.0,
+      "2024-01-28": 11329000000.0,
+      "2023-01-29": 11132000000.0,
+      "2022-01-30": 7434000000.0,
+      "2021-01-31": 5864000000.0
+    },
+    {
+      "label": "Operating Income",
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "2025-01-26": 81453000000.0,
+      "2024-01-28": 32972000000.0,
+      "2023-01-29": 4224000000.0,
+      "2022-01-30": 10041000000.0,
+      "2021-01-31": 4532000000.0
+    },
+    {
+      "label": "Interest Expense",
+      "concept": "us-gaap_InterestExpense",
+      "2025-01-26": null,
+      "2024-01-28": -257000000.0,
+      "2023-01-29": -262000000.0,
+      "2022-01-30": -236000000.0,
+      "2021-01-31": -184000000.0
+    },
+    {
+      "label": "Interest Expense (non-operating)",
+      "concept": "us-gaap_InterestExpenseNonoperating",
+      "2025-01-26": -247000000.0,
+      "2024-01-28": null,
+      "2023-01-29": null,
+      "2022-01-30": null,
+      "2021-01-31": null
+    },
+    {
+      "label": "Interest income",
+      "concept": "us-gaap_InvestmentIncomeInterest",
+      "2025-01-26": 1786000000.0,
+      "2024-01-28": 866000000.0,
+      "2023-01-29": 267000000.0,
+      "2022-01-30": 29000000.0,
+      "2021-01-31": 57000000.0
+    },
+    {
+      "label": "Other, net",
+      "concept": "us-gaap_OtherNonoperatingIncomeExpense",
+      "2025-01-26": 1034000000.0,
+      "2024-01-28": 237000000.0,
+      "2023-01-29": -48000000.0,
+      "2022-01-30": 107000000.0,
+      "2021-01-31": 4000000.0
+    },
+    {
+      "label": "Nonoperating Income/Expense",
+      "concept": "us-gaap_NonoperatingIncomeExpense",
+      "2025-01-26": 2573000000.0,
+      "2024-01-28": 846000000.0,
+      "2023-01-29": -43000000.0,
+      "2022-01-30": -100000000.0,
+      "2021-01-31": -123000000.0
+    },
+    {
+      "label": "Income before income tax",
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "2025-01-26": null,
+      "2024-01-28": null,
+      "2023-01-29": null,
+      "2022-01-30": null,
+      "2021-01-31": 4409000000.0
+    },
+    {
+      "label": "Income Before Tax from Continuing Operations",
+      "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "2025-01-26": 84026000000.0,
+      "2024-01-28": 33818000000.0,
+      "2023-01-29": 4181000000.0,
+      "2022-01-30": 9941000000.0,
+      "2021-01-31": null
+    },
+    {
+      "label": "Income Tax Expense",
+      "concept": "us-gaap_IncomeTaxExpenseBenefit",
+      "2025-01-26": 11146000000.0,
+      "2024-01-28": 4058000000.0,
+      "2023-01-29": -187000000.0,
+      "2022-01-30": 189000000.0,
+      "2021-01-31": 77000000.0
+    },
+    {
+      "label": "Net Income",
+      "concept": "us-gaap_NetIncomeLoss",
+      "2025-01-26": 72880000000.0,
+      "2024-01-28": 29760000000.0,
+      "2023-01-29": 4368000000.0,
+      "2022-01-30": 9752000000.0,
+      "2021-01-31": 4332000000.0
+    },
+    {
+      "label": "Earnings Per Share (Basic)",
+      "concept": "us-gaap_EarningsPerShareBasic",
+      "2025-01-26": 2.97,
+      "2024-01-28": 12.05,
+      "2023-01-29": 1.76,
+      "2022-01-30": 3.91,
+      "2021-01-31": 7.02
+    },
+    {
+      "label": "Earnings Per Share (Diluted)",
+      "concept": "us-gaap_EarningsPerShareDiluted",
+      "2025-01-26": 2.94,
+      "2024-01-28": 11.93,
+      "2023-01-29": 1.74,
+      "2022-01-30": 3.85,
+      "2021-01-31": 6.9
+    },
+    {
+      "label": "Shares Outstanding (Basic)",
+      "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+      "2025-01-26": 24555000000.0,
+      "2024-01-28": 2469000000.0,
+      "2023-01-29": 2487000000.0,
+      "2022-01-30": 2496000000.0,
+      "2021-01-31": 617000000.0
+    },
+    {
+      "label": "Shares Outstanding (Diluted)",
+      "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+      "2025-01-26": 24804000000.0,
+      "2024-01-28": 2494000000.0,
+      "2023-01-29": 2507000000.0,
+      "2022-01-30": 2535000000.0,
+      "2021-01-31": 628000000.0
+    }
+  ]
+}

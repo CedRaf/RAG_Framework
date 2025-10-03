@@ -1,0 +1,302 @@
+{
+  "ticker": "AAPL",
+  "multi_cash_flow": [
+    {
+      "label": "Net Income",
+      "concept": "us-gaap_NetIncomeLoss",
+      "2024-09-28": 93736000000.0,
+      "2023-09-30": 96995000000.0,
+      "2022-09-24": 99803000000.0,
+      "2021-09-25": 94680000000.0,
+      "2020-09-26": 57411000000.0
+    },
+    {
+      "label": "Depreciation and amortization",
+      "concept": "us-gaap_DepreciationDepletionAndAmortization",
+      "2024-09-28": 11445000000.0,
+      "2023-09-30": 11519000000.0,
+      "2022-09-24": 11104000000.0,
+      "2021-09-25": 11284000000.0,
+      "2020-09-26": 11056000000.0
+    },
+    {
+      "label": "Share-based compensation expense",
+      "concept": "us-gaap_ShareBasedCompensation",
+      "2024-09-28": 11688000000.0,
+      "2023-09-30": 10833000000.0,
+      "2022-09-24": 9038000000.0,
+      "2021-09-25": 7906000000.0,
+      "2020-09-26": 6829000000.0
+    },
+    {
+      "label": "Accounts receivable, net",
+      "concept": "us-gaap_IncreaseDecreaseInAccountsReceivable",
+      "2024-09-28": -3788000000.0,
+      "2023-09-30": -1688000000.0,
+      "2022-09-24": -1823000000.0,
+      "2021-09-25": -10125000000.0,
+      "2020-09-26": 6917000000.0
+    },
+    {
+      "label": "Vendor non-trade receivables",
+      "concept": "us-gaap_IncreaseDecreaseInOtherReceivables",
+      "2024-09-28": -1356000000.0,
+      "2023-09-30": 1271000000.0,
+      "2022-09-24": -7520000000.0,
+      "2021-09-25": -3903000000.0,
+      "2020-09-26": 1553000000.0
+    },
+    {
+      "label": "Inventories",
+      "concept": "us-gaap_IncreaseDecreaseInInventories",
+      "2024-09-28": -1046000000.0,
+      "2023-09-30": -1618000000.0,
+      "2022-09-24": 1484000000.0,
+      "2021-09-25": -2642000000.0,
+      "2020-09-26": -127000000.0
+    },
+    {
+      "label": "Other current and non-current assets",
+      "concept": "us-gaap_IncreaseDecreaseInOtherOperatingAssets",
+      "2024-09-28": -11731000000.0,
+      "2023-09-30": -5684000000.0,
+      "2022-09-24": -6499000000.0,
+      "2021-09-25": -8042000000.0,
+      "2020-09-26": -9588000000.0
+    },
+    {
+      "label": "Accounts payable",
+      "concept": "us-gaap_IncreaseDecreaseInAccountsPayable",
+      "2024-09-28": 6020000000.0,
+      "2023-09-30": -1889000000.0,
+      "2022-09-24": 9448000000.0,
+      "2021-09-25": 12326000000.0,
+      "2020-09-26": -4062000000.0
+    },
+    {
+      "label": "Other current and non-current liabilities",
+      "concept": "us-gaap_IncreaseDecreaseInOtherOperatingLiabilities",
+      "2024-09-28": 15552000000.0,
+      "2023-09-30": 3031000000.0,
+      "2022-09-24": 5632000000.0,
+      "2021-09-25": 5799000000.0,
+      "2020-09-26": 8916000000.0
+    },
+    {
+      "label": "Other",
+      "concept": "us-gaap_OtherNoncashIncomeExpense",
+      "2024-09-28": -361000000.0,
+      "2023-09-30": -581000000.0,
+      "2022-09-24": -160000000.0,
+      "2021-09-25": -129000000.0,
+      "2020-09-26": -126000000.0
+    },
+    {
+      "label": "Net Cash from Operating Activities",
+      "concept": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+      "2024-09-28": 118254000000.0,
+      "2023-09-30": 110543000000.0,
+      "2022-09-24": 122151000000.0,
+      "2021-09-25": 104038000000.0,
+      "2020-09-26": 80674000000.0
+    },
+    {
+      "label": "Purchases of marketable securities",
+      "concept": "us-gaap_PaymentsToAcquireAvailableForSaleSecuritiesDebt",
+      "2024-09-28": -48656000000.0,
+      "2023-09-30": -29513000000.0,
+      "2022-09-24": -76923000000.0,
+      "2021-09-25": -109558000000.0,
+      "2020-09-26": -114938000000.0
+    },
+    {
+      "label": "Proceeds from Maturities, Prepayments and Calls of Securities",
+      "concept": "us-gaap_ProceedsFromMaturitiesPrepaymentsAndCallsOfAvailableForSaleSecurities",
+      "2024-09-28": 51211000000.0,
+      "2023-09-30": 39686000000.0,
+      "2022-09-24": 29917000000.0,
+      "2021-09-25": 59023000000.0,
+      "2020-09-26": 69918000000.0
+    },
+    {
+      "label": "Proceeds from Sale of Debt Securities, ",
+      "concept": "us-gaap_ProceedsFromSaleOfAvailableForSaleSecuritiesDebt",
+      "2024-09-28": 11135000000.0,
+      "2023-09-30": 5828000000.0,
+      "2022-09-24": 37446000000.0,
+      "2021-09-25": 47460000000.0,
+      "2020-09-26": 50473000000.0
+    },
+    {
+      "label": "Payments for Property, Plant and Equipment",
+      "concept": "us-gaap_PaymentsToAcquirePropertyPlantAndEquipment",
+      "2024-09-28": -9447000000.0,
+      "2023-09-30": -10959000000.0,
+      "2022-09-24": -10708000000.0,
+      "2021-09-25": -11085000000.0,
+      "2020-09-26": -7309000000.0
+    },
+    {
+      "label": "Net Cash from Investing Activities",
+      "concept": "us-gaap_NetCashProvidedByUsedInInvestingActivities",
+      "2024-09-28": 2935000000.0,
+      "2023-09-30": 3705000000.0,
+      "2022-09-24": -22354000000.0,
+      "2021-09-25": -14545000000.0,
+      "2020-09-26": -4289000000.0
+    },
+    {
+      "label": "Tax Withholding for Share-Based Compensation",
+      "concept": "us-gaap_PaymentsRelatedToTaxWithholdingForShareBasedCompensation",
+      "2024-09-28": -5441000000.0,
+      "2023-09-30": -5431000000.0,
+      "2022-09-24": -6223000000.0,
+      "2021-09-25": -6556000000.0,
+      "2020-09-26": -3634000000.0
+    },
+    {
+      "label": "Payments of Dividends",
+      "concept": "us-gaap_PaymentsOfDividends",
+      "2024-09-28": -15234000000.0,
+      "2023-09-30": -15025000000.0,
+      "2022-09-24": -14841000000.0,
+      "2021-09-25": -14467000000.0,
+      "2020-09-26": -14081000000.0
+    },
+    {
+      "label": "Repurchases of common stock",
+      "concept": "us-gaap_PaymentsForRepurchaseOfCommonStock",
+      "2024-09-28": -94949000000.0,
+      "2023-09-30": -77550000000.0,
+      "2022-09-24": -89402000000.0,
+      "2021-09-25": -85971000000.0,
+      "2020-09-26": -72358000000.0
+    },
+    {
+      "label": "Proceeds from Issuance of Long-Term Debt",
+      "concept": "us-gaap_ProceedsFromIssuanceOfLongTermDebt",
+      "2024-09-28": 0.0,
+      "2023-09-30": 5228000000.0,
+      "2022-09-24": 5465000000.0,
+      "2021-09-25": 20393000000.0,
+      "2020-09-26": 16091000000.0
+    },
+    {
+      "label": "Repayments of term debt",
+      "concept": "us-gaap_RepaymentsOfLongTermDebt",
+      "2024-09-28": -9958000000.0,
+      "2023-09-30": -11151000000.0,
+      "2022-09-24": -9543000000.0,
+      "2021-09-25": -8750000000.0,
+      "2020-09-26": -12629000000.0
+    },
+    {
+      "label": "Proceeds from (Repayments of) Commercial Paper",
+      "concept": "us-gaap_ProceedsFromRepaymentsOfCommercialPaper",
+      "2024-09-28": 3960000000.0,
+      "2023-09-30": -3978000000.0,
+      "2022-09-24": 3955000000.0,
+      "2021-09-25": 1022000000.0,
+      "2020-09-26": -963000000.0
+    },
+    {
+      "label": "Net Cash from Financing Activities",
+      "concept": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+      "2024-09-28": -121983000000.0,
+      "2023-09-30": -108488000000.0,
+      "2022-09-24": -110749000000.0,
+      "2021-09-25": -93353000000.0,
+      "2020-09-26": -86820000000.0
+    },
+    {
+      "label": "Net Change in Cash",
+      "concept": "us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+      "2024-09-28": -794000000.0,
+      "2023-09-30": 5760000000.0,
+      "2022-09-24": -10952000000.0,
+      "2021-09-25": -3860000000.0,
+      "2020-09-26": -10435000000.0
+    },
+    {
+      "label": "Purchases of non-marketable securities",
+      "concept": "us-gaap_PaymentsToAcquireOtherInvestments",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": null,
+      "2021-09-25": -131000000.0,
+      "2020-09-26": -210000000.0
+    },
+    {
+      "label": "Proceeds from Issuance of Common Stock",
+      "concept": "us-gaap_ProceedsFromIssuanceOfCommonStock",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": null,
+      "2021-09-25": 1105000000.0,
+      "2020-09-26": 880000000.0
+    },
+    {
+      "label": "Proceeds from Sale and Maturity of Other Investments",
+      "concept": "us-gaap_ProceedsFromSaleAndMaturityOfOtherInvestments",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": null,
+      "2021-09-25": 387000000.0,
+      "2020-09-26": 92000000.0
+    },
+    {
+      "label": "Payments to Acquire Businesses",
+      "concept": "us-gaap_PaymentsToAcquireBusinessesNetOfCashAcquired",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": -306000000.0,
+      "2021-09-25": -33000000.0,
+      "2020-09-26": -1524000000.0
+    },
+    {
+      "label": "Deferred income tax benefit",
+      "concept": "us-gaap_DeferredIncomeTaxExpenseBenefit",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": null,
+      "2021-09-25": -4774000000.0,
+      "2020-09-26": -215000000.0
+    },
+    {
+      "label": "Income Tax Expense",
+      "concept": "us-gaap_IncomeTaxesPaidNet",
+      "2024-09-28": 26102000000.0,
+      "2023-09-30": 18679000000.0,
+      "2022-09-24": 19573000000.0,
+      "2021-09-25": 25385000000.0,
+      "2020-09-26": 9501000000.0
+    },
+    {
+      "label": "Cash paid for interest",
+      "concept": "us-gaap_InterestPaidNet",
+      "2024-09-28": null,
+      "2023-09-30": 3803000000.0,
+      "2022-09-24": 2865000000.0,
+      "2021-09-25": 2687000000.0,
+      "2020-09-26": 3002000000.0
+    },
+    {
+      "label": "Deferred income tax expense/(benefit)",
+      "concept": "us-gaap_DeferredIncomeTaxExpenseBenefit",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": 895000000.0,
+      "2021-09-25": null,
+      "2020-09-26": null
+    },
+    {
+      "label": "Deferred revenue",
+      "concept": "us-gaap_IncreaseDecreaseInContractWithCustomerLiability",
+      "2024-09-28": null,
+      "2023-09-30": null,
+      "2022-09-24": 478000000.0,
+      "2021-09-25": 1676000000.0,
+      "2020-09-26": 2081000000.0
+    }
+  ]
+}

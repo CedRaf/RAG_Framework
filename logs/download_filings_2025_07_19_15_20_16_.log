@@ -1,0 +1,12 @@
+07-19-2025 23:20 - download_filings - INFO - Saving log to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\logs
+
+07-19-2025 23:20 - download_filings - INFO - Downloading index files from SEC...
+07-19-2025 23:20 - download_filings - INFO - 2023_QTR1.tsv downloaded
+07-19-2025 23:20 - download_filings - INFO - 2023_QTR2.tsv downloaded
+07-19-2025 23:20 - download_filings - INFO - 2023_QTR3.tsv downloaded
+07-19-2025 23:20 - download_filings - INFO - 2023_QTR4.tsv downloaded
+07-19-2025 23:20 - download_filings - INFO - 
+Downloading 10 filings directly from EDGAR...
+
+07-19-2025 23:20 - download_filings - INFO - 
+Filings metadata exported to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\datasets\FILINGS_METADATA.csv

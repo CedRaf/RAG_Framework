@@ -1,0 +1,5 @@
+07-19-2025 23:23 - ExtractItems - INFO - Starting the structured JSON extraction from 10 unstructured EDGAR filings.
+07-19-2025 23:23 - ExtractItems - INFO - 
+Item extraction is completed successfully.
+07-19-2025 23:23 - ExtractItems - INFO - 10 files were processed.
+07-19-2025 23:23 - ExtractItems - INFO - Extracted filings are saved to: C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\datasets\EXTRACTED_FILINGS

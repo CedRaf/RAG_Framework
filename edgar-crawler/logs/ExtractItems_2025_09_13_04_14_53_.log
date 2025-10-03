@@ -1,0 +1,4 @@
+09-13-2025 12:15 - ExtractItems - DEBUG - 1045810_10Q_2023_0001045810-23-000093.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+09-13-2025 12:15 - ExtractItems - DEBUG - 1045810_10Q_2023_0001045810-23-000093.htm - Could not detect positions/texts of parts.
+09-13-2025 12:15 - ExtractItems - DEBUG - 1045810_10Q_2023_0001045810-23-000093.htm - Could not detect positions/texts of parts.
+09-13-2025 12:15 - ExtractItems - DEBUG - 1045810_10Q_2023_0001045810-23-000093.htm - Could not separate PARTs correctly. Likely PART I contains just ToC content.
