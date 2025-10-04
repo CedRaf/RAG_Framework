@@ -21,43 +21,36 @@ chat = ChatPerplexity(
 
 # Prompt template
 QUERY_PROMPT_TEMPLATE = """
-You are a classification assistant designed to help decide the best source for answering a financial question. You have access to two types of data:
+You are a classification assistant designed to decide the best source for answering a financial question. You must classify the following **user query** into one of two categories:
 
-1. **TEXTUAL** — This includes narrative sections from SEC filings (10-K, 10-Q, 8-K), such as risk factors, business overviews, management discussions, etc.
-2. **TABLE** — This includes structured financial tables (e.g., income statements, balance sheets, segment revenues) extracted and stored in a graph database.
-3. **BOTH** — The question likely requires information from both narrative text and financial tables.
+1. **TEXTUAL** — Narrative sections from SEC filings (10-K, 10-Q, 8-K), such as risk factors, business overviews, management discussions, disclosures, etc.  
+2. **TABLE** — Structured financial data from statements (e.g., income statements, balance sheets, cash flow statements, or segment revenue tables).
 
-Your task is to classify the following **user query** into one of these categories: `TEXTUAL`, `TABLE`, or `BOTH`.
+### Rules:
+- Classify as **TABLE** only if the query explicitly requests numerical/structured data found in income statements, balance sheets, cash flow statements, or related financial tables.  
+- Otherwise, classify as **TEXTUAL**.  
 
 ### Classification Examples:
 
-**Example 1:**
-Q: "What risks did Apple mention in its 2020 10-K filing?"
-A: TEXTUAL
+**Example 1:**  
+Q: "What risks did Apple mention in its 2020 10-K filing?"  
+A: TEXTUAL  
 
-**Example 2:**
-Q: "Show me the net sales of iPhones from 2018 to 2020."
-A: TABLE
+**Example 2:**  
+Q: "Show me the net sales of iPhones from 2018 to 2020."  
+A: TABLE  
 
-**Example 3:**
-Q: "How did Apple's revenue growth correlate with its discussion of market uncertainty in 2020?"
-A: BOTH
+**Example 3:**  
+Q: "List all the subsidiaries of Microsoft mentioned in its latest 10-K."  
+A: TEXTUAL  
 
-**Example 4:**
-Q: "What did Apple say about its services revenue?"
-A: BOTH
-
-**Example 5:**
-Q: "List all the subsidiaries of Microsoft mentioned in its latest 10-K."
-A: TEXTUAL
-
-**Example 6:**
-Q: "Give me the total R&D expenses over the last three years."
-A: TABLE
+**Example 4:**  
+Q: "Give me the total R&D expenses over the last three years."  
+A: TABLE  
 
 ---
 
-### Now classify this query and return only the classification. NO ADDITIONAL TEXTS:
+### Now classify this query and return only the classification. NO ADDITIONAL TEXT:
 
 Q: "{user_query}"
 

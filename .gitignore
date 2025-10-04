@@ -9,6 +9,7 @@ chunked_sparse/
 embedded_sparse_bm25/
 embedded_dense_finbert/
 embedded_dense_allMini/
+dense_embeddings/
 extracted_texts/
 __pycache__/
 old_code_versions/

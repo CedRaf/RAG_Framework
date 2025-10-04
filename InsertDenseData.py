@@ -5,11 +5,11 @@ import torch
 from sentence_transformers import SentenceTransformer
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import csv
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "sec_chunks_dense"
-EMBEDDING_DIM = 1024  # output dim for all-mini, have to change if we'll use smthn else (set to 1024 for bge-large-en-v1.5)
+EMBEDDING_DIM = 1024
 MAIN_DIR = "dense_embeddings"
 connections.connect(host="localhost", ports="19530")
 
@@ -22,20 +22,20 @@ def insert_dense_embedding_milvus():
             FieldSchema(name="source_file", dtype=DataType.VARCHAR, max_length=512),
             FieldSchema(name="ticker", dtype=DataType.VARCHAR, max_length=32),
             FieldSchema(name="form_type", dtype=DataType.VARCHAR, max_length=16),
-            FieldSchema(name="chunk_id", dtype=DataType.INT64),
+            FieldSchema(name="chunk_id", dtype=DataType.VARCHAR, max_length=1000),
             FieldSchema(name="start_index", dtype=DataType.INT64),
             FieldSchema(name="end_index", dtype=DataType.INT64)
         ]
 
-        schema = CollectionSchema(fields, description="Dense MiniLM Embeddings")
+        schema = CollectionSchema(fields, description="Dense Embeddings")
         collection = Collection(name=COLLECTION_NAME, schema=schema)
         print(f"Created collection: {COLLECTION_NAME}")
         
         # create index immediately after collection creation
         index_params = {
             "index_type": "HNSW",
-            "metric_type": "L2",
-            "params": {"M": 8, "efConstruction": 64}
+            "metric_type": "COSINE",
+            "params": {"M": 64, "efConstruction": 512}
         }
         collection.create_index(field_name="dense_vector", index_params=index_params)
         print("Index created.")

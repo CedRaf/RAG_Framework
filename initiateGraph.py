@@ -113,7 +113,7 @@ company_data = {
 
 
 filing_types = ["10-K", "10-Q"]
-years = ["2020", "2021", "2022", "2023", "2024"]
+years = ["2020", "2021", "2022", "2023", "2024", "2025"]
 
 driver = GraphDatabase.driver(URI, auth=basic_auth(username, password))
 
