@@ -2,8 +2,9 @@ import json
 import os
 import re
 import pandas as pd
+#from langchain.text_splitter import RecursiveCharacterTextSplitter
 from llama_index.core.node_parser import TokenTextSplitter
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
     CIK_dict = json.load(f)
@@ -16,8 +17,8 @@ def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_dense",
-        chunk_size=1300,      # ~300 tokens
-        chunk_overlap=200,
+        chunk_size=300,      # ~300 tokens (set value 1300 when using langchain recursive character splitter)
+        chunk_overlap=50,    # (set value 200 when using langchain recursive character splitter)
         vector_type="dense"
     )
 
@@ -36,7 +37,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    splitter = TokenTextSplitter(
+    splitter = TokenTextSplitter( #change to use RecursiveCharacterTextSplitter if needed
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap
     )
@@ -99,7 +100,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                         continue  # Skip empty items
 
                     # Clean and normalize whitespace
-                    #content = re.sub(r"\s+", " ", content)
+                    content = re.sub(r"\s+", " ", content)
 
                     # Chunk normally
                     item_chunks = splitter.split_text(content) if len(content) > chunk_size else [content]

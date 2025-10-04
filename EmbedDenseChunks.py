@@ -5,12 +5,13 @@ from sentence_transformers import SentenceTransformer, models
 import numpy as np
 #os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
-def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="dense_embeddings", batch_size=128):
+def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="dense_embeddings", batch_size=32):
+
     input_base = os.path.join(base_path, input_folder)
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    model = SentenceTransformer("FinLang/finance-embeddings-investopedia")
+    model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
@@ -37,7 +38,7 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
                 with open(file_path, "r", encoding="utf-8") as f:
                     chunks = json.load(f)
 
-                texts = [chunk["content"] for chunk in chunks]
+                texts = [f"Task: Financial retrieval. Document: {chunk['content']}" for chunk in chunks]
 
                 embeddings = model.encode(
                     texts,
