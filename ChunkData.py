@@ -3,6 +3,7 @@ import os
 import re
 import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
     CIK_dict = json.load(f)
@@ -90,21 +91,24 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                     continue
 
                 item_keys = [key for key in data if key.startswith("item_") or key.startswith("parts_")]
+                # keep a running counter so chunk IDs don't reset for each item
+                chunk_counter = 0
                 for item_key in item_keys:
                     content = data[item_key].strip()
                     if not content:
                         continue  # Skip empty items
 
                     # Clean and normalize whitespace
-                    content = re.sub(r"\s+", " ", content)
+                    #content = re.sub(r"\s+", " ", content)
 
                     # Chunk normally
                     item_chunks = splitter.split_text(content) if len(content) > chunk_size else [content]
 
                     start = 0
-                    for i, chunk in enumerate(item_chunks):
+                    for chunk in item_chunks:
                         end = start + len(chunk)
-                        chunk_id = f"{vector_type}-{i+1}-{file}"
+                        # use running counter so numbering continues across items in the same file
+                        chunk_id = f"{vector_type}-{chunk_counter+1}-{file}"
                         chunk_objects.append({
                             "chunk_id": chunk_id,
                             "item": item_key,
@@ -116,6 +120,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                             "start_index": start,
                             "end_index": end
                         })
+                        chunk_counter += 1
                         start = end - chunk_overlap
 
                 if not chunk_objects:
