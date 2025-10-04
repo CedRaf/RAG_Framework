@@ -27,8 +27,8 @@ def segment_sparse(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_sparse", 
-        chunk_size=1024,     # ~256 tokens
-        chunk_overlap=256,
+        chunk_size=256,     # ~256 tokens (set value to 1024 when using langchain recursive character splitter)
+        chunk_overlap=64,   # (set value to 256 when using langchain recursive character splitter)
         vector_type="sparse"
     )
 
