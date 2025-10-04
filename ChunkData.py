@@ -1,7 +1,14 @@
 import json
 import os
 import re
+import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+with open("company_tickers_exchange.json", "r") as f:
+    CIK_dict = json.load(f)
+
+CIK_df = pd.DataFrame(CIK_dict["data"], columns=CIK_dict["fields"])
+CIK_to_ticker = {str(row["cik"]).zfill(10): row["ticker"] for _, row in CIK_df.iterrows()}
 
 def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
     segment_config(
@@ -122,7 +129,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
-#segment_dense()
+segment_dense()
 segment_sparse()
 
 
