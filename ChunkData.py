@@ -2,7 +2,7 @@ import json
 import os
 import re
 import pandas as pd
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from llama_index.core.node_parser import TokenTextSplitter
 os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
@@ -36,7 +36,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
     output_base = os.path.join(base_path, output_folder)
     os.makedirs(output_base, exist_ok=True)
 
-    splitter = RecursiveCharacterTextSplitter(
+    splitter = TokenTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap
     )
