@@ -1,4 +1,3 @@
-from rank_bm25 import BM25Okapi
 import os
 import json
 
@@ -26,7 +25,10 @@ def get_all_chunks(base_folder):
                                 "chunk_id": chunk["chunk_id"],
                                 "content": chunk["content"],
                                 "file": file,
-                                "file_path": file_path
+                                "file_path": file_path,
+                                "start_index": chunk.get("start_index", 0),
+                                "end_index": chunk.get("end_index", 0),
+                                "item": chunk.get("item", "")
                             })
     return chunks
 
@@ -40,30 +42,51 @@ sparse_chunks = get_all_chunks(sparse_base)
 
 print(f"Dense chunks: {len(dense_chunks)}, Sparse chunks: {len(sparse_chunks)}")
 
+
+# Many-to-many mapping: dense_chunk_id -> [sparse_chunk_id, ...]
 equivalents = {}
-print("Mapping dense to sparse chunks using BM25...")
 
-for dense_chunk in dense_chunks:
-    dense_suffix = get_file_suffix(dense_chunk["file"])
-    candidate_sparse = [sc for sc in sparse_chunks if get_file_suffix(sc["file"]) == dense_suffix]
-    if not candidate_sparse:
-        equivalents[dense_chunk["chunk_id"]] = None
-        continue
+print("Mapping dense to sparse chunks using index-based overlap...")
 
-    # Prepare BM25 corpus
-    sparse_texts = [sc["content"] for sc in candidate_sparse]
-    tokenized_corpus = [text.split() for text in sparse_texts]
-    bm25 = BM25Okapi(tokenized_corpus)
+def map_chunks_by_index(dense_chunks, sparse_chunks):
+    equivalents = {}
+    
+    for dense_chunk in dense_chunks:
+        dense_start = dense_chunk["start_index"]
+        dense_end = dense_chunk["end_index"]
+        dense_suffix = get_file_suffix(dense_chunk["file"])
+        dense_item = dense_chunk["item"]
+        
+        # Find overlapping sparse chunks from same file AND same item
+        overlapping_sparse = []
+        for sparse_chunk in sparse_chunks:
+            # Must be same file AND same item (since indexes reset per item)
+            if (get_file_suffix(sparse_chunk["file"]) != dense_suffix or 
+                sparse_chunk["item"] != dense_item):
+                continue
+                
+            sparse_start = sparse_chunk["start_index"]
+            sparse_end = sparse_chunk["end_index"]
+            
+            # Check for overlap
+            if sparse_start < dense_end and sparse_end > dense_start:
+                overlap_start = max(dense_start, sparse_start)
+                overlap_end = min(dense_end, sparse_end)
+                overlap_length = overlap_end - overlap_start
+                
+                # Only include if significant overlap (>50% of smaller chunk)
+                dense_length = dense_end - dense_start
+                sparse_length = sparse_end - sparse_start
+                min_chunk_size = min(dense_length, sparse_length)
+                
+                if overlap_length > 0.5 * min_chunk_size:
+                    overlapping_sparse.append(sparse_chunk["chunk_id"])
+        
+        equivalents[dense_chunk["chunk_id"]] = overlapping_sparse
+    
+    return equivalents
 
-    # Query is the dense chunk's content
-    query_tokens = dense_chunk["content"].split()
-    scores = bm25.get_scores(query_tokens)
-    best_idx = scores.argmax()
-    best_sparse_chunk = candidate_sparse[best_idx]
-    equivalents[dense_chunk["chunk_id"]] = {
-        "sparse_chunk_id": best_sparse_chunk["chunk_id"],
-        "bm25_score": float(scores[best_idx])
-    }
+equivalents = map_chunks_by_index(dense_chunks, sparse_chunks)
 
 with open(output_file, "w", encoding="utf-8") as f:
     json.dump(equivalents, f, indent=2, ensure_ascii=False)
