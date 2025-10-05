@@ -34,12 +34,13 @@ classification_handlers = {
 }
 
 def route_based_on_classification(classification: str, query: str):
+    orig_classification = classification
     if FORCE_TEXTUAL_ONLY:
         print(f"TEMP: Original classification was {classification}, forcing TEXTUAL")
         classification = "TEXTUAL"
     handler = classification_handlers.get(classification.upper())
     if handler:
-        return handler(query)
+        return handler(query), classification
     raise ValueError(f"No handler for classification: {classification}")
 
 @app.post("/query", response_model=QueryResponse)
@@ -48,11 +49,13 @@ def query_endpoint(request: QueryRequest):
         classification = classify_query(request.user_query)
         result = route_based_on_classification(classification, request.user_query)
 
+        result, used_classification = route_based_on_classification(classification, request.user_query)
+
         response_data = {
-            "classification": classification,
+            "classification": used_classification,
             "cypher_query": result.get("cypher_query"),
-            "graph_results": result.get("results") if classification.upper() == "TABLE" else result.get("graph_results"),
-            "textual_results": result.get("results") if classification.upper() == "TEXTUAL" else result.get("textual_results"),
+            "graph_results": result.get("results") if used_classification.upper() == "TABLE" else result.get("graph_results"),
+            "textual_results": result if used_classification.upper() == "TEXTUAL" else result.get("textual_results"),
         }
         #print("response data:", response_data)        
         return QueryResponse(**response_data)
