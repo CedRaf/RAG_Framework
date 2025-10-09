@@ -60,7 +60,9 @@ def sparse_retrieval_test(sparse_query:str):
         search_params={
             "metric_type": "BM25",
             "params": {
-                "inverted_index_algo": "DAAT_MAXSCORE"
+                "inverted_index_algo": "DAAT_MAXSCORE",
+                "bm25_k1": 1.6,  # Handles scoring for term frequency
+                "bm25_b": 0.7   # Adjusts for document length 
             }
         }
     )
@@ -99,7 +101,7 @@ def dense_retrieval_test(dense_query: str):
 
         search_params = {
             "metric_type": "COSINE", 
-            "params": {"ef": 128}
+            "params": {"ef": 256} #default was set to 128, higher more accurate but slower
         }
 
         detected_tickers = get_tickers(dense_query)
