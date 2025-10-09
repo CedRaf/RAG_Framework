@@ -48,14 +48,14 @@ def expand_query(query, k=4, model="sonar-pro"):
 
 
 
-def sparse_formatting(og_query, pseudo_doc, n=5):
-    result = " ".join([og_query] * n) + " " + pseudo_doc
+def sparse_formatting(og_query,n=5):
+    result = " ".join([og_query] * n)
     
     return result
 
 # Dense Retrieval Format
-def dense_formatting(og_query, pseudo_doc):
-    result = og_query + " [SEP] " + pseudo_doc
+def dense_formatting(og_query):
+    result = og_query
     
     return result
 

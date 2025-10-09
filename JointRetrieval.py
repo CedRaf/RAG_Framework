@@ -1,6 +1,7 @@
 from QueryRouting import classify_query
 from GraphQueryTest import execute_graph_retrieval_process, close_drivers
 from QueryTest import execute_vector_retrieval
+from HybridRetrieval import hybrid_retrieval_test
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import traceback
@@ -23,13 +24,26 @@ def handle_tabular(query):
     close_drivers()
     return result
 
-def handle_textual(query):
-    print("Routing to Milvus (TEXTUAL)")
+def handle_textual_legacy(query):
+    print("Routing to Milvus (TEXTUAL - Legacy)")
     result = execute_vector_retrieval(query)
     return result
 
+def handle_textual_hybrid(query):
+    print("Routing to Milvus (TEXTUAL - Hybrid)")
+    result = hybrid_retrieval_test(query)
+    
+    formatted_result = {
+        "query": result["original_query"],
+        "reranked": result["reranked"],
+    }
+    return formatted_result
+
+def handle_textual(query):
+    return handle_textual_hybrid(query)
+
 classification_handlers = {
-    "TEXTUAL": handle_textual,
+    "TEXTUAL": handle_textual_hybrid,
     "TABLE": handle_tabular
 }
 

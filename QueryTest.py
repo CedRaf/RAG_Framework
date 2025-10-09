@@ -50,22 +50,25 @@ def sparse_retrieval_test(sparse_query:str):
         ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
         expr = f'ticker in [{ticker_filter}]'
 
-    sparse_results = client.search(
-        collection_name="sec_chunks_sparse",
-        data=[sparse_query],  # BM25 function will convert text to sparse vector automatically
-        anns_field="sparse",  # Search on the sparse vector field
-        limit=50,  # Number of results to return
-        expr=expr,
-        output_fields=["text", "ticker", "form_type", "source_file", "chunk_id"],
-        search_params={
+    # Only pass expr if it is not None
+    search_kwargs = {
+        "collection_name": "sec_chunks_sparse",
+        "data": [sparse_query],
+        "anns_field": "sparse",
+        "limit": 50,
+        "output_fields": ["text", "ticker", "form_type", "source_file", "chunk_id"],
+        "search_params": {
             "metric_type": "BM25",
             "params": {
                 "inverted_index_algo": "DAAT_MAXSCORE",
-                "bm25_k1": 1.6,  # Handles scoring for term frequency
-                "bm25_b": 0.7   # Adjusts for document length 
+                "bm25_k1": 1.6,
+                "bm25_b": 0.7
             }
         }
-    )
+    }
+    if expr:
+        search_kwargs["expr"] = expr
+    sparse_results = client.search(**search_kwargs)
 
     print("Sparse Results Generated")
 
@@ -81,7 +84,6 @@ def dense_retrieval_test(dense_query: str):
     
     collection = Collection("sec_chunks_dense")
     collection.load()
-    print("Collection Loaded")
 
     # Move embedding model to GPU only when needed
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -96,8 +98,6 @@ def dense_retrieval_test(dense_query: str):
             normalize_embeddings=True,
             device=device,
         )
-
-        print("Query Embedded")
 
         search_params = {
             "metric_type": "COSINE", 

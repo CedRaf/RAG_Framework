@@ -10,9 +10,9 @@ client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", ports="19530")
 
 def hybrid_retrieval(user_query: str, sparse_ratio=0.6):
-    pseudo_doc = expand_query(user_query)
-    sparse_query = sparse_formatting(user_query, pseudo_doc)
-    dense_query = dense_formatting(user_query, pseudo_doc)
+    #pseudo_doc = expand_query(user_query)
+    sparse_query = sparse_formatting(user_query)
+    dense_query = dense_formatting(user_query)
 
     sparse_results = sparse_retrieval_test(sparse_query)
     dense_results = dense_retrieval_test(dense_query)
@@ -88,7 +88,7 @@ def preprocess_passages_for_reranker(passages, query):
     
     return processed
 
-def two_stage_reranking(query, passages, top_k=5):
+def two_stage_reranking(query, passages, top_k=10):
     if len(passages) <= top_k:
         return rerank(query, passages, top_k=len(passages))
 
@@ -101,21 +101,59 @@ def two_stage_reranking(query, passages, top_k=5):
 
 def hybrid_retrieval_test(user_query: str):
     hybrid_candidates = hybrid_retrieval(user_query, sparse_ratio=0.6)
-    
     compiled_results = [candidate['content'] for candidate in hybrid_candidates]
-    
     cleaned_passages = preprocess_passages_for_reranker(compiled_results, user_query)
-    
     enhanced_query = enhance_query_for_reranking(user_query)
+    reranked = two_stage_reranking(enhanced_query, cleaned_passages, top_k=10)
+
+    reranked_with_metadata = []
+    seen_source_files = set()
     
-    reranked = two_stage_reranking(enhanced_query, cleaned_passages, top_k=5)
+    for reranked_text, score in reranked:
+        if len(reranked_with_metadata) >= 5:
+            break
+            
+        matching_candidates = [candidate for candidate in hybrid_candidates if candidate['content'] == reranked_text]
+        
+        for candidate in matching_candidates:
+            source_file = candidate['metadata'].get('source_file', 'Unknown')
+            
+            if source_file not in seen_source_files:
+                seen_source_files.add(source_file)
+                reranked_with_metadata.append({
+                    "text": reranked_text,
+                    "chunk_id": candidate['chunk_id'],
+                    "source_file": source_file,
+                    "ticker": candidate['metadata'].get('ticker', 'Unknown'),
+                    "form_type": candidate['metadata'].get('form_type', 'Unknown'),
+                    "source": candidate['source']
+                })
+                break
+
+    for reranked_text, score in reranked:
+        if len(reranked_with_metadata) >= 5:
+            break
+            
+        already_included = any(result['text'] == reranked_text for result in reranked_with_metadata)
+        
+        if not already_included:
+            # Find the first matching candidate
+            for candidate in hybrid_candidates:
+                if candidate['content'] == reranked_text:
+                    reranked_with_metadata.append({
+                        "text": reranked_text,
+                        "chunk_id": candidate['chunk_id'],
+                        "source_file": candidate['metadata'].get('source_file', 'Unknown'),
+                        "ticker": candidate['metadata'].get('ticker', 'Unknown'),
+                        "form_type": candidate['metadata'].get('form_type', 'Unknown'),
+                        "source": candidate['source']
+                    })
+                    break
 
     output_data = {
-        "reranked": reranked,
+        "reranked": reranked_with_metadata,
         "original_query": user_query,
-        "enhanced_query": enhanced_query,
         "hybrid_candidates": hybrid_candidates,
-        "fusion_method": "simplified_candidate_selection"
     }
 
     save_results_to_file(output_data)
