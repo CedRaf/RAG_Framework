@@ -43,11 +43,19 @@ def initialize_models():
         
 # SPARSE SEARCH
 def sparse_retrieval_test(sparse_query:str):
+    
+    detected_tickers = get_tickers(sparse_query)
+    expr = None
+    if detected_tickers:
+        ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
+        expr = f'ticker in [{ticker_filter}]'
+
     sparse_results = client.search(
         collection_name="sec_chunks_sparse",
         data=[sparse_query],  # BM25 function will convert text to sparse vector automatically
         anns_field="sparse",  # Search on the sparse vector field
         limit=50,  # Number of results to return
+        expr=expr,
         output_fields=["text", "ticker", "form_type", "source_file", "chunk_id"],
         search_params={
             "metric_type": "BM25",
