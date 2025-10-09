@@ -1,6 +1,6 @@
 from pymilvus import connections, MilvusClient
 
-
+# Collection names sec_chunks_dense and sec_chunks_sparse
 COLLECTION_NAME = "sec_chunks_dense"
 connections.disconnect("default")
 
