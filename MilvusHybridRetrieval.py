@@ -92,8 +92,8 @@ def create_hybrid_collection():
         metric_type="BM25",
         params={
             "inverted_index_algo": "DAAT_MAXSCORE",
-            "bm25_k1": 1.2,
-            "bm25_b": 0.75
+            "bm25_k1": 1.6,
+            "bm25_b": 0.7
         }
     )
     

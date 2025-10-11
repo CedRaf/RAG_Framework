@@ -10,18 +10,9 @@ import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 
-
 embedding_model = None
-reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3") 
-reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
-reranker_model.eval().to("cpu")  # Start on CPU
-
-
-
-reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
-reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
-
-reranker_model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
+reranker_tokenizer = None
+reranker_model = None
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", ports="19530")
@@ -43,14 +34,6 @@ def initialize_models():
         
 # SPARSE SEARCH
 def sparse_retrieval_test(sparse_query:str):
-    
-    detected_tickers = get_tickers(sparse_query)
-    expr = None
-    if detected_tickers:
-        ticker_filter = ",".join([f'"{t}"' for t in detected_tickers])
-        expr = f'ticker in [{ticker_filter}]'
-
-    # Only pass expr if it is not None
     search_kwargs = {
         "collection_name": "sec_chunks_sparse",
         "data": [sparse_query],
@@ -66,8 +49,6 @@ def sparse_retrieval_test(sparse_query:str):
             }
         }
     }
-    if expr:
-        search_kwargs["expr"] = expr
     sparse_results = client.search(**search_kwargs)
 
     print("Sparse Results Generated")
