@@ -97,7 +97,7 @@ def dense_retrieval_test(dense_query: str):
             param=search_params,
             limit=50,
             expr=expr,
-            output_fields=["source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]
+            output_fields=["text", "source_file", "ticker", "form_type", "chunk_id", "start_index", "end_index"]  # Include text
         )
 
         if not results:
@@ -183,8 +183,14 @@ def vector_retrieval_test(user_query:str):
         compiled_results.append(result['entity']['text'])
 
     for hit in dense_results[0]:
-        text = fetch_text({...})  # Already in your code
-        compiled_results.append(text)
+        # Use text directly from search results (no need to fetch from file)
+        text = hit['entity'].get('text', '')
+        if text:
+            compiled_results.append(text)
+        else:
+            # Fallback to fetch_text if text is missing (for old data)
+            text = fetch_text(hit['entity'])
+            compiled_results.append(text)
 
     reranked = rerank(user_query, compiled_results, top_k=5)
 
@@ -229,12 +235,7 @@ def vector_retrieval_test(user_query:str):
                 "form_type": hit['entity']['form_type'],
                 "source_file": hit['entity']['source_file'],
                 "chunk_id": hit['entity']['chunk_id'],
-                "text": fetch_text({
-                    "form_type": hit.entity.get("form_type", ""),
-                    "ticker": hit.entity.get("ticker", ""),
-                    "source_file": hit.entity.get("source_file", ""),
-                    "chunk_id": hit.entity.get("chunk_id", "")
-                })
+                "text": hit['entity'].get('text', '')  # Use text directly from results
             }
             for i, hit in enumerate(dense_results[0])
         ]
@@ -265,8 +266,14 @@ def execute_vector_retrieval(user_query:str):
             compiled_results.append(result['entity']['text'])
 
         for hit in dense_results[0]:
-            text = fetch_text({...})  # Already in your code
-            compiled_results.append(text)
+            # Use text directly from search results (no need to fetch from file)
+            text = hit['entity'].get('text', '')
+            if text:
+                compiled_results.append(text)
+            else:
+                # Fallback to fetch_text if text is missing (for old data)
+                text = fetch_text(hit['entity'])
+                compiled_results.append(text)
 
         reranked = rerank(user_query, compiled_results, top_k=5)
         
@@ -294,12 +301,7 @@ def execute_vector_retrieval(user_query:str):
                 "form_type": hit['entity']['form_type'],
                 "source_file": hit['entity']['source_file'],
                 "chunk_id": hit['entity']['chunk_id'],
-                "text": fetch_text({
-                "form_type": hit.entity.get("form_type", ""),
-                "ticker": hit.entity.get("ticker", ""),
-                "source_file": hit.entity.get("source_file", ""),
-                "chunk_id": hit.entity.get("chunk_id", "")
-                })
+                "text": hit['entity'].get('text', '')  # Use text directly from results
             }
                 for i, hit in enumerate(dense_results[0][:10])
             ]

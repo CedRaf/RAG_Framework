@@ -53,6 +53,7 @@ def embed_chunks(base_path=".", input_folder="chunked_dense", output_folder="den
                 for chunk, emb in zip(chunks, embeddings):
                     entry = {
                         "embedding": emb.tolist(),
+                        "text": chunk.get("content", ""),  # Include the text content
                         "metadata": {
                             "chunk_id": chunk.get("chunk_id", ""),
                             "source_file": chunk.get("source_file", file),

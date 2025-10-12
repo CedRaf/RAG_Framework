@@ -19,6 +19,7 @@ def insert_dense_embedding_milvus():
         fields = [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
             FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR, dim=EMBEDDING_DIM),
+            FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=10000),  # Add text field
             FieldSchema(name="source_file", dtype=DataType.VARCHAR, max_length=512),
             FieldSchema(name="ticker", dtype=DataType.VARCHAR, max_length=32),
             FieldSchema(name="form_type", dtype=DataType.VARCHAR, max_length=16),
@@ -73,6 +74,7 @@ def insert_dense_embedding_milvus():
 
     # for inserting the data
     vectors = []
+    texts = []  # Add text list
     source_files = []
     tickers = []
     form_types = []
@@ -91,6 +93,7 @@ def insert_dense_embedding_milvus():
             continue
             
         vectors.append(entry["embedding"])
+        texts.append(entry.get("text", ""))  # Add text content
         
         # set defaults
         metadata = entry.get("metadata", {})
@@ -105,6 +108,7 @@ def insert_dense_embedding_milvus():
     # Insert as list of lists in FIELD ORDER (not including auto_id)
     collection.insert([
         vectors,           
+        texts,             # Add text field
         source_files,      
         tickers,           
         form_types, 
