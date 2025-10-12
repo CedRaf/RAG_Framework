@@ -90,7 +90,9 @@ def milvus_hybrid_search(user_query: str, limit=50):
         )
         
         # Use WeightedRanker for fusion (Dense: 40%, Sparse: 60%)
-        ranker = WeightedRanker(0.4, 0.6)
+        # Can adjust these weights to bring up sparse results cuz w this config dense dominates
+        # Can change this to RRFRanker() to experiment
+        ranker = WeightedRanker(0.4, 0.6) 
         
         search_results = collection.hybrid_search(
             reqs=[dense_req, sparse_req],
