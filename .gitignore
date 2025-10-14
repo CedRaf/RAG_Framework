@@ -16,7 +16,9 @@ old_code_versions/
 .env
 datasets/
 venv312/
+hybrid_retrieval_outputs/
 retrieval_outputs/
 models/
 IMPORTANT.txt
 chunked versions/
+AutomatedTesting.py
