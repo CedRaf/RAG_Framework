@@ -4,7 +4,7 @@ import re
 import pandas as pd
 #from langchain.text_splitter import RecursiveCharacterTextSplitter
 from llama_index.core.node_parser import TokenTextSplitter
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
     CIK_dict = json.load(f)
@@ -140,7 +140,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
-segment_dense()
+#segment_dense()
 segment_sparse()
 
 

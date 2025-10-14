@@ -1,7 +1,7 @@
 from pymilvus import connections, MilvusClient
 
 # Collection names sec_chunks_dense, sec_chunks_sparse, sec_chunks_hybrid
-COLLECTION_NAME = "sec_chunks_dense"
+COLLECTION_NAME = "sec_chunks_hybrid"
 connections.disconnect("default")
 
 connections.connect("default", host="localhost", port="19530")

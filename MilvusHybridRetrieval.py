@@ -104,11 +104,8 @@ def milvus_hybrid_search(user_query: str, limit=50):
             expr=filter_expr
         )
         
-        # Use WeightedRanker for fusion (Dense: 40%, Sparse: 60%)
-        # Can adjust these weights to bring up sparse results cuz w this config dense dominates
-        # Can change this to RRFRanker() to experiment
-        #ranker = WeightedRanker(0.2, 0.8) 
-        ranker = RRFRanker()
+        #ranker = WeightedRanker(0.1, 0.9) 
+        ranker = RRFRanker(k=30)
 
         search_results = collection.hybrid_search(
             reqs=[dense_req, sparse_req],
@@ -235,7 +232,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     output_data = {
         "query": user_query,
-        "fusion_method": "RRFRanker",
+        "fusion_method": "RRFRanker(k=30)",
         "reranked_results": reranked_with_metadata,
         "hybrid_raw_results": [
             {
@@ -255,7 +252,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
     return output_data
 
 def save_results_to_file(output_data):
-    os.makedirs("retrieval_outputs", exist_ok=True)
+    os.makedirs("hybrid_retrieval_outputs", exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_path = os.path.join("hybrid_retrieval_outputs", f"milvus_hybrid_results_{timestamp}.json")
 
