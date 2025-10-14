@@ -207,24 +207,31 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     reranked = rerank_results(user_query, passages, top_k=5)
     
-    # Map reranked results back to their metadata
+    # Map reranked results back to their metadata with deduplication
     reranked_with_metadata = []
+    seen_chunks = set()  # Track which chunk_ids have been mapped
+    
     for i, (text, score) in enumerate(reranked):
         # Find the matching metadata for this reranked text
         for j, passage in enumerate(passages):
             if passage == text:
                 metadata = passage_metadata[j]
-                reranked_with_metadata.append({
-                    "rank": i + 1,
-                    "rerank_score": float(score),
-                    "text": text,
-                    "chunk_id": metadata["chunk_id"],
-                    "ticker": metadata["ticker"],
-                    "form_type": metadata["form_type"],
-                    "source_file": metadata["source_file"],
-                    "hybrid_score": metadata["hybrid_score"]
-                })
-                break
+                chunk_id = metadata["chunk_id"]
+                
+                # Only add if we haven't seen this chunk_id before
+                if chunk_id not in seen_chunks:
+                    reranked_with_metadata.append({
+                        "rank": i + 1,
+                        "rerank_score": float(score),
+                        "text": text,
+                        "chunk_id": chunk_id,
+                        "ticker": metadata["ticker"],
+                        "form_type": metadata["form_type"],
+                        "source_file": metadata["source_file"],
+                        "hybrid_score": metadata["hybrid_score"]
+                    })
+                    seen_chunks.add(chunk_id)
+                    break
     
     output_data = {
         "query": user_query,
@@ -244,7 +251,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
         ],
     }
     
-    #save_results_to_file(output_data)
+    save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):
