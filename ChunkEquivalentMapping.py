@@ -156,3 +156,13 @@ if unmapped_dense > 0:
     unmapped_examples = [k for k, v in list(equivalents.items())[:10] if len(v) == 0]
     if unmapped_examples:
         print(f"Example unmapped dense chunks: {unmapped_examples[:3]}")
+
+# Save mappings to JSON file
+output_path = "chunk_equivalents_index.json"
+with open(output_path, "w", encoding="utf-8") as f:
+    json.dump(equivalents, f, indent=2, ensure_ascii=False)
+
+print(f"\nMappings saved to: {output_path}")
+print(f"Total mappings: {len(equivalents)}")
+
+        

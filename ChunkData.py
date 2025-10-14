@@ -4,7 +4,7 @@ import re
 import pandas as pd
 #from langchain.text_splitter import RecursiveCharacterTextSplitter
 from llama_index.core.node_parser import TokenTextSplitter
-#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
     CIK_dict = json.load(f)
@@ -18,7 +18,7 @@ def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         input_folders=input_folders,
         output_folder="chunked_dense",
         chunk_size=300,      # ~300 tokens (set value 1300 when using langchain recursive character splitter)
-        chunk_overlap=50,    # (set value 200 when using langchain recursive character splitter)
+        chunk_overlap=50,    # ~50(set value 200 when using langchain recursive character splitter)
         vector_type="dense"
     )
 
@@ -27,8 +27,8 @@ def segment_sparse(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_sparse", 
-        chunk_size=256,     # ~256 tokens (set value to 1024 when using langchain recursive character splitter)
-        chunk_overlap=64,   # (set value to 256 when using langchain recursive character splitter)
+        chunk_size=300,     # ~256 tokens (set value to 1024 when using langchain recursive character splitter)
+        chunk_overlap=50,   # ~64(set value to 256 when using langchain recursive character splitter)
         vector_type="sparse"
     )
 
@@ -41,7 +41,12 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap
     )
-
+    # splitter = RecursiveCharacterTextSplitter( #change to use RecursiveCharacterTextSplitter if needed
+    #     chunk_size=chunk_size,
+    #     chunk_overlap=chunk_overlap,
+    #     length_function=len,
+    #     separators=["\n\n", "\n", " ", ""]
+    # )
     for folder in input_folders:
         form_type = folder  # e.g., "10-K", "10-Q", "8-K"
         input_dir = os.path.join(input_base, form_type)

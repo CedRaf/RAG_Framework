@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import traceback
 from datetime import datetime
 from pymilvus import MilvusClient, DataType, Function, FunctionType, Collection, AnnSearchRequest, RRFRanker, WeightedRanker, connections
 from sentence_transformers import SentenceTransformer
@@ -8,6 +9,20 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from queryExpansion import sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class QueryRequest(BaseModel):
+    user_query: str
+
+class QueryResponse(BaseModel):
+    query: str
+    reranked: list
+    hybrid_raw_results: list
+    fusion_method: str
+    error: str | None = None
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", port="19530")
@@ -92,7 +107,8 @@ def milvus_hybrid_search(user_query: str, limit=50):
         # Use WeightedRanker for fusion (Dense: 40%, Sparse: 60%)
         # Can adjust these weights to bring up sparse results cuz w this config dense dominates
         # Can change this to RRFRanker() to experiment
-        ranker = WeightedRanker(0.4, 0.6) 
+        #ranker = WeightedRanker(0.4, 0.6) 
+        ranker = RRFRanker()
         
         search_results = collection.hybrid_search(
             reqs=[dense_req, sparse_req],
@@ -181,7 +197,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
         print("No results found from hybrid search!")
         return {
             "query": user_query,
-            "reranked_results": [],
+            "reranked": [],
             "hybrid_raw_results": [],
             "fusion_method": "milvus_built_in_hybrid_weighted",
             "error": "No results found"
@@ -212,7 +228,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     output_data = {
         "query": user_query,
-        "reranked_results": reranked_with_metadata,
+        "reranked": reranked_with_metadata,
         "hybrid_raw_results": [
             {
                 "rank": i+1,
@@ -228,7 +244,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
         "fusion_method": "milvus_built_in_hybrid_weighted"
     }
     
-    save_results_to_file(output_data)
+    #save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):
@@ -241,13 +257,18 @@ def save_results_to_file(output_data):
 
     print(f"Milvus hybrid results saved to {output_path}")
 
-if __name__ == "__main__":
-    user_query = input("Enter your query: ")
-    results = milvus_hybrid_retrieval_test(user_query)
+@app.post("/query", response_model=QueryResponse)
+def query_endpoint(request: QueryRequest):
+    """API endpoint for Milvus hybrid retrieval"""
+    try:
+        print(f"Received query: {request.user_query}")
+        results = milvus_hybrid_retrieval_test(request.user_query)
+        return QueryResponse(**results)
     
-    print("\nMILVUS HYBRID SEARCH RESULTS")
-    for result in results["reranked_results"]:
-        print(f"Rank {result['rank']} - Rerank Score: {result['rerank_score']:.4f}")
-        print(f"Ticker: {result['ticker']} | Form: {result['form_type']} | Source: {result['source_file']}")
-        print(result['text'][:300] + "...")
-        print("-" * 60)
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("MilvusHybridRetrieval:app", host="0.0.0.0", port=8000, reload=True)
