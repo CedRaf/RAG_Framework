@@ -17,8 +17,8 @@ def segment_dense(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_dense",
-        chunk_size=300,      # ~300 tokens (set value 1300 when using langchain recursive character splitter)
-        chunk_overlap=50,    # ~50(set value 200 when using langchain recursive character splitter)
+        chunk_size=512,      # ~300 tokens (set value 1300 when using langchain recursive character splitter)
+        chunk_overlap=102,    # ~50(set value 200 when using langchain recursive character splitter)
         vector_type="dense"
     )
 
@@ -27,8 +27,8 @@ def segment_sparse(base_path=".", input_folders=["10-K", "10-Q", "8-K"]):
         base_path=base_path,
         input_folders=input_folders,
         output_folder="chunked_sparse", 
-        chunk_size=300,     # ~256 tokens (set value to 1024 when using langchain recursive character splitter)
-        chunk_overlap=50,   # ~64(set value to 256 when using langchain recursive character splitter)
+        chunk_size=256,     # ~256 tokens (set value to 1024 when using langchain recursive character splitter)
+        chunk_overlap=64,   # ~64(set value to 256 when using langchain recursive character splitter)
         vector_type="sparse"
     )
 
@@ -110,9 +110,38 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                     # Chunk normally
                     item_chunks = splitter.split_text(content) if len(content) > chunk_size else [content]
 
-                    start = 0
-                    for chunk in item_chunks:
-                        end = start + len(chunk)
+                    # Track position in original content to find accurate indices
+                    # Use a more robust approach that handles duplicate text
+                    search_start_pos = 0
+                    prev_chunk_end = 0
+                    
+                    for i, chunk in enumerate(item_chunks):
+                        # Find where this chunk appears in the original content
+                        # Start searching from where we expect it based on previous chunk
+                        
+                        # For first chunk, search from beginning
+                        if i == 0:
+                            chunk_start = content.find(chunk, 0)
+                        else:
+                            # For subsequent chunks, search from near the end of previous chunk
+                            # Allow backtrack for overlap
+                            overlap_chars = chunk_overlap * 4  # Estimate: ~4 chars per token
+                            search_from = max(0, prev_chunk_end - overlap_chars)
+                            chunk_start = content.find(chunk, search_from)
+                            
+                            # If not found near previous chunk, it might be a duplicate
+                            # Try searching from just after previous chunk start instead
+                            if chunk_start == -1 or chunk_start < search_start_pos:
+                                chunk_start = content.find(chunk, search_start_pos)
+                        
+                        if chunk_start == -1:
+                            # If exact match not found (rare case), fall back to estimated position
+                            # This can happen if TokenTextSplitter modified the text
+                            chunk_start = prev_chunk_end
+                            chunk_end = chunk_start + len(chunk)
+                        else:
+                            chunk_end = chunk_start + len(chunk)
+                        
                         # use running counter so numbering continues across items in the same file
                         chunk_id = f"{vector_type}-{chunk_counter+1}-{file}"
                         chunk_objects.append({
@@ -123,11 +152,16 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                             "form_type": data.get("filing_type", form_type),
                             "filing_date": data.get("filing_date", ""),
                             "source_file": file,
-                            "start_index": start,
-                            "end_index": end
+                            "start_index": chunk_start,
+                            "end_index": chunk_end
                         })
                         chunk_counter += 1
-                        start = end - chunk_overlap
+                        
+                        # Update tracking variables for next iteration
+                        # Move search position to just after current chunk start
+                        # This prevents matching the same chunk twice while allowing overlap
+                        search_start_pos = chunk_start + 1
+                        prev_chunk_end = chunk_end
 
                 if not chunk_objects:
                     print(f"Skipped (no valid chunks): {file}")
@@ -140,7 +174,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
 
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
-#segment_dense()
-segment_sparse()
+segment_dense()
+#segment_sparse()
 
 

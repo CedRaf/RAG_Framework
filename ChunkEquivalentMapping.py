@@ -42,14 +42,39 @@ sparse_chunks = get_all_chunks(sparse_base)
 
 print(f"Dense chunks: {len(dense_chunks)}, Sparse chunks: {len(sparse_chunks)}")
 
+# Verify chunk sizes
+if dense_chunks and sparse_chunks:
+    print("\nSample Dense Chunk:")
+    sample_dense = dense_chunks[0]
+    dense_char_size = sample_dense['end_index'] - sample_dense['start_index']
+    print(f"  ID: {sample_dense['chunk_id']}")
+    print(f"  Character size: {dense_char_size}")
+    print(f"  Indices: {sample_dense['start_index']} - {sample_dense['end_index']}")
+    print(f"  Content preview: {sample_dense['content'][:100]}...")
+    
+    print("\nSample Sparse Chunk:")
+    sample_sparse = sparse_chunks[0]
+    sparse_char_size = sample_sparse['end_index'] - sample_sparse['start_index']
+    print(f"  ID: {sample_sparse['chunk_id']}")
+    print(f"  Character size: {sparse_char_size}")
+    print(f"  Indices: {sample_sparse['start_index']} - {sample_sparse['end_index']}")
+    print(f"  Content preview: {sample_sparse['content'][:100]}...")
+    
+    print(f"\nSize ratio (dense/sparse): {dense_char_size/sparse_char_size:.2f}x")
+    print(f"Expected ratio: ~2.0x (512 tokens / 256 tokens)")
+
 
 # Many-to-many mapping: dense_chunk_id -> [sparse_chunk_id, ...]
 equivalents = {}
 
-print("Mapping dense to sparse chunks using index-based overlap...")
+print("\nMapping dense to sparse chunks using index-based overlap...")
 
 def map_chunks_by_index(dense_chunks, sparse_chunks):
-    """Map dense chunks to sparse chunks with improved logic"""
+    """
+    Map dense chunks to sparse chunks with improved logic.
+    Dense chunks are larger (512 tokens, ~2048 chars) than sparse (256 tokens, ~1024 chars).
+    One dense chunk will typically map to 2-3 sparse chunks.
+    """
     equivalents = {}
     
     for dense_chunk in dense_chunks:
@@ -70,7 +95,7 @@ def map_chunks_by_index(dense_chunks, sparse_chunks):
             sparse_start = sparse_chunk.get("start_index", 0)
             sparse_end = sparse_chunk.get("end_index", 0)
             
-            # Check for ANY overlap (not just 50%)
+            # Check for ANY overlap
             if sparse_start < dense_end and sparse_end > dense_start:
                 overlap_start = max(dense_start, sparse_start)
                 overlap_end = min(dense_end, sparse_end)
@@ -85,9 +110,11 @@ def map_chunks_by_index(dense_chunks, sparse_chunks):
                     overlap_pct_dense = overlap_length / dense_size
                     overlap_pct_sparse = overlap_length / sparse_size
                     
-                    # More lenient threshold: 30% of either chunk
-                    # OR at least 100 characters/tokens of overlap
-                    if (overlap_pct_dense >= 0.3 or overlap_pct_sparse >= 0.3) or overlap_length >= 100:
+                    # Adjusted thresholds for different chunk sizes:
+                    # - Dense (512 tokens): 20% threshold (~102 tokens, similar to overlap size)
+                    # - Sparse (256 tokens): 25% threshold (~64 tokens, matches overlap size)
+                    # - OR at least 200 characters of overlap (conservative)
+                    if (overlap_pct_dense >= 0.2 or overlap_pct_sparse >= 0.25) or overlap_length >= 200:
                         overlapping_sparse.append({
                             'chunk_id': sparse_chunk["chunk_id"],
                             'overlap_length': overlap_length,
@@ -144,11 +171,16 @@ unmapped_dense = sum(1 for v in equivalents.values() if len(v) == 0)
 single_mapped = sum(1 for v in equivalents.values() if len(v) == 1)
 multi_mapped = sum(1 for v in equivalents.values() if len(v) > 1)
 
+# Calculate average mappings per dense chunk
+avg_mappings = sum(len(v) for v in equivalents.values()) / total_dense if total_dense > 0 else 0
+
 print(f"\nMapping Statistics:")
 print(f"Total dense chunks: {total_dense}")
 print(f"Unmapped dense chunks: {unmapped_dense} ({unmapped_dense/total_dense*100:.1f}%)")
 print(f"Single-mapped: {single_mapped} ({single_mapped/total_dense*100:.1f}%)")
 print(f"Multi-mapped: {multi_mapped} ({multi_mapped/total_dense*100:.1f}%)")
+print(f"Average sparse chunks per dense chunk: {avg_mappings:.2f}")
+print(f"Expected: ~2.0 (since dense is 2x larger than sparse)")
 
 if unmapped_dense > 0:
     print(f"\nWarning: {unmapped_dense} dense chunks have no sparse equivalents")
@@ -156,6 +188,12 @@ if unmapped_dense > 0:
     unmapped_examples = [k for k, v in list(equivalents.items())[:10] if len(v) == 0]
     if unmapped_examples:
         print(f"Example unmapped dense chunks: {unmapped_examples[:3]}")
+
+# Show a few example mappings
+print("\nSample Mappings (first 3 multi-mapped):")
+multi_mapped_examples = [(k, v) for k, v in list(equivalents.items())[:20] if len(v) > 1]
+for dense_id, sparse_ids in multi_mapped_examples[:3]:
+    print(f"  {dense_id} → {len(sparse_ids)} sparse chunks: {sparse_ids}")
 
 # Save mappings to JSON file
 output_path = "chunk_equivalents_index.json"

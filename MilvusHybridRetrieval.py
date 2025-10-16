@@ -94,7 +94,7 @@ def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
             "params": {
                 "inverted_index_algo": "DAAT_MAXSCORE",
                 "bm25_k1": 1.6,
-                "bm25_b": 0.7
+                "bm25_b": 0.4
             }
         }
 

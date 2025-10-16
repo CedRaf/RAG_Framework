@@ -3,7 +3,7 @@ import os
 import json
 import re
 from collections import defaultdict
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # Paths
 chunk_equivalents_path = "chunk_equivalents_index.json"
@@ -99,47 +99,44 @@ for dense_id, sparse_ids in chunk_equivalents.items():
         no_match_count += 1
         continue
     
-    # Get the original sparse chunk (1-to-1 mapping)
-    original_sparse_id = sparse_ids[0]
+    # UPDATED: Process ALL sparse chunks in the mapping, not just the first one
+    matching_chunks = set(sparse_ids)  # Start with existing mappings
     
-    # Get the text content of the original sparse chunk
-    if original_sparse_id not in chunk_text_map:
-        no_match_count += 1
-        continue
-    
-    target_text = chunk_text_map[original_sparse_id]
-    
-    # Extract ticker and year from original
-    # Try to get source_file from the chunk data
-    original_ticker = None
-    original_year = None
-    
-    for ticker, chunks in sparse_chunks_by_ticker.items():
-        for chunk in chunks:
-            if chunk["chunk_id"] == original_sparse_id:
-                original_ticker = ticker
-                _, original_year = extract_ticker_year(original_sparse_id, chunk["source_file"])
+    # Iterate through each sparse chunk in the current mapping
+    for original_sparse_id in sparse_ids:
+        # Get the text content of this sparse chunk
+        if original_sparse_id not in chunk_text_map:
+            continue
+        
+        target_text = chunk_text_map[original_sparse_id]
+        
+        # Extract ticker and year from this sparse chunk
+        original_ticker = None
+        original_year = None
+        
+        for ticker, chunks in sparse_chunks_by_ticker.items():
+            for chunk in chunks:
+                if chunk["chunk_id"] == original_sparse_id:
+                    original_ticker = ticker
+                    _, original_year = extract_ticker_year(original_sparse_id, chunk["source_file"])
+                    break
+            if original_ticker:
                 break
-        if original_ticker:
-            break
-    
-    if not original_ticker:
-        no_match_count += 1
-        continue
-    
-    # Find all chunks from the same ticker with exact text match
-    matching_chunks = set(sparse_ids)  # Start with original mapping
-    
-    if original_ticker in sparse_chunks_by_ticker:
-        for chunk in sparse_chunks_by_ticker[original_ticker]:
-            # Skip if it's the same chunk
-            if chunk["chunk_id"] == original_sparse_id:
-                continue
-            
-            # Check for exact text match
-            if chunk["content"].strip() == target_text.strip():
-                matching_chunks.add(chunk["chunk_id"])
-                expanded_count += 1
+        
+        if not original_ticker:
+            continue
+        
+        # Find all chunks from the same ticker with exact text match
+        if original_ticker in sparse_chunks_by_ticker:
+            for chunk in sparse_chunks_by_ticker[original_ticker]:
+                # Skip if it's already in our matching set
+                if chunk["chunk_id"] in matching_chunks:
+                    continue
+                
+                # Check for exact text match
+                if chunk["content"].strip() == target_text.strip():
+                    matching_chunks.add(chunk["chunk_id"])
+                    expanded_count += 1
     
     # Update mapping with expanded list
     chunk_equivalents[dense_id] = sorted(list(matching_chunks))
