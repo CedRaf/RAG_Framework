@@ -163,8 +163,27 @@ for count in sorted(expansion_stats.keys()):
     percentage = (expansion_stats[count] / len(chunk_equivalents)) * 100
     print(f"      {count} match(es): {expansion_stats[count]} chunks ({percentage:.1f}%)")
 
+# Add dense equivalents by converting sparse chunk IDs
+print("\n[5/6] Adding dense equivalents for each sparse chunk...")
+dense_added_count = 0
+
+for dense_id, sparse_ids in chunk_equivalents.items():
+    dense_equivalents = []
+    
+    for sparse_id in sparse_ids:
+        # Convert sparse-N-file.json to dense-N-file.json
+        if sparse_id.startswith("sparse-"):
+            dense_equivalent = sparse_id.replace("sparse-", "dense-", 1)
+            dense_equivalents.append(dense_equivalent)
+            dense_added_count += 1
+    
+    # Append dense equivalents to the list
+    chunk_equivalents[dense_id].extend(dense_equivalents)
+
+print(f"     Added {dense_added_count} dense equivalents")
+
 # Save expanded mappings
-print(f"\n[5/5] Saving expanded mappings to {output_path}...")
+print(f"\n[6/6] Saving expanded mappings to {output_path}...")
 with open(output_path, "w", encoding="utf-8") as f:
     json.dump(chunk_equivalents, f, indent=2, ensure_ascii=False)
 
@@ -176,20 +195,42 @@ print("SAMPLE EXPANSIONS")
 print("=" * 80)
 
 example_count = 0
-for dense_id, sparse_ids in chunk_equivalents.items():
-    if len(sparse_ids) > 1:  # Only show expanded mappings
+for dense_id, sparse_and_dense_ids in chunk_equivalents.items():
+    if len(sparse_and_dense_ids) > 2:  # Only show expanded mappings (more than just original sparse + dense)
         print(f"\n{dense_id} →")
-        for sparse_id in sparse_ids:
+        
+        # Separate sparse and dense for clearer display
+        sparse_matches = [id for id in sparse_and_dense_ids if id.startswith("sparse-")]
+        dense_matches = [id for id in sparse_and_dense_ids if id.startswith("dense-")]
+        
+        print(f"  Sparse matches ({len(sparse_matches)}):")
+        for sparse_id in sparse_matches[:3]:  # Show first 3
             # Try to show year info
+            year_found = False
             for ticker, chunks in sparse_chunks_by_ticker.items():
                 for chunk in chunks:
                     if chunk["chunk_id"] == sparse_id:
                         _, year = extract_ticker_year(sparse_id, chunk["source_file"])
                         if year:
-                            print(f"  - {sparse_id} (Year: {year})")
+                            print(f"    - {sparse_id} (Year: {year})")
                         else:
-                            print(f"  - {sparse_id}")
+                            print(f"    - {sparse_id}")
+                        year_found = True
                         break
+                if year_found:
+                    break
+            if not year_found:
+                print(f"    - {sparse_id}")
+        
+        if len(sparse_matches) > 3:
+            print(f"    ... and {len(sparse_matches) - 3} more")
+        
+        print(f"  Dense matches ({len(dense_matches)}):")
+        for dense_id_match in dense_matches[:3]:  # Show first 3
+            print(f"    - {dense_id_match}")
+        
+        if len(dense_matches) > 3:
+            print(f"    ... and {len(dense_matches) - 3} more")
         
         example_count += 1
         if example_count >= 3:
@@ -199,6 +240,7 @@ print("\n" + "=" * 80)
 print("EXPANSION COMPLETE!")
 print("=" * 80)
 print(f"\nOriginal mappings: {len(chunk_equivalents)}")
-print(f"Additional cross-year matches found: {expanded_count}")
+print(f"Additional cross-year sparse matches found: {expanded_count}")
+print(f"Total dense equivalents added: {dense_added_count}")
 print(f"Output saved to: {output_path}")
 print("\nYou can now use this expanded mapping for hybrid retrieval!")

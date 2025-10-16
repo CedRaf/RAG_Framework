@@ -2,6 +2,7 @@ import os
 import json
 import re
 import traceback
+import time
 from datetime import datetime
 from pymilvus import MilvusClient, DataType, Function, FunctionType, Collection, AnnSearchRequest, RRFRanker, WeightedRanker, connections
 from sentence_transformers import SentenceTransformer
@@ -20,7 +21,7 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     query: str
     reranked: list
-    hybrid_raw_results: list
+    #hybrid_raw_results: list
     fusion_method: str
     error: str | None = None
 
@@ -44,6 +45,7 @@ def initialize_models():
         reranker_model.eval().to("cpu")
 
 def milvus_hybrid_search(user_query: str, limit=50):
+    start_time = time.time()
     
     COLLECTION_NAME = "sec_chunks_hybrid"
     initialize_models()
@@ -117,6 +119,9 @@ def milvus_hybrid_search(user_query: str, limit=50):
         if not search_results or (len(search_results) > 0 and len(search_results[0]) == 0):
             return print("No results found in hybrid search!")
 
+        search_time = time.time() - start_time
+        print(f"Milvus hybrid search completed in {search_time:.2f} seconds")
+
         formatted_results = [[
             {
                 "id": hit.id,
@@ -173,6 +178,8 @@ def rerank_results(query, passages, top_k=5):
 
 def milvus_hybrid_retrieval_test(user_query: str):
     
+    total_start_time = time.time()
+    
     hybrid_results = milvus_hybrid_search(user_query, limit=50)
     
     passages = []
@@ -202,39 +209,39 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     print(f"Found {len(passages)} passages for reranking")
     
-    reranked = rerank_results(user_query, passages, top_k=5)
+    # reranked = rerank_results(user_query, passages, top_k=5)
     
-    # Map reranked results back to their metadata with deduplication
-    reranked_with_metadata = []
-    seen_chunks = set()  # Track which chunk_ids have been mapped
+    # # Map reranked results back to their metadata with deduplication
+    # reranked_with_metadata = []
+    # seen_chunks = set()  # Track which chunk_ids have been mapped
     
-    for i, (text, score) in enumerate(reranked):
-        # Find the matching metadata for this reranked text
-        for j, passage in enumerate(passages):
-            if passage == text:
-                metadata = passage_metadata[j]
-                chunk_id = metadata["chunk_id"]
+    # for i, (text, score) in enumerate(reranked):
+    #     # Find the matching metadata for this reranked text
+    #     for j, passage in enumerate(passages):
+    #         if passage == text:
+    #             metadata = passage_metadata[j]
+    #             chunk_id = metadata["chunk_id"]
                 
-                # Only add if we haven't seen this chunk_id before
-                if chunk_id not in seen_chunks:
-                    reranked_with_metadata.append({
-                        "rank": i + 1,
-                        "rerank_score": float(score),
-                        "text": text,
-                        "chunk_id": chunk_id,
-                        "ticker": metadata["ticker"],
-                        "form_type": metadata["form_type"],
-                        "source_file": metadata["source_file"],
-                        "hybrid_score": metadata["hybrid_score"]
-                    })
-                    seen_chunks.add(chunk_id)
-                    break
+    #             # Only add if we haven't seen this chunk_id before
+    #             if chunk_id not in seen_chunks:
+    #                 reranked_with_metadata.append({
+    #                     "rank": i + 1,
+    #                     "rerank_score": float(score),
+    #                     "text": text,
+    #                     "chunk_id": chunk_id,
+    #                     "ticker": metadata["ticker"],
+    #                     "form_type": metadata["form_type"],
+    #                     "source_file": metadata["source_file"],
+    #                     "hybrid_score": metadata["hybrid_score"]
+    #                 })
+    #                 seen_chunks.add(chunk_id)
+    #                 break
     
     output_data = {
         "query": user_query,
         "fusion_method": "RRFRanker(k=30)",
-        "reranked_results": reranked_with_metadata,
-        "hybrid_raw_results": [
+        #"reranked": reranked_with_metadata,
+        "reranked": [
             {
                 "rank": i+1,
                 "hybrid_score": result.get("distance", 0),
@@ -242,13 +249,16 @@ def milvus_hybrid_retrieval_test(user_query: str):
                 "ticker": result.get("entity", {}).get("ticker", ""),
                 "form_type": result.get("entity", {}).get("form_type", ""),
                 "source_file": result.get("entity", {}).get("source_file", ""),
-                "text": result.get("entity", {}).get("text", "")[:500] + "..."  #truncated
+                "text": result.get("entity", {}).get("text", "")  #truncated
             }
             for i, result in enumerate(hybrid_results[0][:50]) 
         ],
     }
     
-    save_results_to_file(output_data)
+    total_time = time.time() - total_start_time
+    print(f"Total retrieval completed in {total_time:.2f} seconds")
+    
+    #save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):
@@ -265,8 +275,18 @@ def save_results_to_file(output_data):
 def query_endpoint(request: QueryRequest):
     """API endpoint for Milvus hybrid retrieval"""
     try:
+        request_start = time.time()
+        print(f"\n{'='*60}")
         print(f"Received query: {request.user_query}")
+        print(f"{'='*60}")
+        
         results = milvus_hybrid_retrieval_test(request.user_query)
+        
+        request_time = time.time() - request_start
+        print(f"\n{'='*60}")
+        print(f"API request completed in {request_time:.2f} seconds")
+        print(f"{'='*60}\n")
+        
         return QueryResponse(**results)
     
     except Exception as e:
