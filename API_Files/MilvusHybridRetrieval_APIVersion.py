@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+import sys
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import traceback
@@ -8,6 +9,8 @@ from datetime import datetime
 from pymilvus import MilvusClient, DataType, Function, FunctionType, Collection, AnnSearchRequest, RRFRanker, WeightedRanker, connections
 from sentence_transformers import SentenceTransformer
 import torch
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent_dir)
 from queryExpansion import sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 from fastapi import FastAPI, HTTPException
@@ -171,7 +174,7 @@ def rerank_results_api(query, passages, top_k=5):
         return []
     
     try:
-        # Call reranker API
+        # Call reranker API with longer timeout for large batches
         response = requests.post(
             RERANKER_API_URL,
             json={
@@ -179,7 +182,7 @@ def rerank_results_api(query, passages, top_k=5):
                 "passages": passages,
                 "top_k": top_k
             },
-            timeout=30  # 30 second timeout
+            timeout=120  # Increased to 120 seconds for 50 passages
         )
         
         if response.status_code != 200:
@@ -225,7 +228,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
         print("No results found from hybrid search!")
         return {
             "query": user_query,
-            "reranked": [],
+            "reranked": [],  # Changed from "reranked_results" to match QueryResponse schema
             "hybrid_raw_results": [],
             "fusion_method": "RRFRanker(k=30)",
             "error": "No results found"
@@ -265,7 +268,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
     output_data = {
         "query": user_query,
         "fusion_method": "RRFRanker(k=30)",
-        "reranked_results": reranked_with_metadata,
+        "reranked": reranked_with_metadata,  # Changed from "reranked_results" to match QueryResponse schema
         "hybrid_raw_results": [
             {
                 "rank": i+1,
@@ -278,6 +281,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
             }
             for i, result in enumerate(hybrid_results[0][:50]) 
         ],
+        "error": None
     }
     
     save_results_to_file(output_data)

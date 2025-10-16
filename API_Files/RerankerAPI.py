@@ -17,7 +17,7 @@ app = FastAPI(title="Reranker API", description="Text reranking microservice")
 # Global model variables
 reranker_model = None
 reranker_tokenizer = None
-MODEL_NAME = "Qwen/Qwen3-Reranker-4B"  # Change to "Qwen/Qwen3-Reranker-4B" if needed
+MODEL_NAME = "BAAI/bge-reranker-v2-m3"  # Change to "Qwen/Qwen3-Reranker-4B" if needed
 
 class RerankRequest(BaseModel):
     query: str
@@ -72,41 +72,59 @@ def rerank_endpoint(request: RerankRequest):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         reranker_model = reranker_model.to(device)
         
-        # BGE reranker format: separate query and passage lists
-        if "bge" in MODEL_NAME.lower():
-            inputs = reranker_tokenizer(
-                [request.query] * len(request.passages),
-                request.passages,
-                padding=True,
-                truncation=True,
-                return_tensors="pt"
-            ).to(device)
-            
-            with torch.no_grad():
-                scores = reranker_model(**inputs).logits.squeeze(-1)
+        # Process in batches to avoid memory issues and timeouts
+        batch_size = 16  # Process 16 passages at a time
+        all_scores = []
         
-        # Qwen3 reranker format: combined "query: X document: Y" strings
-        elif "qwen" in MODEL_NAME.lower():
-            pairs = [f"query: {request.query} document: {passage}" for passage in request.passages]
-            
-            inputs = reranker_tokenizer(
-                pairs,
-                padding=True,
-                truncation=True,
-                max_length=512,
-                return_tensors="pt"
-            ).to(device)
-            
-            with torch.no_grad():
-                outputs = reranker_model(**inputs)
-                scores = outputs.logits[:, 0]  # Take first column for relevance
+        print(f"Reranking {len(request.passages)} passages in batches of {batch_size}")
         
-        else:
-            raise ValueError(f"Unknown reranker model format: {MODEL_NAME}")
+        for i in range(0, len(request.passages), batch_size):
+            batch_passages = request.passages[i:i + batch_size]
+            
+            # BGE reranker format: separate query and passage lists
+            if "bge" in MODEL_NAME.lower():
+                inputs = reranker_tokenizer(
+                    [request.query] * len(batch_passages),
+                    batch_passages,
+                    padding=True,
+                    truncation=True,
+                    return_tensors="pt"
+                ).to(device)
+                
+                with torch.no_grad():
+                    batch_scores = reranker_model(**inputs).logits.squeeze(-1)
+            
+            # Qwen3 reranker format: combined "query: X document: Y" strings
+            elif "qwen" in MODEL_NAME.lower():
+                pairs = [f"query: {request.query} document: {passage}" for passage in batch_passages]
+                
+                inputs = reranker_tokenizer(
+                    pairs,
+                    padding=True,
+                    truncation=True,
+                    max_length=512,
+                    return_tensors="pt"
+                ).to(device)
+                
+                with torch.no_grad():
+                    outputs = reranker_model(**inputs)
+                    batch_scores = outputs.logits[:, 0]  # Take first column for relevance
+            
+            else:
+                raise ValueError(f"Unknown reranker model format: {MODEL_NAME}")
+            
+            # Handle single item case (squeeze would remove dimension)
+            if batch_scores.dim() == 0:
+                batch_scores = batch_scores.unsqueeze(0)
+            
+            all_scores.extend(batch_scores.tolist())
+            print(f"Processed batch {i//batch_size + 1}/{(len(request.passages) + batch_size - 1)//batch_size}")
+        
+        scores = all_scores
         
         # Rank results by score
         ranked = sorted(
-            zip(request.passages, scores.tolist()),
+            zip(request.passages, scores),
             key=lambda x: x[1],
             reverse=True
         )[:request.top_k]
@@ -121,6 +139,7 @@ def rerank_endpoint(request: RerankRequest):
             for i, (text, score) in enumerate(ranked)
         ]
         
+        print(f"Reranking complete. Returning top {len(results)} results")
         return RerankResponse(results=results, model_name=MODEL_NAME)
         
     except Exception as e:
