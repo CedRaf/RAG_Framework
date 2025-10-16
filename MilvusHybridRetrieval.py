@@ -1,6 +1,8 @@
 import os
 import json
-import re
+import torch
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 import traceback
 from datetime import datetime
 from pymilvus import MilvusClient, DataType, Function, FunctionType, Collection, AnnSearchRequest, RRFRanker, WeightedRanker, connections
@@ -43,7 +45,15 @@ def initialize_models():
         reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
         reranker_model.eval().to("cpu")
 
-def milvus_hybrid_search(user_query: str, limit=50):
+def normalize(arr):
+    if len(arr) == 0 or arr.max() == arr.min():
+        return np.ones_like(arr)
+    return (arr - arr.min()) / (arr.max() - arr.min())
+
+def rrf(rank, k):
+    return 1/(rank + k)
+
+def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
     
     COLLECTION_NAME = "sec_chunks_hybrid"
     initialize_models()
@@ -79,14 +89,6 @@ def milvus_hybrid_search(user_query: str, limit=50):
             "params": {"ef": 256}
         }
         
-        dense_req = AnnSearchRequest(
-            data=[dense_query_vector],
-            anns_field="dense_vector",
-            param=dense_search_params,
-            limit=limit,
-            expr=filter_expr
-        )
-        
         sparse_search_params = {
             "metric_type": "BM25",
             "params": {
@@ -95,41 +97,69 @@ def milvus_hybrid_search(user_query: str, limit=50):
                 "bm25_b": 0.7
             }
         }
-        
-        sparse_req = AnnSearchRequest(
+
+        dense_results = collection.search(
+            data=[dense_query_vector],
+            anns_field="dense_vector",
+            param=dense_search_params,
+            limit=limit,
+            expr=filter_expr,
+            output_fields=["text", "chunk_id", "ticker", "form_type", "source_file"]
+        )
+
+        sparse_results = collection.search(
             data=[sparse_query],
             anns_field="sparse_vector",
             param=sparse_search_params,
             limit=limit,
-            expr=filter_expr
+            expr=filter_expr,
+            output_fields=["text", "chunk_id", "ticker", "form_type", "source_file"],
         )
-        
-        #ranker = WeightedRanker(0.1, 0.9) 
-        ranker = RRFRanker(k=30)
 
-        search_results = collection.hybrid_search(
-            reqs=[dense_req, sparse_req],
-            rerank=ranker,
-            limit=limit,
-            output_fields=["text", "chunk_id", "ticker", "form_type", "source_file"]
-        )
+        if not dense_results or not sparse_results:
+            print("No results found in hybrid search!")
+            return []
         
-        if not search_results or (len(search_results) > 0 and len(search_results[0]) == 0):
-            return print("No results found in hybrid search!")
+        dense_scores = np.array([hit.distance for hit in dense_results[0]])
+        sparse_scores = np.array([hit.distance for hit in sparse_results[0]])
+
+        dense_norm = normalize(dense_scores)
+        sparse_norm = normalize(sparse_scores)
+
+        final_scores = {}
+
+        if use_rrf:
+            for rank, hit in enumerate(dense_results[0]):
+                final_scores[hit.id] = final_scores.get(hit.id, 0) + rrf(rank, 30)
+            
+            for rank, hit in enumerate(sparse_results[0]):
+                final_scores[hit.id] = final_scores.get(hit.id, 0) + rrf(rank, 30)
+        else:
+            for hit, score in zip(dense_results[0], dense_norm):
+                final_scores[hit.id] = alpha * score
+
+            for hit, score in zip(sparse_results[0], sparse_norm):
+                final_scores[hit.id] = final_scores.get(hit.id, 0) + (1 - alpha) * score
+
+        ranked = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
+        top_ids = [r[0] for r in ranked[:limit]] 
+
+        all_hits = {hit.id: hit for hit in dense_results[0]}  
+        all_hits.update({hit.id: hit for hit in sparse_results[0]})
 
         formatted_results = [[
             {
-                "id": hit.id,
-                "distance": hit.distance,
+                "id": hit_id,
+                "distance": final_scores[hit_id],
                 "entity": {
-                    "text": hit.entity.get("text", ""),
-                    "chunk_id": hit.entity.get("chunk_id", ""),
-                    "ticker": hit.entity.get("ticker", ""),
-                    "form_type": hit.entity.get("form_type", ""),
-                    "source_file": hit.entity.get("source_file", "")
+                    "text": all_hits[hit_id].entity.get("text", ""),
+                    "chunk_id": all_hits[hit_id].entity.get("chunk_id", ""),
+                    "ticker": all_hits[hit_id].entity.get("ticker", ""),
+                    "form_type": all_hits[hit_id].entity.get("form_type", ""),
+                    "source_file": all_hits[hit_id].entity.get("source_file", "")
                 }
             }
-            for hit in search_results[0]
+            for hit_id in top_ids
         ]]
         
         return formatted_results
