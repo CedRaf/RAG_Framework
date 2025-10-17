@@ -17,8 +17,8 @@ app = FastAPI(title="Reranker API", description="Text reranking microservice")
 # Global model variables
 reranker_model = None
 reranker_tokenizer = None
-MODEL_NAME = "BAAI/bge-reranker-v2-m3"  # Change to "Qwen/Qwen3-Reranker-4B" if needed
-
+#MODEL_NAME = "BAAI/bge-reranker-v2-m3"  # Change to "Qwen/Qwen3-Reranker-4B" if needed
+MODEL_NAME = "Qwen/Qwen3-Reranker-4B"
 class RerankRequest(BaseModel):
     query: str
     passages: List[str]
