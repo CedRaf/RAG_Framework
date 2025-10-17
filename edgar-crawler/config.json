@@ -1,10 +1,10 @@
 {
 	"download_filings": {
-		"start_year": 2019,
+		"start_year": 2020,
 		"end_year": 2024,
 		"quarters": [1, 2, 3, 4],
 		"filing_types": ["10-K", "10-Q", "8-K"],
-		"cik_tickers": ["AMZN"],
+		"cik_tickers": ["LIN","AMZN","NFLX","COST","MELI","SBUX","ORLY","BKR","PEP","MDLZ","GILD","VRTX","BIIB","CSX","VRSK","ODFL","CSGP","AAPL","GOOGL","META","AVGO","NVDA","APP","CRWD","INTU","ADBE","MSTR","MRVL","NXPI","ZS","MCHP","CTSH","ON","TMUS","AEP"],
 		"user_agent": "Rhenz Largo (rhenzlargo80@gmail.com)",
 		"raw_filings_folder": "RAW_FILINGS",
 		"indices_folder": "INDICES",
