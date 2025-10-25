@@ -175,6 +175,6 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
 segment_dense()
-#segment_sparse()
+segment_sparse()
 
 
