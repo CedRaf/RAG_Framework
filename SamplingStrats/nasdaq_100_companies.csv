@@ -1,0 +1,102 @@
+Ticker,Company,Sector,Market_Cap,Market_Cap_Category
+LIN,Linde plc,BasicMaterials,208308371456,Large
+AMZN,"Amazon.com, Inc.",ConsumerDiscretionary,2287303655424,Large
+NFLX,"Netflix, Inc.",ConsumerDiscretionary,502938533888,Large
+COST,Costco Wholesale Corporation,ConsumerDiscretionary,410215514112,Large
+BKNG,Booking Holdings Inc.,ConsumerDiscretionary,160503791616,Mid
+MELI,"MercadoLibre, Inc.",ConsumerDiscretionary,103577780224,Mid
+SBUX,Starbucks Corporation,ConsumerDiscretionary,95869280256,Mid
+ORLY,"O'Reilly Automotive, Inc.",ConsumerDiscretionary,85842411520,Mid
+ABNB,"Airbnb, Inc.",ConsumerDiscretionary,75237638144,Mid
+TRI,Thomson Reuters Corporation,ConsumerDiscretionary,70503669760,Mid
+MAR,"Marriott International, Inc.",ConsumerDiscretionary,70318440448,Mid
+ROST,"Ross Stores, Inc.",ConsumerDiscretionary,50478370816,Mid
+PCAR,PACCAR Inc,ConsumerDiscretionary,49968840704,Small
+EA,Electronic Arts Inc.,ConsumerDiscretionary,49956048896,Small
+FAST,Fastenal Company,ConsumerDiscretionary,48171577344,Small
+TTWO,"Take-Two Interactive Software, Inc.",ConsumerDiscretionary,47820214272,Small
+WBD,"Warner Bros. Discovery, Inc.",ConsumerDiscretionary,45281873920,Small
+BKR,Baker Hughes Company,ConsumerDiscretionary,44009644032,Small
+CPRT,"Copart, Inc.",ConsumerDiscretionary,42633412608,Small
+LULU,lululemon athletica inc.,ConsumerDiscretionary,19522146304,Small
+PEP,"PepsiCo, Inc.",ConsumerStaples,208751820800,Large
+MDLZ,"Mondelez International, Inc.",ConsumerStaples,79707037696,Mid
+MNST,Monster Beverage Corporation,ConsumerStaples,68506202112,Mid
+CCEP,Coca-Cola Europacific Partners PLC,ConsumerStaples,40381198336,Small
+KDP,Keurig Dr Pepper Inc.,ConsumerStaples,37655826432,Small
+KHC,The Kraft Heinz Company,ConsumerStaples,29743847424,Small
+FANG,"Diamondback Energy, Inc.",Energy,40365944832,Small
+AZN,AstraZeneca PLC,Healthcare,261095473152,Large
+AMGN,Amgen Inc.,Healthcare,159252824064,Mid
+ISRG,"Intuitive Surgical, Inc.",Healthcare,155801059328,Mid
+GILD,"Gilead Sciences, Inc.",Healthcare,146229100544,Mid
+VRTX,Vertex Pharmaceuticals Incorporated,Healthcare,104763785216,Mid
+REGN,"Regeneron Pharmaceuticals, Inc.",Healthcare,60324868096,Mid
+IDXX,"IDEXX Laboratories, Inc.",Healthcare,50990194688,Mid
+GEHC,GE HealthCare Technologies Inc.,Healthcare,33502521344,Small
+DXCM,"DexCom, Inc.",Healthcare,26011660288,Small
+BIIB,Biogen Inc.,Healthcare,20857391104,Small
+TSLA,"Tesla, Inc.",Industrials,1425658478592,Large
+HON,Honeywell International Inc.,Industrials,128991936512,Mid
+ADP,"Automatic Data Processing, Inc.",Industrials,113489879040,Mid
+CTAS,Cintas Corporation,Industrials,74088144896,Mid
+CSX,CSX Corporation,Industrials,67095330816,Mid
+PYPL,"PayPal Holdings, Inc.",Industrials,63102746624,Mid
+AXON,"Axon Enterprise, Inc.",Industrials,51198238720,Mid
+PAYX,"Paychex, Inc.",Industrials,45523009536,Small
+VRSK,"Verisk Analytics, Inc.",Industrials,32003112960,Small
+ODFL,"Old Dominion Freight Line, Inc.",Industrials,29024221184,Small
+CSGP,"CoStar Group, Inc.",RealEstate,31498403840,Small
+NVDA,NVIDIA Corporation,Technology,4426527932416,Large
+MSFT,Microsoft Corporation,Technology,3802882113536,Large
+AAPL,Apple Inc.,Technology,3672254447616,Large
+GOOGL,Alphabet Inc.,Technology,3043438100480,Large
+GOOG,Alphabet Inc.,Technology,3043437838336,Large
+META,"Meta Platforms, Inc.",Technology,1788820717568,Large
+AVGO,Broadcom Inc.,Technology,1672425504768,Large
+PLTR,Palantir Technologies Inc.,Technology,422561644544,Large
+ASML,ASML Holding N.V.,Technology,395751489536,Large
+AMD,"Advanced Micro Devices, Inc.",Technology,380654190592,Large
+MU,"Micron Technology, Inc.",Technology,227333046272,Large
+APP,AppLovin Corporation,Technology,204871204864,Large
+SHOP,Shopify Inc.,Technology,203637243904,Large
+AMAT,"Applied Materials, Inc.",Technology,181411414016,Mid
+ARM,Arm Holdings plc,Technology,181335408640,Mid
+PDD,PDD Holdings Inc.,Technology,180791967744,Mid
+INTU,Intuit Inc.,Technology,180384038912,Mid
+LRCX,Lam Research Corporation,Technology,179533168640,Mid
+QCOM,QUALCOMM Incorporated,Technology,177042325504,Mid
+INTC,Intel Corporation,Technology,175255896064,Mid
+TXN,Texas Instruments Incorporated,Technology,159535382528,Mid
+KLAC,KLA Corporation,Technology,144694968320,Mid
+PANW,"Palo Alto Networks, Inc.",Technology,139103731712,Mid
+ADBE,Adobe Inc.,Technology,137815687168,Mid
+CRWD,"CrowdStrike Holdings, Inc.",Technology,121018097664,Mid
+ADI,"Analog Devices, Inc.",Technology,118861348864,Mid
+DASH,"DoorDash, Inc.",Technology,113920049152,Mid
+CDNS,"Cadence Design Systems, Inc.",Technology,88354873344,Mid
+SNPS,"Synopsys, Inc.",Technology,81766563840,Mid
+MSTR,Strategy Inc,Technology,81492926464,Mid
+MRVL,"Marvell Technology, Inc.",Technology,76063080448,Mid
+ADSK,"Autodesk, Inc.",Technology,63861661696,Mid
+FTNT,"Fortinet, Inc.",Technology,63707357184,Mid
+WDAY,"Workday, Inc.",Technology,60769202176,Mid
+NXPI,NXP Semiconductors N.V.,Technology,54812233728,Mid
+ROP,"Roper Technologies, Inc.",Technology,53815521280,Mid
+DDOG,"Datadog, Inc.",Technology,52719800320,Mid
+ZS,"Zscaler, Inc.",Technology,47369932800,Small
+TEAM,Atlassian Corporation,Technology,39518924800,Small
+MCHP,Microchip Technology Incorporated,Technology,35268067328,Small
+CTSH,Cognizant Technology Solutions Corporation,Technology,31975282688,Small
+TTD,"The Trade Desk, Inc.",Technology,24398249984,Small
+ON,ON Semiconductor Corporation,Technology,21663352832,Small
+CDW,CDW Corporation,Technology,19803279360,Small
+GFS,GLOBALFOUNDRIES Inc.,Technology,19188146176,Small
+CSCO,"Cisco Systems, Inc.",Telecommunications,273126375424,Large
+TMUS,"T-Mobile US, Inc.",Telecommunications,254851137536,Large
+CMCSA,Comcast Corporation,Telecommunications,108033966080,Mid
+CHTR,"Charter Communications, Inc.",Telecommunications,34877145088,Small
+CEG,Constellation Energy Corporation,Utilities,123878178816,Mid
+AEP,"American Electric Power Company, Inc.",Utilities,62854426624,Mid
+XEL,Xcel Energy Inc.,Utilities,47964663808,Small
+EXC,Exelon Corporation,Utilities,47832997888,Small

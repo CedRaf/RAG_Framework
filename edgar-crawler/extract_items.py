@@ -17,7 +17,7 @@ from tqdm import tqdm
 from __init__ import DATASET_DIR
 from item_lists import item_list_8k, item_list_8k_obsolete, item_list_10k, item_list_10q
 from logger import Logger
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler")
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler")
 
 # Change the default recursion limit of 1000 to 30000
 sys.setrecursionlimit(30000)
@@ -574,7 +574,7 @@ class ExtractItems:
         else:
             if "." in item_index:
                 # We need to escape the '.', otherwise it will be treated as a special character - for 8Ks
-                item_index = item_index.replace(".", "\.")
+                item_index = item_index.replace(".", r"\.")
             if item_index in roman_numeral_map:
                 # Rarely, reports use roman numerals for the item indexes. For 8-K, we assume this does not occur (due to their format - e.g. 5.01)
                 item_index = f"(?:{roman_numeral_map[item_index]}|{item_index})"
@@ -1202,7 +1202,7 @@ def main() -> None:
 
     # Check if the filings metadata file exists
     if os.path.exists(filings_metadata_filepath):
-        filings_metadata_df = pd.read_csv(filings_metadata_filepath, dtype=str)
+        filings_metadata_df = pd.read_csv(filings_metadata_filepath, dtype=str, encoding='utf-8', encoding_errors='replace')
         filings_metadata_df = filings_metadata_df.replace({np.nan: None})
     else:
         LOGGER.info(f'No such file "{filings_metadata_filepath}"')

@@ -1,0 +1,36 @@
+Ticker,Company,Sector,Market_Cap,Market_Cap_Category
+LIN,Linde plc,BasicMaterials,208308371456,Large
+AMZN,"Amazon.com, Inc.",ConsumerDiscretionary,2287303655424,Large
+NFLX,"Netflix, Inc.",ConsumerDiscretionary,502938533888,Large
+COST,Costco Wholesale Corporation,ConsumerDiscretionary,410215514112,Large
+MELI,"MercadoLibre, Inc.",ConsumerDiscretionary,103577780224,Mid
+SBUX,Starbucks Corporation,ConsumerDiscretionary,95869280256,Mid
+ORLY,"O'Reilly Automotive, Inc.",ConsumerDiscretionary,85842411520,Mid
+BKR,Baker Hughes Company,ConsumerDiscretionary,44009644032,Small
+PEP,"PepsiCo, Inc.",ConsumerStaples,208751820800,Large
+MDLZ,"Mondelez International, Inc.",ConsumerStaples,79707037696,Mid
+GILD,"Gilead Sciences, Inc.",Healthcare,146229100544,Mid
+VRTX,Vertex Pharmaceuticals Incorporated,Healthcare,104763785216,Mid
+BIIB,Biogen Inc.,Healthcare,20857391104,Small
+CSX,CSX Corporation,Industrials,67095330816,Mid
+VRSK,"Verisk Analytics, Inc.",Industrials,32003112960,Small
+ODFL,"Old Dominion Freight Line, Inc.",Industrials,29024221184,Small
+CSGP,"CoStar Group, Inc.",RealEstate,31498403840,Small
+AAPL,Apple Inc.,Technology,3672254447616,Large
+GOOGL,Alphabet Inc.,Technology,3043438100480,Large
+META,"Meta Platforms, Inc.",Technology,1788820717568,Large
+AVGO,Broadcom Inc.,Technology,1672425504768,Large
+ASML,ASML Holding N.V.,Technology,395751489536,Large
+APP,AppLovin Corporation,Technology,204871204864,Large
+PDD,PDD Holdings Inc.,Technology,180791967744,Mid
+INTU,Intuit Inc.,Technology,180384038912,Mid
+ADBE,Adobe Inc.,Technology,137815687168,Mid
+MSTR,Strategy Inc,Technology,81492926464,Mid
+MRVL,"Marvell Technology, Inc.",Technology,76063080448,Mid
+NXPI,NXP Semiconductors N.V.,Technology,54812233728,Mid
+ZS,"Zscaler, Inc.",Technology,47369932800,Small
+MCHP,Microchip Technology Incorporated,Technology,35268067328,Small
+CTSH,Cognizant Technology Solutions Corporation,Technology,31975282688,Small
+ON,ON Semiconductor Corporation,Technology,21663352832,Small
+TMUS,"T-Mobile US, Inc.",Telecommunications,254851137536,Large
+AEP,"American Electric Power Company, Inc.",Utilities,62854426624,Mid
