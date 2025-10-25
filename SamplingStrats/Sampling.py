@@ -149,7 +149,7 @@ def sample_edgar_filings():
         "LIN","AMZN","NFLX","COST","MELI","SBUX","ORLY","BKR","PEP","MDLZ",
         "GILD","VRTX","BIIB","CSX","VRSK","ODFL","CSGP","AAPL","GOOGL","META",
         "AVGO","CRWD","APP","NVDA","INTU","ADBE","MSTR","MRVL","NXPI","ZS",
-        "MCHP","CTSH","ON","TMUS","AEP"
+        "MCHP","CTSH","ON","TMUS","CEG"
     ]
     
     # Get CIKs for target tickers
