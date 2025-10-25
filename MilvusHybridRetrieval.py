@@ -13,8 +13,58 @@ from queryExpansion import sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+
+from huggingface_hub import login
+from dotenv import load_dotenv
+load_dotenv()
+HF_KEY = os.getenv("HF_KEY")
+
+# Global variables for models
+embedding_model = None
+reranker_model = None
+reranker_tokenizer = None
+device = None
+
+def initialize_models():
+    global embedding_model, reranker_model, reranker_tokenizer, device
+    
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Initializing models on {device}")
+    
+    if embedding_model is None:
+        # embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
+        login(HF_KEY)
+        embedding_model = SentenceTransformer("google/embeddinggemma-300m")
+        embedding_model = embedding_model.to(device)
+        print("Embedding model loaded to GPU")
+    
+    if reranker_model is None:
+        reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
+        reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+        reranker_model = reranker_model.eval().to(device)
+        print("Reranker model loaded to GPU")
+
+def cleanup_models():
+    global embedding_model, reranker_model
+    if embedding_model is not None:
+        embedding_model = embedding_model.to("cpu")
+    if reranker_model is not None:
+        reranker_model = reranker_model.to("cpu")
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    print("Models moved to CPU and cache cleared")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    initialize_models()
+    yield
+    # Shutdown
+    cleanup_models()
+
+app = FastAPI(lifespan=lifespan)
 
 class QueryRequest(BaseModel):
     user_query: str
@@ -22,28 +72,12 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     query: str
     reranked: list
-    hybrid_raw_results: list
+    #hybrid_raw_results: list
     fusion_method: str
     error: str | None = None
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", port="19530")
-
-embedding_model = None
-reranker_model = None
-reranker_tokenizer = None
-
-def initialize_models():
-    global embedding_model, reranker_model, reranker_tokenizer
-    
-    if embedding_model is None:
-        embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
-        embedding_model = embedding_model.to("cpu")
-    
-    if reranker_model is None:
-        reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
-        reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
-        reranker_model.eval().to("cpu")
 
 def normalize(arr):
     if len(arr) == 0 or arr.max() == arr.min():
@@ -56,19 +90,23 @@ def rrf(rank, k):
 def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
     
     COLLECTION_NAME = "sec_chunks_hybrid"
-    initialize_models()
-    global embedding_model
+    global embedding_model, device
     
     sparse_query = sparse_formatting(user_query)
     dense_query = dense_formatting(user_query)
     
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    embedding_model = embedding_model.to(device)
-    
     try:
-        query_text = f"Task: Financial retrieval. Query: {dense_query}"
+        # query_text = f"Task: Financial retrieval. Query: {dense_query}"
+        # dense_query_vector = embedding_model.encode(
+        #     query_text,
+        #     convert_to_numpy=True,
+        #     normalize_embeddings=True,
+        #     device=device,
+        # ).tolist()
+
         dense_query_vector = embedding_model.encode(
-            query_text,
+            dense_query,
+            prompt_name="Retrieval-query",
             convert_to_numpy=True,
             normalize_embeddings=True,
             device=device,
@@ -165,21 +203,17 @@ def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
         return formatted_results
         
     finally:
-        embedding_model = embedding_model.to("cpu")
+        # Clear GPU cache after each search to prevent memory accumulation
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
 def rerank_results(query, passages, top_k=5):
     """Rerank results using BGE reranker"""
-    global reranker_model, reranker_tokenizer
+    global reranker_model, reranker_tokenizer, device
     
     if not passages:
         print("No passages to rerank")
         return []
-    
-    initialize_models()
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    reranker_model = reranker_model.to(device)
     
     try:
         inputs = reranker_tokenizer(
@@ -197,7 +231,7 @@ def rerank_results(query, passages, top_k=5):
         return ranked[:top_k]
         
     finally:
-        reranker_model = reranker_model.to("cpu")
+        # Clear GPU cache after each reranking to prevent memory accumulation
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
@@ -232,39 +266,39 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     print(f"Found {len(passages)} passages for reranking")
     
-    reranked = rerank_results(user_query, passages, top_k=5)
+    # reranked = rerank_results(user_query, passages, top_k=5)
     
-    # Map reranked results back to their metadata with deduplication
-    reranked_with_metadata = []
-    seen_chunks = set()  # Track which chunk_ids have been mapped
+    # # Map reranked results back to their metadata with deduplication
+    # reranked_with_metadata = []
+    # seen_chunks = set()  # Track which chunk_ids have been mapped
     
-    for i, (text, score) in enumerate(reranked):
-        # Find the matching metadata for this reranked text
-        for j, passage in enumerate(passages):
-            if passage == text:
-                metadata = passage_metadata[j]
-                chunk_id = metadata["chunk_id"]
+    # for i, (text, score) in enumerate(reranked):
+    #     # Find the matching metadata for this reranked text
+    #     for j, passage in enumerate(passages):
+    #         if passage == text:
+    #             metadata = passage_metadata[j]
+    #             chunk_id = metadata["chunk_id"]
                 
-                # Only add if we haven't seen this chunk_id before
-                if chunk_id not in seen_chunks:
-                    reranked_with_metadata.append({
-                        "rank": i + 1,
-                        "rerank_score": float(score),
-                        "text": text,
-                        "chunk_id": chunk_id,
-                        "ticker": metadata["ticker"],
-                        "form_type": metadata["form_type"],
-                        "source_file": metadata["source_file"],
-                        "hybrid_score": metadata["hybrid_score"]
-                    })
-                    seen_chunks.add(chunk_id)
-                    break
+    #             # Only add if we haven't seen this chunk_id before
+    #             if chunk_id not in seen_chunks:
+    #                 reranked_with_metadata.append({
+    #                     "rank": i + 1,
+    #                     "rerank_score": float(score),
+    #                     "text": text,
+    #                     "chunk_id": chunk_id,
+    #                     "ticker": metadata["ticker"],
+    #                     "form_type": metadata["form_type"],
+    #                     "source_file": metadata["source_file"],
+    #                     "hybrid_score": metadata["hybrid_score"]
+    #                 })
+    #                 seen_chunks.add(chunk_id)
+    #                 break
     
     output_data = {
         "query": user_query,
         "fusion_method": "RRFRanker(k=30)",
-        "reranked_results": reranked_with_metadata,
-        "hybrid_raw_results": [
+        #"reranked": reranked_with_metadata,
+        "reranked": [
             {
                 "rank": i+1,
                 "hybrid_score": result.get("distance", 0),
@@ -272,13 +306,13 @@ def milvus_hybrid_retrieval_test(user_query: str):
                 "ticker": result.get("entity", {}).get("ticker", ""),
                 "form_type": result.get("entity", {}).get("form_type", ""),
                 "source_file": result.get("entity", {}).get("source_file", ""),
-                "text": result.get("entity", {}).get("text", "")[:500] + "..."  #truncated
+                "text": result.get("entity", {}).get("text", "")  #truncated
             }
             for i, result in enumerate(hybrid_results[0][:50]) 
         ],
     }
     
-    save_results_to_file(output_data)
+    #save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):

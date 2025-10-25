@@ -20,10 +20,18 @@ company_to_ticker = {
     "workday": "WDAY", "xcel": "XEL", "zscaler": "ZS"
 }
 
+# def get_tickers(query):
+#     detected = []
+#     lower_query = query.lower()
+#     for company, ticker in company_to_ticker.items():
+#         if re.search(rf"\b{re.escape(company)}\b", lower_query):
+#             detected.append(ticker)
+#     return detected
+
+
 def get_tickers(query):
-    detected = []
-    lower_query = query.lower()
-    for company, ticker in company_to_ticker.items():
-        if re.search(rf"\b{re.escape(company)}\b", lower_query):
-            detected.append(ticker)
-    return detected
+    # Extract ticker from parentheses at the start of the query
+    match = re.match(r'^\(([A-Z]+)\)', query.strip())
+    if match:
+        return [match.group(1)]
+    return []

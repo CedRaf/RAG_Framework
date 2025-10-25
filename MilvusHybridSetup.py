@@ -16,7 +16,7 @@ client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", port="19530")
 
 COLLECTION_NAME = "sec_chunks_hybrid"
-EMBEDDING_DIM = 1024
+EMBEDDING_DIM = 768
 MAX_TEXT_LENGTH = 10000
 
 def create_hybrid_collection():

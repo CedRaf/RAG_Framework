@@ -284,7 +284,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
         "error": None
     }
     
-    save_results_to_file(output_data)
+    #save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):

@@ -4,7 +4,7 @@ import re
 import pandas as pd
 #from langchain.text_splitter import RecursiveCharacterTextSplitter
 from llama_index.core.node_parser import TokenTextSplitter
-#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
+os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 with open("company_tickers_exchange.json", "r") as f:
     CIK_dict = json.load(f)
@@ -96,7 +96,7 @@ def segment_config(base_path, input_folders, output_folder, chunk_size, chunk_ov
                     print(f"Skipping non-dict file: {file}")
                     continue
 
-                item_keys = [key for key in data if key.startswith("item_") or key.startswith("parts_")]
+                item_keys = [key for key in data if key.startswith("item_") or key.startswith("parts_") or key.startswith("part_")]
                 # keep a running counter so chunk IDs don't reset for each item
                 chunk_counter = 0
                 for item_key in item_keys:

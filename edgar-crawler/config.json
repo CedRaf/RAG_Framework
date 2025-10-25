@@ -1,10 +1,10 @@
 {
 	"download_filings": {
-		"start_year": 2019,
-		"end_year": 2024,
+		"start_year": 2023,
+		"end_year": 2023,
 		"quarters": [1, 2, 3, 4],
-		"filing_types": ["10-K", "10-Q", "8-K"],
-		"cik_tickers": ["AMZN"],
+		"filing_types": [ "10-Q"],
+		"cik_tickers": ["CEG"],
 		"user_agent": "Rhenz Largo (rhenzlargo80@gmail.com)",
 		"raw_filings_folder": "RAW_FILINGS",
 		"indices_folder": "INDICES",
@@ -15,7 +15,7 @@
 		"raw_filings_folder": "RAW_FILINGS",
 		"extracted_filings_folder": "EXTRACTED_FILINGS",
 		"filings_metadata_file": "FILINGS_METADATA.csv",
-		"filing_types": ["10-K", "10-Q", "8-K"],
+		"filing_types": ["10-Q"],
 		"include_signature": false,
 		"items_to_extract": [],
 		"remove_tables": true,

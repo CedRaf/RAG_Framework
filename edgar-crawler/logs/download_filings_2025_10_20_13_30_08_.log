@@ -1,0 +1,13 @@
+10-20-2025 21:30 - download_filings - INFO - Saving log to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler\logs
+
+10-20-2025 21:30 - download_filings - INFO - Downloading index files from SEC...
+10-20-2025 21:30 - download_filings - INFO - Skipping 2023_QTR1.tsv
+10-20-2025 21:30 - download_filings - INFO - Skipping 2023_QTR2.tsv
+10-20-2025 21:30 - download_filings - INFO - Skipping 2023_QTR3.tsv
+10-20-2025 21:30 - download_filings - INFO - Skipping 2023_QTR4.tsv
+10-20-2025 21:30 - download_filings - INFO - 
+Reading filings metadata...
+
+10-20-2025 21:30 - download_filings - INFO - 
+Downloading 3 filings directly from EDGAR...
+
