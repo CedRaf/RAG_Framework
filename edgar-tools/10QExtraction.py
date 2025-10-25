@@ -7,9 +7,19 @@ import os
 set_identity("rhenzgerard0@gmail.com")
 
 output_dir = "10-Q"
-os.makedirs(output_dir, exist_ok=True)
+balance_dir = os.path.join(output_dir, "balance_sheet")
+income_dir = os.path.join(output_dir, "income_statement")
+cashflow_dir = os.path.join(output_dir, "cash_flow")
 
-companies = ['AAPL']
+os.makedirs(output_dir, exist_ok=True)
+os.makedirs(balance_dir, exist_ok=True)
+os.makedirs(income_dir, exist_ok=True)
+os.makedirs(cashflow_dir, exist_ok=True)
+
+companies = ["LIN","AMZN","NFLX","COST","MELI","SBUX","ORLY","BKR","PEP","MDLZ",
+             "GILD","VRTX","BIIB","CSX","VRSK","ODFL","CSGP","AAPL","GOOGL","META",
+             "AVGO","NVDA","APP","CRWD","INTU","ADBE","MSTR","MRVL","NXPI","ZS",
+             "MCHP","CTSH","ON","TMUS","CEG"]
 
 for ticker in companies:
 
@@ -25,15 +35,16 @@ for ticker in companies:
             xbrl = filing.xbrl()
             statements = xbrl.statements
             
-            for name, method in [
-                ('balance_sheet', statements.balance_sheet),
-                ('income_statement', statements.income_statement), 
-                ('cashflow_statement', statements.cashflow_statement)
+
+            for name, method, subdir in [
+                ('balance_sheet', statements.balance_sheet, balance_dir),
+                ('income_statement', statements.income_statement, income_dir),
+                ('cashflow_statement', statements.cashflow_statement, cashflow_dir)
             ]:
                 try:
                     statement = method()
                     df = statement.to_dataframe()
-                    json_file = os.path.join(output_dir, f"{ticker}_{name}_{filing.filing_date}-10Q.json") 
+                    json_file = os.path.join(subdir, f"{ticker}_{name}_{filing.filing_date}-10Q.json")
                     df.to_json(json_file, orient="index", indent=2)
                     print(f"Saved {json_file}")
                 except Exception as e:

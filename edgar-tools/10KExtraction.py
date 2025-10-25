@@ -4,13 +4,24 @@ import json
 import os
 
 set_identity("rhenzgerard0@gmail.com")
-os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG/edgar-tools")
-os.environ['PYTHONTZPATH'] = r"C:\Users\Rhenz\Downloads\tzdata"
+#os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG/edgar-tools")
+#os.environ['PYTHONTZPATH'] = r"C:\Users\Rhenz\Downloads\tzdata"
 
 output_dir = "10-K"
-os.makedirs(output_dir, exist_ok=True)
+balance_dir = os.path.join(output_dir, "multi_balance_sheet")
+income_dir = os.path.join(output_dir, "multi_income_statement")
+cashflow_dir = os.path.join(output_dir, "multi_cash_flow")
 
-companies = ["AAPL"]
+os.makedirs(output_dir, exist_ok=True)
+os.makedirs(balance_dir, exist_ok=True)
+os.makedirs(income_dir, exist_ok=True)
+os.makedirs(cashflow_dir, exist_ok=True)
+
+
+companies = ["LIN","AMZN","NFLX","COST","MELI","SBUX","ORLY","BKR","PEP","MDLZ",
+             "GILD","VRTX","BIIB","CSX","VRSK","ODFL","CSGP","AAPL","GOOGL","META",
+             "AVGO","NVDA","APP","CRWD","INTU","ADBE","MSTR","MRVL","NXPI","ZS",
+             "MCHP","CTSH","ON","TMUS","CEG"]
 
 for ticker in companies:
     # Get financial data
@@ -29,10 +40,10 @@ for ticker in companies:
     income_json = json.loads(income_statement_df.to_json(orient='records'))
     cashflow_json = json.loads(cash_flow_df.to_json(orient='records'))
 
-    # Save as JSON files
-    with open(os.path.join(output_dir, f"{ticker.lower()}_multi_balance_sheet-10K.json"), "w") as f:
+    # Save as JSON files in their respective directories
+    with open(os.path.join(balance_dir, f"{ticker.lower()}_multi_balance_sheet-10K.json"), "w") as f:
         json.dump({"ticker": ticker, "multi_balance_sheet": balance_json}, f, indent=2)
-    with open(os.path.join(output_dir, f"{ticker.lower()}_multi_income_statement-10K.json"), "w") as f:
+    with open(os.path.join(income_dir, f"{ticker.lower()}_multi_income_statement-10K.json"), "w") as f:
         json.dump({"ticker": ticker, "multi_income_statement": income_json}, f, indent=2)
-    with open(os.path.join(output_dir, f"{ticker.lower()}_multi_cash_flow-10K.json"), "w") as f:
+    with open(os.path.join(cashflow_dir, f"{ticker.lower()}_multi_cash_flow-10K.json"), "w") as f:
         json.dump({"ticker": ticker, "multi_cash_flow": cashflow_json}, f, indent=2)
