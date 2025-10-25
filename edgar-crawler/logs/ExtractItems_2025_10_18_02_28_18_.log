@@ -1,0 +1,34 @@
+10-18-2025 10:28 - ExtractItems - DEBUG - 1326801_10Q_2020_0001326801-20-000048.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1713683_10Q_2020_0001713683-20-000037.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1730168_10Q_2021_0001730168-21-000045.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1326801_10Q_2021_0001326801-21-000033.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1707925_10Q_2021_0001628280-21-009226.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1751008_10Q_2021_0001193125-21-161989.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2021_0001835632-21-000032.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2021_0001835632-21-000032.htm - Could not detect positions/texts of parts.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2021_0001835632-21-000032.htm - Could not detect positions/texts of parts.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2021_0001835632-21-000032.htm - Could not separate PARTs correctly. Likely PART I contains just ToC content.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1751008_10Q_2022_0001751008-22-000016.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 827054_10Q_2022_0000827054-22-000148.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 827054_10Q_2022_0000827054-22-000148.htm - Could not detect positions/texts of parts.
+10-18-2025 10:28 - ExtractItems - DEBUG - 827054_10Q_2022_0000827054-22-000148.htm - Could not detect positions/texts of parts.
+10-18-2025 10:28 - ExtractItems - DEBUG - 827054_10Q_2022_0000827054-22-000148.htm - Could not separate PARTs correctly. Likely PART I contains just ToC content.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2022_0001835632-22-000041.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1326801_10Q_2022_0001326801-22-000108.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1835632_10Q_2023_0001835632-23-000029.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:28 - ExtractItems - DEBUG - 1707925_10Q_2023_0001628280-23-025878.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1326801_10Q_2023_0001326801-23-000103.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 882095_10Q_2023_0000882095-23-000031.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 882095_10Q_2023_0000882095-23-000031.htm - Could not detect positions/texts of parts.
+10-18-2025 10:29 - ExtractItems - DEBUG - 882095_10Q_2023_0000882095-23-000031.htm - Could not detect positions/texts of parts.
+10-18-2025 10:29 - ExtractItems - DEBUG - 882095_10Q_2023_0000882095-23-000031.htm - Could not separate PARTs correctly. Likely PART I contains just ToC content.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1707925_10Q_2024_0001707925-24-000090.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1099590_10Q_2024_0001099590-24-000017.htm - Detected error in part separation - End of PART I is 173298 chars from start of PART II. Changing Extraction to extract all text between the two parts.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1707925_10Q_2024_0001628280-24-034299.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 827054_10Q_2024_0000827054-24-000139.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1326801_10Q_2024_0001326801-24-000081.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 827054_10Q_2024_0000827054-24-000206.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1535527_10Q_2022_0001535527-22-000018.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 1535527_10Q_2023_0001535527-23-000014.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 4904_10Q_2023_0000004904-23-000121.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.
+10-18-2025 10:29 - ExtractItems - DEBUG - 4904_10Q_2024_0000004904-24-000046.htm - Detected error in part separation - No PART I found. Changing Extraction to extract all text before PART II as PART I.

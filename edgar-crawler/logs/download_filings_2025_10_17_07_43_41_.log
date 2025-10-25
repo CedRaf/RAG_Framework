@@ -1,0 +1,24 @@
+10-17-2025 15:43 - download_filings - INFO - Saving log to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\logs
+
+10-17-2025 15:43 - download_filings - INFO - Downloading index files from SEC...
+10-17-2025 15:43 - download_filings - INFO - Skipping 2020_QTR1.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2020_QTR2.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2020_QTR3.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2020_QTR4.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2021_QTR1.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2021_QTR2.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2021_QTR3.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2021_QTR4.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2022_QTR1.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2022_QTR2.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2022_QTR3.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2022_QTR4.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2023_QTR1.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2023_QTR2.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2023_QTR3.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2023_QTR4.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2024_QTR1.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2024_QTR2.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2024_QTR3.tsv
+10-17-2025 15:43 - download_filings - INFO - Skipping 2024_QTR4.tsv
+10-17-2025 15:44 - download_filings - INFO - Failed downloading "https://www.sec.gov/files/company_tickers.json" - HTTPSConnectionPool(host='www.sec.gov', port=443): Max retries exceeded with url: /files/company_tickers.json (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001F35EC97B00>: Failed to resolve 'www.sec.gov' ([Errno 11001] getaddrinfo failed)"))

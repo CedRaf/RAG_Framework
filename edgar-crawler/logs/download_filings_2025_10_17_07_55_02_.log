@@ -1,0 +1,33 @@
+10-17-2025 15:55 - download_filings - INFO - Saving log to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\logs
+
+10-17-2025 15:55 - download_filings - INFO - Downloading index files from SEC...
+10-17-2025 15:55 - download_filings - INFO - Skipping 2020_QTR1.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2020_QTR2.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2020_QTR3.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2020_QTR4.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2021_QTR1.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2021_QTR2.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2021_QTR3.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2021_QTR4.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2022_QTR1.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2022_QTR2.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2022_QTR3.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2022_QTR4.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2023_QTR1.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2023_QTR2.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2023_QTR3.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2023_QTR4.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2024_QTR1.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2024_QTR2.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2024_QTR3.tsv
+10-17-2025 15:55 - download_filings - INFO - Skipping 2024_QTR4.tsv
+10-17-2025 15:55 - download_filings - INFO - 
+Reading filings metadata...
+
+10-17-2025 15:55 - download_filings - INFO - 
+Downloading 1590 filings directly from EDGAR...
+
+10-17-2025 16:12 - download_filings - DEBUG - Request for https://www.sec.gov/Archives/edgar/data/909832/0000909832-22-000005-index.html failed due to network-related error: HTTPSConnectionPool(host='www.sec.gov', port=443): Max retries exceeded with url: /Archives/edgar/data/909832/0000909832-22-000005-index.html (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002D0B2375040>: Failed to resolve 'www.sec.gov' ([Errno 11001] getaddrinfo failed)"))
+10-17-2025 16:17 - download_filings - DEBUG - Request for https://www.sec.gov/Archives/edgar/data/1326801/000132680122000057/meta-20220331.htm failed due to network-related error: HTTPSConnectionPool(host='www.sec.gov', port=443): Max retries exceeded with url: /Archives/edgar/data/1326801/000132680122000057/meta-20220331.htm (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002D0B7D32D20>: Failed to resolve 'www.sec.gov' ([Errno 11001] getaddrinfo failed)"))
+10-17-2025 16:21 - download_filings - DEBUG - Request for https://www.sec.gov/Archives/edgar/data/1730168/000173016822000059/avgo-20220404.htm failed due to network-related error: HTTPSConnectionPool(host='www.sec.gov', port=443): Max retries exceeded with url: /Archives/edgar/data/1730168/000173016822000059/avgo-20220404.htm (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002D0B22FED80>: Failed to resolve 'www.sec.gov' ([Errno 11001] getaddrinfo failed)"))
+10-17-2025 16:36 - download_filings - DEBUG - Request for https://www.sec.gov/Archives/edgar/data/1018724/000119312523000849/d429499d8k.htm failed due to network-related error: HTTPSConnectionPool(host='www.sec.gov', port=443): Max retries exceeded with url: /Archives/edgar/data/1018724/000119312523000849/d429499d8k.htm (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002D0BD671D60>: Failed to resolve 'www.sec.gov' ([Errno 11001] getaddrinfo failed)"))

@@ -1,0 +1,29 @@
+10-17-2025 14:17 - download_filings - INFO - Saving log to C:\Users\Cedric\Desktop\RAG THESIS\RAG_Framework\edgar-crawler\logs
+
+10-17-2025 14:17 - download_filings - INFO - Downloading index files from SEC...
+10-17-2025 14:17 - download_filings - INFO - Skipping 2020_QTR1.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2020_QTR2.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2020_QTR3.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2020_QTR4.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2021_QTR1.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2021_QTR2.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2021_QTR3.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2021_QTR4.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2022_QTR1.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2022_QTR2.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2022_QTR3.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2022_QTR4.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2023_QTR1.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2023_QTR2.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2023_QTR3.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2023_QTR4.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2024_QTR1.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2024_QTR2.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2024_QTR3.tsv
+10-17-2025 14:17 - download_filings - INFO - Skipping 2024_QTR4.tsv
+10-17-2025 14:18 - download_filings - INFO - 
+Reading filings metadata...
+
+10-17-2025 14:18 - download_filings - INFO - 
+Downloading 2236 filings directly from EDGAR...
+
