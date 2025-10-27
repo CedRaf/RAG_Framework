@@ -32,14 +32,32 @@ def load_model():
     )
     
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
-        quantization_config=bnb_config,
-        device_map="auto",
-        attn_implementation="flash_attention_2",  # Flash Attention 2 for faster inference
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True
-    )
+    
+    # Qwen models typically have padding token, but verify
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    
+    # Try loading with Flash Attention 2, fallback to eager if unavailable
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            quantization_config=bnb_config,
+            device_map="auto",
+            attn_implementation="flash_attention_2",  # Qwen 2.5 fully supports FA2
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True
+        )
+        print("Loaded with Flash Attention 2")
+    except Exception as e:
+        print(f"Flash Attention 2 unavailable, using eager attention: {e}")
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            quantization_config=bnb_config,
+            device_map="auto",
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True
+        )
     
     # Set model to eval mode
     model.eval()
