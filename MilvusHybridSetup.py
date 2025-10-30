@@ -4,10 +4,21 @@ from pymilvus import MilvusClient, DataType, Function, FunctionType, connections
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
+
+
+from huggingface_hub import login
+from dotenv import load_dotenv
+load_dotenv()
+HF_KEY = os.getenv("HF_KEY")
+
 def initialize_models():
     global embedding_model, reranker_model, reranker_tokenizer
     if 'embedding_model' not in globals():
-        globals()['embedding_model'] = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B").to("cpu")
+        #globals()['embedding_model'] = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B").to("cpu")
+        login(HF_KEY)
+        globals()['embedding_model'] = SentenceTransformer("google/embeddinggemma-300m").to("cpu")
+
+
     if 'reranker_model' not in globals():
         globals()['reranker_tokenizer'] = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
         globals()['reranker_model'] = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3").eval().to("cpu")

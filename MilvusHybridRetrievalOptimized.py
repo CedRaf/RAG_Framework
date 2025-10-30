@@ -1,23 +1,90 @@
 import os
 import json
 import torch
-import sys
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import traceback
 from datetime import datetime
 from pymilvus import MilvusClient, DataType, Function, FunctionType, Collection, AnnSearchRequest, RRFRanker, WeightedRanker, connections
 from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, parent_dir)
 from queryExpansion import sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from contextlib import asynccontextmanager
 import requests
+import time
 
-app = FastAPI()
+# Use orjson for faster JSON (pip install orjson)
+try:
+    import orjson
+    USE_ORJSON = True
+except ImportError:
+    USE_ORJSON = False
+    print("orjson not installed, using standard json (slower)")
+
+from huggingface_hub import login
+from dotenv import load_dotenv
+load_dotenv()
+HF_KEY = os.getenv("HF_KEY")
+
+# Global variables for models
+embedding_model = None
+reranker_model = None
+reranker_tokenizer = None
+device = None
+
+# HTTP Session for connection pooling (IMPORTANT!)
+http_session = requests.Session()
+http_session.headers.update({'Connection': 'keep-alive'})
+
+def initialize_models():
+    global embedding_model, reranker_model, reranker_tokenizer, device
+    
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Initializing models on {device}")
+    
+    # Load in FP16/half precision to save memory
+    if embedding_model is None:
+        login(HF_KEY)  # Comment this line if Qwen embedding
+        embedding_model = SentenceTransformer("google/embeddinggemma-300m")
+        # embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
+        embedding_model = embedding_model.half().to(device)  # FP16
+        print("Embedding model loaded to GPU (FP16)")
+
+    # Reranker initialization commented out since we're using API
+    # if reranker_model is None:
+    #     reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
+    #     reranker_model = AutoModelForSequenceClassification.from_pretrained(
+    #         "BAAI/bge-reranker-v2-m3",
+    #         torch_dtype=torch.float16
+    #     )
+    #     reranker_model = reranker_model.eval().to(device)
+    #     print("Reranker model loaded to GPU (FP16)")
+
+def cleanup_models():
+    global embedding_model, reranker_model, http_session
+    if embedding_model is not None:
+        embedding_model = embedding_model.to("cpu")
+    if reranker_model is not None:
+        reranker_model = reranker_model.to("cpu")
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    # Close HTTP session
+    http_session.close()
+    print("Models moved to CPU and cache cleared")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    initialize_models()
+    yield
+    # Shutdown
+    cleanup_models()
+
+app = FastAPI(lifespan=lifespan)
 
 class QueryRequest(BaseModel):
     user_query: str
@@ -25,24 +92,11 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     query: str
     reranked: list
-    hybrid_raw_results: list
     fusion_method: str
     error: str | None = None
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 connections.connect(host="localhost", port="19530")
-
-embedding_model = None
-
-# Reranker API configuration
-RERANKER_API_URL = "http://localhost:8001/rerank"  # Change if hosted elsewhere
-
-def initialize_models():
-    global embedding_model
-    
-    if embedding_model is None:
-        embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
-        embedding_model = embedding_model.to("cpu")
 
 def normalize(arr):
     if len(arr) == 0 or arr.max() == arr.min():
@@ -53,21 +107,17 @@ def rrf(rank, k):
     return 1/(rank + k)
 
 def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
-    
     COLLECTION_NAME = "sec_chunks_hybrid"
-    initialize_models()
-    global embedding_model
+    global embedding_model, device
     
     sparse_query = sparse_formatting(user_query)
     dense_query = dense_formatting(user_query)
     
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    embedding_model = embedding_model.to(device)
-    
     try:
-        query_text = f"Task: Financial retrieval. Query: {dense_query}"
+        # GEMMA embedding
         dense_query_vector = embedding_model.encode(
-            query_text,
+            dense_query,
+            prompt_name="Retrieval-query",
             convert_to_numpy=True,
             normalize_embeddings=True,
             device=device,
@@ -164,55 +214,57 @@ def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
         return formatted_results
         
     finally:
-        embedding_model = embedding_model.to("cpu")
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-def rerank_results_api(query, passages, top_k=5):
-    if not passages:
-        print("No passages to rerank")
-        return []
+def call_reranker_api(query: str, passages: list[str], top_k: int = 5):
+    """Optimized API call with connection pooling and fast JSON"""
+    global http_session
+    
+    reranker_api_url = "http://localhost:8500/rerank"
+    payload = {
+        "query": query,
+        "passages": passages,
+        "top_k": top_k
+    }
     
     try:
-        # Call reranker API with longer timeout for large batches
-        response = requests.post(
-            RERANKER_API_URL,
-            json={
-                "query": query,
-                "passages": passages,
-                "top_k": top_k
-            },
-            timeout=120  # Increased to 120 seconds for 50 passages
-        )
+        start_time = time.time()
         
-        if response.status_code != 200:
-            print(f"Reranker API error: {response.status_code} - {response.text}")
-            # Fallback: return passages in original order with dummy scores
-            return [(p, 1.0 - i*0.1) for i, p in enumerate(passages[:top_k])]
+        if USE_ORJSON:
+            # Use orjson for faster JSON encoding
+            payload_json = orjson.dumps(payload)
+            response = http_session.post(
+                reranker_api_url,
+                data=payload_json,
+                headers={'Content-Type': 'application/json'}
+            )
+            response.raise_for_status()
+            result = orjson.loads(response.content)
+        else:
+            # Standard requests with session (still uses connection pooling)
+            response = http_session.post(reranker_api_url, json=payload)
+            response.raise_for_status()
+            result = response.json()
         
-        data = response.json()
-        results = data.get("results", [])
+        elapsed = time.time() - start_time
+        print(f"Reranker API call took: {elapsed:.3f}s")
         
-        # Convert API response to expected format: [(text, score), ...]
-        ranked = [(r["text"], r["score"]) for r in results]
-        
-        print(f"Reranker API returned {len(ranked)} results (model: {data.get('model_name', 'unknown')})")
-        return ranked
+        reranked_items = result["reranked"]
+        # Convert to expected format: list of (text, score) tuples
+        return [(item["text"], item["score"]) for item in reranked_items]
         
     except requests.exceptions.RequestException as e:
-        print(f"Failed to connect to reranker API: {e}")
-        print("Fallback: returning passages in original order")
-        # Fallback: return passages in original order with dummy scores
-        return [(p, 1.0 - i*0.1) for i, p in enumerate(passages[:top_k])]
+        print(f"Reranker API call failed: {e}")
+        return []
 
 def milvus_hybrid_retrieval_test(user_query: str):
-    
     hybrid_results = milvus_hybrid_search(user_query, limit=50)
     
     passages = []
-    passage_metadata = []  
+    passage_metadata = []
 
-    for result in hybrid_results[0]:  
+    for result in hybrid_results[0]:
         text = result.get("entity", {}).get("text", "")
         if text:
             passages.append(text)
@@ -228,29 +280,34 @@ def milvus_hybrid_retrieval_test(user_query: str):
         print("No results found from hybrid search!")
         return {
             "query": user_query,
-            "reranked": [],  # Changed from "reranked_results" to match QueryResponse schema
-            "hybrid_raw_results": [],
+            "reranked": [],
             "fusion_method": "RRFRanker(k=30)",
             "error": "No results found"
         }
     
     print(f"Found {len(passages)} passages for reranking")
     
-    # Call external reranker API instead of local model
-    reranked = rerank_results_api(user_query, passages, top_k=5)
+    # Call optimized reranker API
+    reranked = call_reranker_api(user_query, passages, top_k=5)
     
+    if not reranked:
+        return {
+            "query": user_query,
+            "reranked": [],
+            "fusion_method": "RRFRanker(k=30)",
+            "error": "Reranking failed"
+        }
+
     # Map reranked results back to their metadata with deduplication
     reranked_with_metadata = []
-    seen_chunks = set()  # Track which chunk_ids have been mapped
+    seen_chunks = set()
     
     for i, (text, score) in enumerate(reranked):
-        # Find the matching metadata for this reranked text
         for j, passage in enumerate(passages):
             if passage == text:
                 metadata = passage_metadata[j]
                 chunk_id = metadata["chunk_id"]
                 
-                # Only add if we haven't seen this chunk_id before
                 if chunk_id not in seen_chunks:
                     reranked_with_metadata.append({
                         "rank": i + 1,
@@ -268,23 +325,9 @@ def milvus_hybrid_retrieval_test(user_query: str):
     output_data = {
         "query": user_query,
         "fusion_method": "RRFRanker(k=30)",
-        "reranked": reranked_with_metadata,  # Changed from "reranked_results" to match QueryResponse schema
-        "hybrid_raw_results": [
-            {
-                "rank": i+1,
-                "hybrid_score": result.get("distance", 0),
-                "chunk_id": result.get("entity", {}).get("chunk_id", ""),
-                "ticker": result.get("entity", {}).get("ticker", ""),
-                "form_type": result.get("entity", {}).get("form_type", ""),
-                "source_file": result.get("entity", {}).get("source_file", ""),
-                "text": result.get("entity", {}).get("text", "")[:500] + "..."  #truncated
-            }
-            for i, result in enumerate(hybrid_results[0][:50]) 
-        ],
-        "error": None
+        "reranked": reranked_with_metadata,
     }
     
-    #save_results_to_file(output_data)
     return output_data
 
 def save_results_to_file(output_data):
@@ -311,11 +354,4 @@ def query_endpoint(request: QueryRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    print("=" * 80)
-    print("Milvus Hybrid Retrieval API (with External Reranker)")
-    print("=" * 80)
-    print(f"Reranker API URL: {RERANKER_API_URL}")
-    print("Make sure the reranker API is running on port 8001!")
-    print("Start reranker: python RerankerAPI.py")
-    print("=" * 80)
-    uvicorn.run("MilvusHybridRetrieval_APIVersion:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("MilvusHybridRetrievalOptimized:app", host="0.0.0.0", port=8000, reload=True)

@@ -14,6 +14,7 @@ from TickerFilter import get_tickers
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
+import requests
 
 
 from huggingface_hub import login
@@ -27,31 +28,53 @@ reranker_model = None
 reranker_tokenizer = None
 device = None
 
+# def initialize_models():
+#     global embedding_model, reranker_model, reranker_tokenizer, device
+    
+#     device = "cuda" if torch.cuda.is_available() else "cpu"
+#     print(f"Initializing models on {device}")
+    
+#     if embedding_model is None:
+        # embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
+        # login(HF_KEY)
+#       # embedding_model = SentenceTransformer("google/embeddinggemma-300m")
+#         embedding_model = embedding_model.to(device)
+#         print("Embedding model loaded to GPU")
+    
+#     if reranker_model is None:
+#         reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
+#         reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+#         reranker_model = reranker_model.eval().to(device)
+#         print("Reranker model loaded to GPU")
+
 def initialize_models():
     global embedding_model, reranker_model, reranker_tokenizer, device
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Initializing models on {device}")
     
+    # Load in FP16/half precision to save memory
     if embedding_model is None:
-        # embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
-        login(HF_KEY)
+        login(HF_KEY) #comment this line if Qwen embedding
         embedding_model = SentenceTransformer("google/embeddinggemma-300m")
-        embedding_model = embedding_model.to(device)
-        print("Embedding model loaded to GPU")
-    
+        #embedding_model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
+        embedding_model = embedding_model.to(device)  # FP16
+        print("Embedding model loaded to GPU (FP32)")
+
     if reranker_model is None:
         reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3")
-        reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-reranker-v2-m3")
+        reranker_model = AutoModelForSequenceClassification.from_pretrained(
+            "BAAI/bge-reranker-v2-m3",
+            #torch_dtype=torch.float16  # FP16
+        )
         reranker_model = reranker_model.eval().to(device)
-        print("Reranker model loaded to GPU")
-
+        print("Reranker model loaded to GPU (FP32)")
 def cleanup_models():
     global embedding_model, reranker_model
     if embedding_model is not None:
         embedding_model = embedding_model.to("cpu")
     if reranker_model is not None:
-        reranker_model = reranker_model.to("cpu")
+        reranker_model = reranker_model.to("cpu")  
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     print("Models moved to CPU and cache cleared")
@@ -101,9 +124,10 @@ def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
         #     query_text,
         #     convert_to_numpy=True,
         #     normalize_embeddings=True,
-        #     device=device,
+        #     #device=device,
         # ).tolist()
 
+        # GEMMA embedding , swap with above for Qwen embedding
         dense_query_vector = embedding_model.encode(
             dense_query,
             prompt_name="Retrieval-query",
@@ -207,8 +231,8 @@ def milvus_hybrid_search(user_query: str, limit=50, use_rrf=True, alpha=0.3):
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-def rerank_results(query, passages, top_k=5):
-    """Rerank results using BGE reranker"""
+def rerank_results(query, passages, top_k=5, batch_size=8):
+    """Rerank results using BGE reranker with batching"""
     global reranker_model, reranker_tokenizer, device
     
     if not passages:
@@ -216,25 +240,35 @@ def rerank_results(query, passages, top_k=5):
         return []
     
     try:
-        inputs = reranker_tokenizer(
-            [query] * len(passages),
-            passages,
-            padding=True,
-            truncation=True,
-            return_tensors="pt"
-        ).to(device)
+        all_scores = []
+        
+        # Process in batches
+        for i in range(0, len(passages), batch_size):
+            batch_passages = passages[i:i + batch_size]
+            batch_queries = [query] * len(batch_passages)
+            
+            inputs = reranker_tokenizer(
+                batch_queries,
+                batch_passages,
+                padding=True,
+                truncation=True,
+                max_length=512,
+                return_tensors="pt"
+            ).to(device)
 
-        with torch.no_grad():
-            scores = reranker_model(**inputs).logits.squeeze(-1)
-
-        ranked = sorted(zip(passages, scores.tolist()), key=lambda x: x[1], reverse=True)
+            with torch.no_grad():
+                batch_scores = reranker_model(**inputs).logits.squeeze(-1)
+                all_scores.extend(batch_scores.cpu().tolist())
+            
+            # Clear only the batch tensors, not the model
+            del inputs, batch_scores
+        
+        ranked = sorted(zip(passages, all_scores), key=lambda x: x[1], reverse=True)
         return ranked[:top_k]
         
     finally:
-        # Clear GPU cache after each reranking to prevent memory accumulation
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-
 def milvus_hybrid_retrieval_test(user_query: str):
     
     hybrid_results = milvus_hybrid_search(user_query, limit=50)
@@ -266,9 +300,25 @@ def milvus_hybrid_retrieval_test(user_query: str):
     
     print(f"Found {len(passages)} passages for reranking")
     
-    # reranked = rerank_results(user_query, passages, top_k=5)
-    
-    # # Map reranked results back to their metadata with deduplication
+    #reranked = rerank_results(user_query, passages, top_k=5)
+    # Call reranker API instead
+    # try:
+    #     reranker_api_url = "http://localhost:8500/rerank"  
+    #     payload = {
+    #         "query": user_query,
+    #         "passages": passages,
+    #         "top_k": 5
+    #     }
+    #     response = requests.post(reranker_api_url, json=payload)
+    #     response.raise_for_status()
+    #     reranked = response.json()["reranked"]
+    #     # Convert to expected format: list of (text, score) tuples
+    #     reranked = [(item["text"], item["score"]) for item in reranked]
+    # except Exception as e:
+    #     print(f"Reranker API call failed: {e}")
+    #     reranked = []
+# ------------------------------------------------------------------------------#
+    # Map reranked results back to their metadata with deduplication
     # reranked_with_metadata = []
     # seen_chunks = set()  # Track which chunk_ids have been mapped
     
@@ -293,7 +343,7 @@ def milvus_hybrid_retrieval_test(user_query: str):
     #                 })
     #                 seen_chunks.add(chunk_id)
     #                 break
-    
+ #------------------------------------------------------------------------------#   
     output_data = {
         "query": user_query,
         "fusion_method": "RRFRanker(k=30)",

@@ -1,0 +1,15 @@
+10-30-2025 02:03 - download_filings - INFO - Saving log to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler\logs
+
+10-30-2025 02:03 - download_filings - INFO - Downloading index files from SEC...
+10-30-2025 02:03 - download_filings - INFO - Skipping 2024_QTR1.tsv
+10-30-2025 02:03 - download_filings - INFO - Skipping 2024_QTR2.tsv
+10-30-2025 02:03 - download_filings - INFO - Skipping 2024_QTR3.tsv
+10-30-2025 02:03 - download_filings - INFO - Skipping 2024_QTR4.tsv
+10-30-2025 02:03 - download_filings - INFO - 
+Reading filings metadata...
+
+10-30-2025 02:03 - download_filings - INFO - 
+Downloading 12 filings directly from EDGAR...
+
+10-30-2025 02:03 - download_filings - INFO - 
+Filings metadata exported to C:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG\edgar-crawler\datasets\FILINGS_METADATA.csv
