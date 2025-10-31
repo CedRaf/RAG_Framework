@@ -4,6 +4,7 @@ from neo4j import GraphDatabase, basic_auth
 from langchain_perplexity import ChatPerplexity
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from SmartQueryRouter import SmartQueryRouter
 
 # Load environment variables
 load_dotenv()
@@ -82,9 +83,6 @@ User Query:
 Cypher Query:
 """
 
-
-
-
 def generate_cypher_from_query(user_query: str) -> str:
     prompt = ChatPromptTemplate.from_template(QUERY_PROMPT_TEMPLATE)
     chain = prompt | chat | StrOutputParser()
@@ -107,22 +105,47 @@ def run_cypher_query(cypher_query: str):
 
 # This function is for the 'JointRetrieval' file
 def execute_graph_retrieval_process(user_query: str):
-    cypher_query = generate_cypher_from_query(user_query)
+    """
+    Enhanced retrieval with smart routing.
+    Tries rule-based templates first, falls back to LLM if needed.
+    """
+    # Try smart routing first
+    routed_result = SmartQueryRouter.route(user_query)
+    
+    if routed_result:
+        # Use template-based query
+        print(f"✓ Using rule-based template: {routed_result['method']}")
+        cypher_query = routed_result['cypher']
+        method = routed_result['method']
+    else:
+        # Fallback to LLM-generated query
+        print("✓ Using LLM-generated Cypher")
+        cypher_query = generate_cypher_from_query(user_query)
+        method = "llm_generated"
+    
     result = run_cypher_query(cypher_query)
+    
     return {
-        "cypher_query" : cypher_query,
-        "results": result
+        "cypher_query": cypher_query,
+        "results": result,
+        "method": method  # Track which method was used
     }
 
 def close_drivers():
     driver.close()
 
 if __name__ == "__main__":
-    user_query = input("Ask your financial graph question (e.g., 'Show Apple’s net income in 2020 10-K'): ")
-    cypher_query = generate_cypher_from_query(user_query)
-    print("\nGenerated Cypher query:\n", cypher_query)
-    print("\nQuery Results:\n")
-    run_cypher_query(cypher_query)
+    user_query = input("Ask your financial graph question (e.g., 'Show Apple's net income in 2020 10-K'): ")
+    
+    # Use the enhanced retrieval process
+    result = execute_graph_retrieval_process(user_query)
+    
+    print(f"\nMethod used: {result['method']}")
+    print("\nGenerated Cypher query:\n", result['cypher_query'])
+    print("\nQuery Results:")
+    for record in result['results']:
+        print(record)
+    
     driver.close()
 
 # This is another optimized prompt for reference, can try using this if the one above is not satisfactory.
