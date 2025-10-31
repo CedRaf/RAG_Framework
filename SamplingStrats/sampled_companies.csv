@@ -1,30 +1,30 @@
 Ticker,Company,Sector,Market_Cap,Market_Cap_Category
-LIN,Linde plc,BasicMaterials,208308371456,Large
-AMZN,"Amazon.com, Inc.",ConsumerDiscretionary,2287303655424,Large
-NFLX,"Netflix, Inc.",ConsumerDiscretionary,502938533888,Large
-COST,Costco Wholesale Corporation,ConsumerDiscretionary,410215514112,Large
-MELI,"MercadoLibre, Inc.",ConsumerDiscretionary,103577780224,Mid
+LIN,Linde plc,BasicMaterials,2.08308E+11,Large
+AMZN,"Amazon.com, Inc.",ConsumerDiscretionary,2.2873E+12,Large
+NFLX,"Netflix, Inc.",ConsumerDiscretionary,5.02939E+11,Large
+COST,Costco Wholesale Corporation,ConsumerDiscretionary,4.10216E+11,Large
+MELI,"MercadoLibre, Inc.",ConsumerDiscretionary,1.03578E+11,Mid
 SBUX,Starbucks Corporation,ConsumerDiscretionary,95869280256,Mid
 ORLY,"O'Reilly Automotive, Inc.",ConsumerDiscretionary,85842411520,Mid
 BKR,Baker Hughes Company,ConsumerDiscretionary,44009644032,Small
-PEP,"PepsiCo, Inc.",ConsumerStaples,208751820800,Large
+PEP,"PepsiCo, Inc.",ConsumerStaples,2.08752E+11,Large
 MDLZ,"Mondelez International, Inc.",ConsumerStaples,79707037696,Mid
-GILD,"Gilead Sciences, Inc.",Healthcare,146229100544,Mid
-VRTX,Vertex Pharmaceuticals Incorporated,Healthcare,104763785216,Mid
+GILD,"Gilead Sciences, Inc.",Healthcare,1.46229E+11,Mid
+VRTX,Vertex Pharmaceuticals Incorporated,Healthcare,1.04764E+11,Mid
 BIIB,Biogen Inc.,Healthcare,20857391104,Small
 CSX,CSX Corporation,Industrials,67095330816,Mid
 VRSK,"Verisk Analytics, Inc.",Industrials,32003112960,Small
 ODFL,"Old Dominion Freight Line, Inc.",Industrials,29024221184,Small
 CSGP,"CoStar Group, Inc.",RealEstate,31498403840,Small
-AAPL,Apple Inc.,Technology,3672254447616,Large
-GOOGL,Alphabet Inc.,Technology,3043438100480,Large
-META,"Meta Platforms, Inc.",Technology,1788820717568,Large
-AVGO,Broadcom Inc.,Technology,1672425504768,Large
-ASML,ASML Holding N.V.,Technology,395751489536,Large
-APP,AppLovin Corporation,Technology,204871204864,Large
-PDD,PDD Holdings Inc.,Technology,180791967744,Mid
-INTU,Intuit Inc.,Technology,180384038912,Mid
-ADBE,Adobe Inc.,Technology,137815687168,Mid
+AAPL,Apple Inc.,Technology,3.67225E+12,Large
+GOOGL,Alphabet Inc.,Technology,3.04344E+12,Large
+META,"Meta Platforms, Inc.",Technology,1.78882E+12,Large
+AVGO,Broadcom Inc.,Technology,1.67243E+12,Large
+ASML,ASML Holding N.V.,Technology,3.95751E+11,Large
+APP,AppLovin Corporation,Technology,2.04871E+11,Large
+CRWD,"CrowdStrike Holdings, Inc.",Technology,1.21018E+11,Mid
+INTU,Intuit Inc.,Technology,1.80384E+11,Mid
+ADBE,Adobe Inc.,Technology,1.37816E+11,Mid
 MSTR,Strategy Inc,Technology,81492926464,Mid
 MRVL,"Marvell Technology, Inc.",Technology,76063080448,Mid
 NXPI,NXP Semiconductors N.V.,Technology,54812233728,Mid
@@ -32,5 +32,5 @@ ZS,"Zscaler, Inc.",Technology,47369932800,Small
 MCHP,Microchip Technology Incorporated,Technology,35268067328,Small
 CTSH,Cognizant Technology Solutions Corporation,Technology,31975282688,Small
 ON,ON Semiconductor Corporation,Technology,21663352832,Small
-TMUS,"T-Mobile US, Inc.",Telecommunications,254851137536,Large
-AEP,"American Electric Power Company, Inc.",Utilities,62854426624,Mid
+TMUS,"T-Mobile US, Inc.",Telecommunications,2.54851E+11,Large
+CEG,Constellation Energy Corporation,Utilities,1.23878E+11,Mid

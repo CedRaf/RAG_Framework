@@ -1,4 +1,7 @@
 import os
+import json
+import sys
+from pathlib import Path
 from datasets import Dataset
 from ragas import evaluate
 from ragas.metrics import (
@@ -11,6 +14,13 @@ from ragas.metrics import (
 )
 from neo4j import GraphDatabase
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# Add Graph directory to path for imports
+sys.path.append(str(Path(__file__).resolve().parent.parent / "Graph"))
+try:
+    from GraphQueryTest import execute_graph_retrieval_process
+except ImportError:
+    print("Warning: Could not import GraphQueryTest - make sure Graph directory is in path")
 
 # ============================================================================
 # CONFIGURATION
@@ -79,24 +89,39 @@ def get_neo4j_driver():
 
 def retrieve_contexts_from_neo4j(question: str, driver) -> list[str]:
     """
-    Retrieve relevant context from Neo4j for a given question.
-    
-    CUSTOMIZE THIS based on your Neo4j schema and retrieval strategy.
-    This is a placeholder example.
+    Retrieve relevant context from Neo4j for a given question using GraphQueryTest.
     """
-    with driver.session() as session:
-        # Example: Retrieve relevant nodes/relationships
-        # MODIFY THIS QUERY based on your graph structure
-        result = session.run("""
-            // Example query - customize for your schema
-            MATCH (n)
-            WHERE n.content CONTAINS $keyword
-            RETURN n.content as context
-            LIMIT 5
-        """, keyword=question.split()[0])  # Simple keyword matching
+    try:
+        # Use the enhanced graph retrieval
+        result = execute_graph_retrieval_process(question)
         
-        contexts = [record["context"] for record in result if record["context"]]
-        return contexts
+        # Convert Neo4j results to context strings
+        contexts = []
+        for record in result['results']:
+            if 'message' in record and record['message'] == 'No Data Found':
+                contexts.append("No relevant data found in the graph database.")
+            else:
+                context_parts = []
+                if 'ticker' in record:
+                    context_parts.append(f"Company: {record.get('name', record['ticker'])} ({record['ticker']})")
+                if 'line_item' in record:
+                    context_parts.append(f"Metric: {record['line_item']}")
+                if 'value' in record:
+                    context_parts.append(f"Value: {record['value']}")
+                if 'year' in record:
+                    context_parts.append(f"Year: {record['year']}")
+                if 'yoy_change_percent' in record and record['yoy_change_percent']:
+                    context_parts.append(f"YoY Change: {record['yoy_change_percent']:.2f}%")
+                if 'percentile' in record:
+                    context_parts.append(f"Industry Percentile: {record['percentile']:.1f}%")
+                
+                contexts.append(" | ".join(context_parts))
+        
+        return contexts if contexts else ["No relevant data found."]
+    
+    except Exception as e:
+        print(f"Error retrieving from Neo4j: {e}")
+        return [f"Error: {str(e)}"]
 
 
 def generate_answer_with_rag(question: str, contexts: list[str]) -> str:
@@ -132,13 +157,13 @@ def prepare_evaluation_dataset_without_ground_truth():
     """
     driver = get_neo4j_driver()
     
-    # Your questions to evaluate
-    questions = [
-        "What is the relationship between entity A and entity B?",
-        "How does process X work in the system?",
-        "What are the main characteristics of concept Y?",
-        # Add more questions...
-    ]
+    # Load questions from cedAnswer.json
+    json_path = Path(__file__).parent / "cedAnswer.json"
+    with open(json_path, 'r') as f:
+        test_cases = json.load(f)
+    
+    # Extract just questions
+    questions = [tc["question"] for tc in test_cases]
     
     data = {
         "question": [],
@@ -147,6 +172,8 @@ def prepare_evaluation_dataset_without_ground_truth():
     }
     
     for question in questions:
+        print(f"Processing: {question[:60]}...")
+        
         # Retrieve contexts from Neo4j
         contexts = retrieve_contexts_from_neo4j(question, driver)
         
@@ -163,23 +190,15 @@ def prepare_evaluation_dataset_without_ground_truth():
 
 def prepare_evaluation_dataset_with_ground_truth():
     """
-    Prepare dataset WITH ground truth answers.
+    Prepare dataset WITH ground truth answers from cedAnswer.json.
     Use this for comprehensive evaluation including answer correctness.
     """
     driver = get_neo4j_driver()
     
-    # Your test set with ground truth
-    test_cases = [
-        {
-            "question": "What is the relationship between entity A and entity B?",
-            "ground_truth": "Entity A is connected to entity B through relationship R."
-        },
-        {
-            "question": "How does process X work in the system?",
-            "ground_truth": "Process X works by first doing step 1, then step 2, resulting in outcome Y."
-        },
-        # Add more test cases...
-    ]
+    # Load test cases from cedAnswer.json
+    json_path = Path(__file__).parent / "cedAnswer.json"
+    with open(json_path, 'r') as f:
+        test_cases = json.load(f)
     
     data = {
         "question": [],
@@ -190,6 +209,7 @@ def prepare_evaluation_dataset_with_ground_truth():
     
     for test_case in test_cases:
         question = test_case["question"]
+        print(f"Processing: {question[:60]}...")
         
         # Retrieve contexts from Neo4j
         contexts = retrieve_contexts_from_neo4j(question, driver)
@@ -200,7 +220,7 @@ def prepare_evaluation_dataset_with_ground_truth():
         data["question"].append(question)
         data["answer"].append(answer)
         data["contexts"].append(contexts)
-        data["ground_truth"].append(test_case["ground_truth"])
+        data["ground_truth"].append(test_case["answer"])
     
     driver.close()
     return Dataset.from_dict(data)
@@ -219,6 +239,37 @@ def load_existing_dataset_from_file():
     df['contexts'] = df['contexts'].apply(eval)  # Convert string to list
     
     return Dataset.from_pandas(df)
+
+
+def analyze_results_by_query_pattern(results_df, test_cases):
+    """
+    OPTIONAL: Analyze results AFTER evaluation to identify patterns.
+    This is for YOUR analysis, not for influencing the evaluation.
+    """
+    # Extract query patterns from comments
+    query_patterns = []
+    for tc in test_cases:
+        comment = tc.get('_comment', 'unknown')
+        # Extract the main pattern type
+        pattern = comment.split('-')[0].strip() if '-' in comment else comment
+        query_patterns.append(pattern)
+    
+    results_df['query_pattern'] = query_patterns
+    
+    print("\n" + "="*80)
+    print("PERFORMANCE BY QUERY PATTERN (Post-hoc Analysis)")
+    print("="*80)
+    
+    grouped = results_df.groupby('query_pattern').agg({
+        'answer_correctness': ['mean', 'std', 'count'],
+        'faithfulness': ['mean', 'std'],
+        'answer_relevancy': ['mean', 'std']
+    }).round(3)
+    
+    print(grouped)
+    print("\n")
+    
+    return grouped
 
 
 # ============================================================================
@@ -284,7 +335,7 @@ def evaluate_with_ground_truth():
 
 if __name__ == "__main__":
     print("=" * 80)
-    print("RAGAS Evaluation for Neo4j Graph RAG")
+    print("RAGAS Evaluation for Neo4j Graph RAG - Graph-Specific Capabilities")
     print("=" * 80)
     
     # Choose your evaluation approach:
@@ -311,5 +362,21 @@ if __name__ == "__main__":
     print("SUMMARY STATISTICS")
     print("=" * 80)
     for metric in results.keys():
-        if metric != 'question' and metric != 'answer' and metric != 'contexts' and metric != 'ground_truth':
+        if metric not in ['question', 'answer', 'contexts', 'ground_truth']:
             print(f"{metric}: {results[metric]:.4f}")
+    
+    # OPTIONAL: Analyze by query pattern
+    print("\n" + "=" * 80)
+    print("ANALYZING PERFORMANCE BY QUERY TYPE...")
+    print("=" * 80)
+    
+    with open(Path(__file__).parent / "cedAnswer.json", 'r') as f:
+        test_cases = json.load(f)
+    
+    pattern_analysis = analyze_results_by_query_pattern(results_df, test_cases)
+    pattern_analysis.to_csv("query_pattern_analysis.csv")
+    print("\nPattern analysis saved to: query_pattern_analysis.csv")
+    
+    print("\n" + "=" * 80)
+    print("EVALUATION COMPLETE")
+    print("=" * 80)
