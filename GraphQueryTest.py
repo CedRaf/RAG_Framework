@@ -66,7 +66,7 @@ Rules:
    - For BalanceSheet: `(t:BalanceSheet)`
    - For CashFlowStatement: `(t:CashFlowStatement)`
    - For all tables: `(t)` where `t:IncomeStatement OR t:BalanceSheet OR t:CashFlowStatement`
-7. If performing a cross-table metric (e.g., "net income divided by total assets" or "operating cash flow to net income ration"), retrieve both values in a single query using OPTIONAL MATCH or subqueries, then compute the ration in the RETURN clause when possible. 
+7. If performing a cross-table metric (e.g., "net income divided by total assets" or "operating cash flow to net income ration"), retrieve both values in a single query using OPTIONAL MATCH or subqueries, then compute the ratio in the RETURN clause when possible. 
 8. Return only:
    c.company_ticker AS ticker,
    c.company_name AS name,
