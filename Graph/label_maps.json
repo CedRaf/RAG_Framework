@@ -1,0 +1,161 @@
+{
+  "revenue": {
+    "total revenues": "Total Revenue",
+    "net revenues": "Total Revenue",
+    "operating revenues": "Total Revenue",
+    "revenues": "Total Revenue",
+    "revenue": "Revenue",
+    "contract revenue": "Revenue"
+  },
+  "gross_profit": {
+    "gross profit": "Gross Profit",
+    "gross profit margin": "Gross Profit Margin",
+    "gross margin": "Gross Profit Margin"
+  },
+  "net_income": {
+    "net income": "Net Income",
+    "net earnings": "Net Income",
+    "net loss": "Net Income",
+    "net income loss": "Net Income"
+  },
+  "operating_income": {
+    "operating income": "Operating Income",
+    "operating profit": "Operating Income",
+    "income from operations": "Operating Income",
+    "operating income loss": "Operating Income"
+  },
+  "cost": {
+    "cost of revenues": "Cost of Revenue",
+    "cost of goods sold": "Cost of Revenue",
+    "cost of revenue": "Cost of Revenue",
+    "total cost of revenue": "Cost of Revenue",
+    "cost of goods and services sold": "Cost of Revenue",
+    "cogs": "Cost of Revenue"
+  },
+  "operating_expense": {
+    "operating expenses": "Operating Expenses",
+    "operating costs": "Operating Expenses",
+    "costs and expenses": "Operating Expenses"
+  },
+  "rd_expense": {
+    "research and development expense": "Research and Development",
+    "research and development": "Research and Development",
+    "r&d expense": "Research and Development"
+  },
+  "sga_expense": {
+    "selling, general and administrative expense": "Selling, General and Administrative",
+    "selling general and administrative expense": "Selling, General and Administrative",
+    "general and administrative expense": "General and Administrative",
+    "selling expense": "Selling Expense",
+    "selling and marketing expense": "Selling and Marketing",
+    "sg&a": "Selling, General and Administrative",
+    "sga": "Selling, General and Administrative"
+  },
+  "cash": {
+    "cash and cash equivalents": "Cash and Cash Equivalents",
+    "cash and cash equivalents at carrying value": "Cash and Cash Equivalents"
+  },
+  "marketable_securities": {
+    "current marketable securities": "Marketable Securities - Current",
+    "marketable securities current": "Marketable Securities - Current",
+    "non current marketable securities": "Marketable Securities - Non-Current",
+    "marketable securities noncurrent": "Marketable Securities - Non-Current",
+    "non-current marketable securities": "Marketable Securities - Non-Current",
+    "non-marketable securities": "Non-Marketable Securities"
+  },
+  "receivables": {
+    "accounts receivable": "Accounts Receivable",
+    "accounts receivable net current": "Accounts Receivable",
+    "accounts receivable, net": "Accounts Receivable",
+    "vendor non-trade receivables": "Vendor Non-Trade Receivables",
+    "income taxes receivable": "Income Taxes Receivable",
+    "income taxes receivable, net": "Income Taxes Receivable"
+  },
+  "inventory": {
+    "inventory": "Inventory",
+    "inventories": "Inventory",
+    "inventory net": "Inventory"
+  },
+  "ppe": {
+    "property, plant and equipment": "Property, Plant and Equipment",
+    "property plant and equipment net": "Property, Plant and Equipment",
+    "property, plant and equipment, net": "Property, Plant and Equipment",
+    "property and equipment, net": "Property, Plant and Equipment"
+  },
+  "intangibles": {
+    "goodwill": "Goodwill",
+    "intangible assets": "Intangible Assets",
+    "intangible assets, net": "Intangible Assets"
+  },
+  "assets": {
+    "total assets": "Total Assets",
+    "current assets": "Current Assets",
+    "total current assets": "Current Assets",
+    "non-current assets": "Non-Current Assets",
+    "noncurrent assets": "Non-Current Assets",
+    "long-term assets": "Non-Current Assets",
+    "other current assets": "Other Current Assets",
+    "other assets current": "Other Current Assets",
+    "other non current assets": "Other Non-Current Assets",
+    "other assets noncurrent": "Other Non-Current Assets",
+    "other assets non-current": "Other Non-Current Assets"
+  },
+  "payables": {
+    "accounts payable": "Accounts Payable",
+    "accounts payable current": "Accounts Payable"
+  },
+  "liabilities": {
+    "total liabilities": "Total Liabilities",
+    "current liabilities": "Current Liabilities",
+    "total current liabilities": "Current Liabilities",
+    "non-current liabilities": "Non-Current Liabilities",
+    "noncurrent liabilities": "Non-Current Liabilities",
+    "long-term liabilities": "Non-Current Liabilities",
+    "other current liabilities": "Other Current Liabilities",
+    "other liabilities current": "Other Current Liabilities",
+    "other non current liabilities": "Other Non-Current Liabilities",
+    "other liabilities noncurrent": "Other Non-Current Liabilities"
+  },
+  "debt": {
+    "long term debt": "Long-Term Debt",
+    "long-term debt": "Long-Term Debt",
+    "long term debt noncurrent": "Long-Term Debt",
+    "short term debt": "Short-Term Debt",
+    "short-term debt": "Short-Term Debt",
+    "long term debt current": "Current Portion of Long-Term Debt"
+  },
+  "equity": {
+    "stockholders equity": "Stockholders Equity",
+    "total stockholders equity": "Total Stockholders Equity",
+    "shareholders equity": "Stockholders Equity",
+    "total shareholders equity": "Total Stockholders Equity",
+    "shareholders' equity": "Stockholders Equity",
+    "stockholders' equity": "Stockholders Equity",
+    "common stock": "Common Stock",
+    "retained earnings": "Retained Earnings",
+    "retained earnings accumulated deficit": "Retained Earnings",
+    "accumulated other comprehensive income loss": "Accumulated Other Comprehensive Income/Loss",
+    "accumulated other comprehensive income/loss": "Accumulated Other Comprehensive Income/Loss",
+    "stockholders": "Stockholders",
+    "shareholders": "Stockholders",
+    "shareholders' ": "Stockholders ",
+    "stockholders' ": "Stockholders "
+  },
+  "cash_flow": {
+    "depreciation and amortization": "Depreciation and Amortization",
+    "depreciation depletion and amortization": "Depreciation and Amortization",
+    "share-based compensation": "Share-Based Compensation",
+    "share-based compensation expense": "Share-Based Compensation",
+    "share based compensation": "Share-Based Compensation",
+    "deferred income taxes": "Deferred Income Taxes",
+    "deferred income taxes and tax credits": "Deferred Income Taxes",
+    "restructuring charges": "Restructuring Charges"
+  },
+  "other": {
+    "nonoperating income/expense": "Non-Operating Income/Expense",
+    "nonoperating income expense": "Non-Operating Income/Expense",
+    "non-operating income/expense": "Non-Operating Income/Expense",
+    "other income/expense": "Other Income/Expense",
+    "other income expense": "Other Income/Expense"
+  }
+}
