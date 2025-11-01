@@ -5,16 +5,14 @@ import json
 from typing import Dict, Optional, List
 from pathlib import Path
 
-# Import company data from centralized file
 try:
     from company_data import company_data
 except ImportError:
     # Fallback if import fails
     company_data = {}
 
-# Load label mappings for precise metric extraction
+# Load label mappings from JSON
 def load_label_maps():
-    """Load label mappings from JSON file"""
     try:
         label_maps_path = Path(__file__).parent / "label_maps.json"
         with open(label_maps_path, 'r') as f:
@@ -25,158 +23,56 @@ def load_label_maps():
 LABEL_MAPS = load_label_maps()
 
 class SmartQueryRouter:
-    """
-    Route queries to predefined Cypher templates when possible.
-    This reduces reliance on LLM-generated queries and improves consistency.
+    # Single predefined template for simple lookups
+    TEMPLATE = """
+        MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {{form_type: "{form_type}"}})
+              -[:HAS_YEAR]->(y:Year {{filing_year: "{year}"}})
+              -[:HAS_TABLE]->(t:{table_type})-[:HAS_ITEM]->(li:LineItem)
+        WHERE (toLower(c.company_name) CONTAINS toLower("{company}") 
+               OR toUpper(c.company_ticker) = toUpper("{ticker}"))
+          AND (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
+        RETURN c.company_ticker AS ticker, c.company_name AS name,
+               li.label AS line_item, li.value AS value, 
+               y.filing_year AS year, f.form_type AS filing_type,
+               t.table_type AS source_table
     """
     
-    # Predefined Cypher templates for common query patterns
-    TEMPLATES = {
-        "single_metric": """
-            MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(y:Year {{filing_year: "{year}"}})
-                  -[:HAS_TABLE]->(t:{table_type})-[:HAS_ITEM]->(li:LineItem)
-            WHERE (toLower(c.company_name) CONTAINS toLower("{company}") 
-                   OR toUpper(c.company_ticker) = toUpper("{ticker}"))
-              AND (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
-            RETURN c.company_ticker AS ticker, c.company_name AS name,
-                   li.label AS line_item, li.value AS value, 
-                   y.filing_year AS year, f.form_type AS filing_type,
-                   t.table_type AS source_table
-        """,
-        
-        "year_over_year_trend": """
-            MATCH (c:Company {{company_ticker: "{ticker}"}})
-                  -[:HAS_FILING]->(:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(y:Year)-[:HAS_TABLE]->(t:{table_type})
-                  -[:HAS_ITEM]->(li:LineItem)
-            WHERE (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
-              AND toInteger(y.filing_year) >= {start_year}
-              AND toInteger(y.filing_year) <= {end_year}
-            WITH c, li, y
-            ORDER BY y.filing_year
-            WITH c.company_ticker AS ticker, collect({{
-                year: y.filing_year,
-                label: li.label,
-                value: li.value
-            }}) AS yearly_data
-            UNWIND range(0, size(yearly_data)-1) AS idx
-            WITH ticker, yearly_data[idx] AS current,
-                 CASE WHEN idx > 0 
-                      THEN yearly_data[idx-1]
-                      ELSE null 
-                 END AS previous
-            RETURN ticker,
-                   current.label AS line_item,
-                   current.year AS year,
-                   current.value AS value,
-                   CASE WHEN previous IS NOT NULL AND toFloat(previous.value) <> 0
-                        THEN round((toFloat(current.value) - toFloat(previous.value)) / toFloat(previous.value) * 100, 2)
-                        ELSE null
-                   END AS yoy_change_percent
-            ORDER BY year
-        """,
-        
-        "peer_comparison": """
-            MATCH (c:Company {{company_ticker: "{ticker}"}})-[:SAME_INDUSTRY]->(peer:Company)
-            WITH collect(DISTINCT peer.company_ticker) + ["{ticker}"] AS all_tickers
-            UNWIND all_tickers AS ticker
-            MATCH (comp:Company {{company_ticker: ticker}})
-                  -[:HAS_FILING]->(:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(:Year {{filing_year: "{year}"}})
-                  -[:HAS_TABLE]->(t:{table_type})-[:HAS_ITEM]->(li:LineItem)
-            WHERE (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
-            RETURN comp.company_ticker AS ticker, 
-                   comp.company_name AS name,
-                   li.label AS line_item,
-                   li.value AS value,
-                   t.table_type AS source_table
-            ORDER BY toFloat(li.value) DESC
-        """,
-        
-        "percentile_rank": """
-            MATCH (target:Company {{company_ticker: "{ticker}"}})
-                  -[:HAS_FILING]->(:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(:Year {{filing_year: "{year}"}})
-                  -[:HAS_TABLE]->(t:{table_type})-[:HAS_ITEM]->(target_li:LineItem)
-            WHERE (target_li.label = "{normalized_label}" OR toUpper(target_li.label) CONTAINS toUpper("{metric}"))
-            WITH target, target_li.value AS target_value, target_li.label AS metric_label
-            
-            MATCH (c:Company)-[:SAME_INDUSTRY]->(target)
-            MATCH (c)-[:HAS_FILING]->(:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(:Year {{filing_year: "{year}"}})
-                  -[:HAS_TABLE]->()-[:HAS_ITEM]->(li:LineItem)
-            WHERE (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
-            WITH target, target_value, metric_label, collect(toFloat(li.value)) AS all_values
-            WITH target, target_value, metric_label, all_values,
-                 size([v IN all_values WHERE v <= toFloat(target_value)]) AS rank,
-                 size(all_values) AS total
-            RETURN target.company_ticker AS ticker,
-                   target.company_name AS name,
-                   metric_label AS line_item,
-                   target_value AS value,
-                   toFloat(rank) / total * 100 AS percentile,
-                   rank AS rank_position,
-                   total AS total_companies
-        """,
-        
-        "hierarchical_breakdown": """
-            MATCH (parent:LineItem)-[:COMPOSED_OF]->(child:LineItem)
-            WHERE parent.company_ticker = "{ticker}"
-              AND parent.filing_year = "{year}"
-              AND parent.form_type = "{form_type}"
-              AND (parent.label = "{normalized_label}" OR toUpper(parent.label) CONTAINS toUpper("{metric}"))
-            RETURN parent.company_ticker AS ticker,
-                   parent.label AS parent_metric,
-                   parent.value AS parent_value,
-                   collect({{
-                       component: child.label,
-                       value: child.value,
-                       percentage: toFloat(child.value) / toFloat(parent.value) * 100
-                   }}) AS components
-        """,
-        
-        "multi_year_comparison": """
-            MATCH (c:Company {{company_ticker: "{ticker}"}})
-                  -[:HAS_FILING]->(:FilingType {{form_type: "{form_type}"}})
-                  -[:HAS_YEAR]->(y:Year)-[:HAS_TABLE]->(t:{table_type})
-                  -[:HAS_ITEM]->(li:LineItem)
-            WHERE (li.label = "{normalized_label}" OR toUpper(li.label) CONTAINS toUpper("{metric}"))
-              AND toInteger(y.filing_year) >= {start_year}
-              AND toInteger(y.filing_year) <= {end_year}
-            RETURN c.company_ticker AS ticker,
-                   c.company_name AS name,
-                   li.label AS line_item,
-                   y.filing_year AS year,
-                   li.value AS value
-            ORDER BY y.filing_year
-        """
-    }
-    
-    # Metric to table type mapping
+    # Metric to table type mapping (used for both label_map categories and keyword fallback)
     METRIC_TABLE_MAP = {
+        # Label map categories
         'revenue': 'IncomeStatement',
+        'gross_profit': 'IncomeStatement',
+        'net_income': 'IncomeStatement',
+        'operating_income': 'IncomeStatement',
+        'cost': 'IncomeStatement',
+        'operating_expense': 'IncomeStatement',
+        'rd_expense': 'IncomeStatement',
+        'sga_expense': 'IncomeStatement',
+        'cash': 'BalanceSheet',
+        'marketable_securities': 'BalanceSheet',
+        'receivables': 'BalanceSheet',
+        'inventory': 'BalanceSheet',
+        'ppe': 'BalanceSheet',
+        'intangibles': 'BalanceSheet',
+        'assets': 'BalanceSheet',
+        'payables': 'BalanceSheet',
+        'liabilities': 'BalanceSheet',
+        'debt': 'BalanceSheet',
+        'equity': 'BalanceSheet',
+        'cash_flow': 'CashFlowStatement',
+        'other': 'IncomeStatement',
+        # Keyword fallbacks
         'sales': 'IncomeStatement',
         'income': 'IncomeStatement',
         'profit': 'IncomeStatement',
         'loss': 'IncomeStatement',
         'earnings': 'IncomeStatement',
         'expense': 'IncomeStatement',
-        'cost': 'IncomeStatement',
-        'assets': 'BalanceSheet',
-        'liabilities': 'BalanceSheet',
-        'equity': 'BalanceSheet',
-        'debt': 'BalanceSheet',
-        'inventory': 'BalanceSheet',
-        'receivables': 'BalanceSheet',
-        'payables': 'BalanceSheet',
-        'cash': 'BalanceSheet',
         'property': 'BalanceSheet',
         'equipment': 'BalanceSheet',
         'goodwill': 'BalanceSheet',
         'intangible': 'BalanceSheet',
         'stock': 'BalanceSheet',
-        'cash flow': 'CashFlowStatement',
         'operating cash': 'CashFlowStatement',
         'investing cash': 'CashFlowStatement',
         'financing cash': 'CashFlowStatement',
@@ -300,35 +196,13 @@ class SmartQueryRouter:
                     metric = metric_keyword
                     break
         
-        # Determine table type based on metric category or metric keyword
+        # Determine table type from metric category or keyword
         table_type = "BalanceSheet"  # Default
         if metric_category:
-            # Map categories to table types
-            category_table_map = {
-                'revenue': 'IncomeStatement',
-                'gross_profit': 'IncomeStatement',
-                'net_income': 'IncomeStatement',
-                'operating_income': 'IncomeStatement',
-                'cost': 'IncomeStatement',
-                'operating_expense': 'IncomeStatement',
-                'rd_expense': 'IncomeStatement',
-                'sga_expense': 'IncomeStatement',
-                'cash': 'BalanceSheet',
-                'marketable_securities': 'BalanceSheet',
-                'receivables': 'BalanceSheet',
-                'inventory': 'BalanceSheet',
-                'ppe': 'BalanceSheet',
-                'intangibles': 'BalanceSheet',
-                'assets': 'BalanceSheet',
-                'payables': 'BalanceSheet',
-                'liabilities': 'BalanceSheet',
-                'debt': 'BalanceSheet',
-                'equity': 'BalanceSheet',
-                'cash_flow': 'CashFlowStatement',
-                'other': 'IncomeStatement'
-            }
-            table_type = category_table_map.get(metric_category, "BalanceSheet")
+            # Use the unified METRIC_TABLE_MAP
+            table_type = SmartQueryRouter.METRIC_TABLE_MAP.get(metric_category, "BalanceSheet")
         elif metric:
+            # Fallback to keyword matching
             table_type = SmartQueryRouter.METRIC_TABLE_MAP.get(metric, "BalanceSheet")
         
         return {
@@ -343,12 +217,9 @@ class SmartQueryRouter:
             'query_lower': query_lower
         }
     
-    @classmethod
+    @classmethod # Routes only for single metric queries cuz its hard to maintain templates for complex ones
     def route(cls, query: str) -> Optional[Dict[str, str]]:
-        """
-        Route query to appropriate template or return None for LLM fallback.
-        Returns dict with 'cypher' and 'method' keys if routed successfully.
-        """
+
         entities = cls.extract_entities(query)
         query_lower = entities['query_lower']
         
@@ -356,66 +227,34 @@ class SmartQueryRouter:
         if not entities.get('normalized_label'):
             entities['normalized_label'] = ''
         
-        # Check for comparison indicators
-        is_comparison = any(word in query_lower for word in [
-            'compare', 'versus', 'vs', 'compared to', 'peer', 'competitor',
-            'higher', 'lower', 'more', 'less', 'better', 'worse',
-            'which company', 'which one', ' or ', 'between'
-        ])
-        
-        # Pattern 1: Simple single metric query
-        # Match if we have ticker, year, and metric - don't require specific trigger words
+        # Check if this is a simple single-metric query
         if entities['ticker'] and entities['year'] and entities['metric']:
-            # Exclude if it's clearly asking about trends or comparisons
-            if not any(word in query_lower for word in ['trend', 'change', 'growth']) and not is_comparison:
-                # Exclude component/breakdown queries
-                if not any(word in query_lower for word in ['component', 'breakdown', 'composition', 'rank', 'percentile']):
-                    # Also check it's not a multi-year query
-                    if len(entities['years']) == 1:
-                        cypher = cls.TEMPLATES['single_metric'].format(**entities)
-                        return {'cypher': cypher, 'method': 'template_single_metric'}
+            # Ensure it's truly simple - single year only
+            if len(entities['years']) != 1:
+                return None
+            
+            # Exclude complex query patterns
+            complex_indicators = [
+                'compare', 'versus', 'vs', 'compared to', 'peer', 'competitor',
+                'higher', 'lower', 'more', 'less', 'better', 'worse',
+                'which company', 'which one', ' or ', 'between',
+                'trend', 'change', 'growth', 'over time',
+                'rank', 'percentile', 'position',
+                'component', 'breakdown', 'composition', 'made up', 'composed of',
+                'ratio', 'calculate', 'compute', 'average', 'mean', 'median'
+            ]
+            
+            if any(indicator in query_lower for indicator in complex_indicators):
+                return None
+            
+            cypher = cls.TEMPLATE.format(**entities)
+            return {'cypher': cypher, 'method': 'template_single_metric'}
         
-        # Pattern 2: Year-over-year trend (multi-year with "trend" or "change")
-        if ('trend' in query_lower or 'change' in query_lower or 'growth' in query_lower):
-            if len(entities['years']) >= 2 and entities['ticker'] and entities['metric']:
-                entities['start_year'] = min(entities['years'])
-                entities['end_year'] = max(entities['years'])
-                
-                cypher = cls.TEMPLATES['year_over_year_trend'].format(**entities)
-                return {'cypher': cypher, 'method': 'template_yoy_trend'}
-        
-        # Pattern 3: Multi-year comparison (no trend keyword, just range)
-        if len(entities['years']) >= 2 and entities['ticker'] and entities['metric']:
-            if not any(word in query_lower for word in ['trend', 'growth', 'change']):
-                entities['start_year'] = min(entities['years'])
-                entities['end_year'] = max(entities['years'])
-                cypher = cls.TEMPLATES['multi_year_comparison'].format(**entities)
-                return {'cypher': cypher, 'method': 'template_multi_year'}
-        
-        # Pattern 4: Peer comparison
-        if is_comparison:
-            if entities['ticker'] and entities['year'] and entities['metric']:
-                cypher = cls.TEMPLATES['peer_comparison'].format(**entities)
-                return {'cypher': cypher, 'method': 'template_peer_comparison'}
-        
-        # Pattern 5: Percentile/ranking
-        if any(word in query_lower for word in ['rank', 'percentile', 'where does', 'how does', 'position']):
-            if entities['ticker'] and entities['year'] and entities['metric']:
-                cypher = cls.TEMPLATES['percentile_rank'].format(**entities)
-                return {'cypher': cypher, 'method': 'template_percentile'}
-        
-        # Pattern 6: Hierarchical breakdown (components, breakdown, composition)
-        if any(word in query_lower for word in ['component', 'breakdown', 'composition', 'made up', 'composed of']):
-            if entities['ticker'] and entities['year'] and entities['metric']:
-                cypher = cls.TEMPLATES['hierarchical_breakdown'].format(**entities)
-                return {'cypher': cypher, 'method': 'template_hierarchical'}
-        
-        # No template matched - return None to trigger LLM fallback
         return None
 
 
 def test_router():
-    """Test the router with various queries"""
+
     test_queries = [
         "What was Apple’s total assets in 2023?",
         "How much cash and cash equivalents did Amazon report in 2022?",
