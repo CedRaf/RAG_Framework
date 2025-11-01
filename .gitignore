@@ -25,3 +25,4 @@ AutomatedTesting.py
 test/
 edgar-tools/10-K
 edgar-tools/10-Q
+Graph/testScript.py
