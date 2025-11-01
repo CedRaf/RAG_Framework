@@ -73,6 +73,7 @@ def load_10K_from_json(driver, directory=JSON_DIR):
 
                 for row in rows:
                     label = row.get("label")
+                    concept = row.get("concept")  # Extract XBRL concept
 
                     for key, value in row.items():
                         year_match = year_pattern.match(key)
@@ -98,6 +99,7 @@ def load_10K_from_json(driver, directory=JSON_DIR):
                                 }})
                                 CREATE (item:LineItem {{
                                     label:$label,
+                                    concept:$concept,
                                     value:$value,
                                     filing_year:$filing_year,
                                     company_ticker:$ticker,
@@ -111,6 +113,7 @@ def load_10K_from_json(driver, directory=JSON_DIR):
                                 "filing_year": filing_year,
                                 "table_type": table_type,
                                 "label": label,
+                                "concept": concept,
                                 "value": value
                             })
 
@@ -186,6 +189,7 @@ def load_10Q_from_json(driver, directory=JSON_DIR):
                 # Second pass: process the actual data
                 for row in rows:
                     label = row.get("label")
+                    concept = row.get("concept")  # Extract XBRL concept
                     if not label:
                         continue
 
@@ -237,6 +241,7 @@ def load_10Q_from_json(driver, directory=JSON_DIR):
                                 }})
                                 CREATE (item:LineItem {{
                                     label:$label,
+                                    concept:$concept,
                                     value:$value,
                                     quarter:$quarter,
                                     filing_year:$filing_year,
@@ -252,12 +257,13 @@ def load_10Q_from_json(driver, directory=JSON_DIR):
                                 "quarter": quarter,
                                 "table_type": table_type,
                                 "label": label,
+                                "concept": concept,
                                 "value": value
                             })
 
     print("Finished loading 10-Q financials into Neo4j.")
 
 if __name__ == "__main__":
-    #load_10K_from_json(driver, directory=JSON_DIR)
+    load_10K_from_json(driver, directory=JSON_DIR)
     load_10Q_from_json(driver, directory=JSON_DIR)
     driver.close()
