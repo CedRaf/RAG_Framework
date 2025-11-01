@@ -79,11 +79,13 @@ def create_year_over_year_relationships(session):
               -[:HAS_YEAR]->(y2:Year)-[:HAS_TABLE]->(t2)
               -[:HAS_ITEM]->(li2:LineItem)
         WHERE toInteger(y2.filing_year) = toInteger(y1.filing_year) + 1
-          AND li1.label = li2.label
           AND t1.table_type = t2.table_type
           AND li1.value IS NOT NULL
           AND li2.value IS NOT NULL
           AND toFloat(li1.value) <> 0
+          // Match primarily on concept, fallback to label
+          AND ((li1.concept IS NOT NULL AND li2.concept IS NOT NULL AND li1.concept = li2.concept)
+               OR (li1.label = li2.label))
         WITH li1, li2, 
              ((toFloat(li2.value) - toFloat(li1.value)) / toFloat(li1.value) * 100) AS change_pct
         MERGE (li1)-[r:NEXT_YEAR]->(li2)
@@ -288,6 +290,223 @@ def create_performance_benchmarks(session):
     print(f"✓ Created {relationship_count} relationships to benchmarks")
 
 
+def create_asset_to_debt_ratio_nodes(session):
+    """
+    Create AssetToDebtRatio nodes for each company per year.
+    Formula: Total Assets / Total Liabilities
+    Higher ratio = more assets relative to debt (generally better financial health)
+    Based on actual XBRL concepts from SEC filings.
+    """
+    print("Creating Asset-to-Debt Ratio nodes...")
+    
+    result = session.run("""
+        // Find Total Assets - match primarily on concept
+        MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {form_type: "10-K"})
+              -[:HAS_YEAR]->(y:Year)-[:HAS_TABLE]->(bs:BalanceSheet)
+              -[:HAS_ITEM]->(assets:LineItem)
+        WHERE assets.value IS NOT NULL
+          AND toFloat(assets.value) > 0
+          // Match primarily on concept, fallback to label
+          AND (assets.concept = 'us-gaap_Assets'
+               OR toUpper(assets.label) = 'TOTAL ASSETS'
+               OR assets.label = 'Total Assets')
+        
+        // Find Total Liabilities - match primarily on concept
+        MATCH (c)-[:HAS_FILING]->(f)
+              -[:HAS_YEAR]->(y)-[:HAS_TABLE]->(bs2:BalanceSheet)
+              -[:HAS_ITEM]->(liabilities:LineItem)
+        WHERE liabilities.value IS NOT NULL
+          AND toFloat(liabilities.value) > 0
+          // Match primarily on concept, fallback to label
+          AND (liabilities.concept = 'us-gaap_Liabilities'
+               OR toUpper(liabilities.label) = 'TOTAL LIABILITIES'
+               OR liabilities.label = 'Total Liabilities'
+               OR liabilities.label = 'Liabilities')
+        
+        WITH c, y, f,
+             toFloat(assets.value) AS total_assets,
+             toFloat(liabilities.value) AS total_liabilities,
+             (toFloat(assets.value) / toFloat(liabilities.value)) AS ratio,
+             assets.label AS assets_label,
+             liabilities.label AS liabilities_label,
+             assets.concept AS assets_concept,
+             liabilities.concept AS liabilities_concept
+        
+        MERGE (metric:AssetToDebtRatio {
+            company_ticker: c.company_ticker,
+            year: y.filing_year,
+            form_type: f.form_type
+        })
+        SET metric.ratio = ratio,
+            metric.total_assets = total_assets,
+            metric.total_liabilities = total_liabilities,
+            metric.company_name = c.company_name,
+            metric.assets_label_used = assets_label,
+            metric.liabilities_label_used = liabilities_label,
+            metric.assets_concept_used = assets_concept,
+            metric.liabilities_concept_used = liabilities_concept,
+            metric.computed_at = datetime()
+        
+        MERGE (c)-[:HAS_METRIC]->(metric)
+        MERGE (y)-[:HAS_METRIC]->(metric)
+        
+        RETURN count(DISTINCT metric) AS metrics_created
+    """)
+    
+    count = result.single()["metrics_created"]
+    print(f"✓ Created {count} Asset-to-Debt Ratio nodes")
+
+
+def create_gross_profit_margin_nodes(session):
+    """
+    Create GrossProfitMargin nodes for each company per year.
+    Formula: (Gross Profit / Total Revenue) * 100
+    Handles both pre-calculated margins and calculates from components when needed.
+    Based on actual XBRL concepts from SEC filings.
+    """
+    print("Creating Gross Profit Margin nodes...")
+    
+    # Calculate from Gross Profit and Revenue using actual XBRL concept patterns
+    result = session.run("""
+        // Find Gross Profit line items - match primarily on concept
+        MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {form_type: "10-K"})
+              -[:HAS_YEAR]->(y:Year)-[:HAS_TABLE]->(is:IncomeStatement)
+              -[:HAS_ITEM]->(gp:LineItem)
+        WHERE gp.value IS NOT NULL
+          AND toFloat(gp.value) <> 0
+          // Match primarily on concept, fallback to label
+          AND (gp.concept = 'us-gaap_GrossProfit'
+               OR gp.concept CONTAINS 'GrossProfit'
+               OR toUpper(gp.label) = 'GROSS PROFIT'
+               OR toUpper(gp.label) = 'GROSS INCOME'
+               OR gp.label = 'Gross Profit')
+        
+        // Find Revenue line items - match primarily on concept
+        MATCH (c)-[:HAS_FILING]->(f)
+              -[:HAS_YEAR]->(y)-[:HAS_TABLE]->(is2:IncomeStatement)
+              -[:HAS_ITEM]->(rev:LineItem)
+        WHERE rev.value IS NOT NULL
+          AND toFloat(rev.value) > 0
+          AND NOT toUpper(rev.label) CONTAINS 'COST'
+          AND NOT toUpper(rev.label) CONTAINS 'EXPENSE'
+          // Match primarily on concept, fallback to label
+          AND (rev.concept = 'us-gaap_Revenues'
+               OR rev.concept = 'us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax'
+               OR rev.concept CONTAINS 'Revenue'
+               OR rev.label = 'Total Revenue'
+               OR rev.label = 'Revenues'
+               OR rev.label = 'Net Revenues'
+               OR rev.label = 'Total Net Revenue'
+               OR toUpper(rev.label) CONTAINS 'REVENUE')
+        
+        // Calculate margin
+        WITH c, y, f,
+             toFloat(gp.value) AS gross_profit,
+             toFloat(rev.value) AS total_revenue,
+             (toFloat(gp.value) / toFloat(rev.value) * 100) AS margin,
+             gp.label AS gp_label,
+             rev.label AS rev_label,
+             gp.concept AS gp_concept,
+             rev.concept AS rev_concept
+        WHERE margin >= 0 AND margin <= 100
+        
+        MERGE (metric:GrossProfitMargin {
+            company_ticker: c.company_ticker,
+            year: y.filing_year,
+            form_type: f.form_type
+        })
+        SET metric.margin_percent = margin,
+            metric.gross_profit = gross_profit,
+            metric.total_revenue = total_revenue,
+            metric.company_name = c.company_name,
+            metric.gp_label_used = gp_label,
+            metric.revenue_label_used = rev_label,
+            metric.gp_concept_used = gp_concept,
+            metric.revenue_concept_used = rev_concept,
+            metric.calculation_method = 'calculated',
+            metric.computed_at = datetime()
+        
+        MERGE (c)-[:HAS_METRIC]->(metric)
+        MERGE (y)-[:HAS_METRIC]->(metric)
+        
+        RETURN count(DISTINCT metric) AS metrics_created
+    """)
+    
+    count = result.single()["metrics_created"]
+    
+    print(f"✓ Created {count} Gross Profit Margin nodes")
+
+
+def create_equity_to_asset_ratio_nodes(session):
+    """
+    Create EquityToAssetRatio nodes for each company per year.
+    Formula: Total Equity / Total Assets
+    Higher ratio = more equity financing vs debt (lower financial leverage)
+    Based on actual XBRL concepts from SEC filings.
+    """
+    print("Creating Equity-to-Asset Ratio nodes...")
+    
+    result = session.run("""
+        // Find Total Equity (Stockholders' Equity) - match primarily on concept
+        MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {form_type: "10-K"})
+              -[:HAS_YEAR]->(y:Year)-[:HAS_TABLE]->(bs:BalanceSheet)
+              -[:HAS_ITEM]->(equity:LineItem)
+        WHERE equity.value IS NOT NULL
+          AND toFloat(equity.value) <> 0
+          // Match primarily on concept, fallback to label
+          AND (equity.concept = 'us-gaap_StockholdersEquity'
+               OR equity.concept = 'us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest'
+               OR toUpper(equity.label) CONTAINS 'STOCKHOLDERS'
+               OR toUpper(equity.label) CONTAINS 'SHAREHOLDERS'
+               OR equity.label = 'Total Equity'
+               OR equity.label = 'Stockholders Equity'
+               OR equity.label = "Stockholders' Equity")
+        
+        // Find Total Assets - match primarily on concept
+        MATCH (c)-[:HAS_FILING]->(f)
+              -[:HAS_YEAR]->(y)-[:HAS_TABLE]->(bs2:BalanceSheet)
+              -[:HAS_ITEM]->(assets:LineItem)
+        WHERE assets.value IS NOT NULL
+          AND toFloat(assets.value) > 0
+          // Match primarily on concept, fallback to label
+          AND (assets.concept = 'us-gaap_Assets'
+               OR toUpper(assets.label) = 'TOTAL ASSETS'
+               OR assets.label = 'Total Assets')
+        
+        WITH c, y, f,
+             toFloat(equity.value) AS total_equity,
+             toFloat(assets.value) AS total_assets,
+             (toFloat(equity.value) / toFloat(assets.value)) AS ratio,
+             equity.label AS equity_label,
+             assets.label AS assets_label,
+             equity.concept AS equity_concept,
+             assets.concept AS assets_concept
+        
+        MERGE (metric:EquityToAssetRatio {
+            company_ticker: c.company_ticker,
+            year: y.filing_year,
+            form_type: f.form_type
+        })
+        SET metric.ratio = ratio,
+            metric.total_equity = total_equity,
+            metric.total_assets = total_assets,
+            metric.company_name = c.company_name,
+            metric.equity_label_used = equity_label,
+            metric.assets_label_used = assets_label,
+            metric.equity_concept_used = equity_concept,
+            metric.assets_concept_used = assets_concept,
+            metric.computed_at = datetime()
+        
+        MERGE (c)-[:HAS_METRIC]->(metric)
+        MERGE (y)-[:HAS_METRIC]->(metric)
+        
+        RETURN count(DISTINCT metric) AS metrics_created
+    """)
+    
+    count = result.single()["metrics_created"]
+    print(f"✓ Created {count} Equity-to-Asset Ratio nodes")
+
+
 def create_indices(session):
     """Create indices for better query performance"""
     print("Creating indices...")
@@ -298,7 +517,14 @@ def create_indices(session):
         "CREATE INDEX line_item_ticker IF NOT EXISTS FOR (li:LineItem) ON (li.company_ticker)",
         "CREATE INDEX company_ticker IF NOT EXISTS FOR (c:Company) ON (c.company_ticker)",
         "CREATE INDEX company_industry IF NOT EXISTS FOR (c:Company) ON (c.industry)",
-        "CREATE TEXT INDEX line_item_text IF NOT EXISTS FOR (li:LineItem) ON (li.label)"
+        "CREATE TEXT INDEX line_item_text IF NOT EXISTS FOR (li:LineItem) ON (li.label)",
+        # Indices for new metric nodes
+        "CREATE INDEX asset_debt_ratio_ticker IF NOT EXISTS FOR (m:AssetToDebtRatio) ON (m.company_ticker)",
+        "CREATE INDEX asset_debt_ratio_year IF NOT EXISTS FOR (m:AssetToDebtRatio) ON (m.year)",
+        "CREATE INDEX gross_margin_ticker IF NOT EXISTS FOR (m:GrossProfitMargin) ON (m.company_ticker)",
+        "CREATE INDEX gross_margin_year IF NOT EXISTS FOR (m:GrossProfitMargin) ON (m.year)",
+        "CREATE INDEX equity_asset_ratio_ticker IF NOT EXISTS FOR (m:EquityToAssetRatio) ON (m.company_ticker)",
+        "CREATE INDEX equity_asset_ratio_year IF NOT EXISTS FOR (m:EquityToAssetRatio) ON (m.year)"
     ]
     
     for index_query in indices:
@@ -318,9 +544,9 @@ def main():
     
     with driver.session() as session:
         try:
-            # Normalize existing labels first
-            normalize_existing_labels(session)
-            print()
+            # # Normalize existing labels first
+            # normalize_existing_labels(session)
+            # print()
             
             # Create indices for better performance
             create_indices(session)
@@ -339,7 +565,17 @@ def main():
             create_performance_benchmarks(session)
             print()
             
-            print("All graph relationships created successfully!")
+            # Create financial ratio metric nodes
+            create_asset_to_debt_ratio_nodes(session)
+            print()
+            
+            create_gross_profit_margin_nodes(session)
+            print()
+            
+            create_equity_to_asset_ratio_nodes(session)
+            print()
+            
+            print("All graph relationships and metric nodes created successfully!")
 
         except Exception as e:
             print(f"\nError: {e}")
