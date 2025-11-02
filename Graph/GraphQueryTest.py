@@ -147,7 +147,9 @@ def execute_graph_retrieval_with_rag(user_query: str):
     }
 
 if __name__ == "__main__":
-    test_queries = []
+    test_queries = [
+        "How did Netflix's free cash flow margin change from 2020 to 2022?"
+    ]
     
     for query in test_queries:
         print(f"\n\n{'='*80}")

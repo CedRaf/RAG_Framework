@@ -8,6 +8,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from pathlib import Path
 
+from prompts import (INFORMATION_EXTRACTION_PROMPT, QUERY_PROMPT_TEMPLATE, ANSWER_GENERATION_PROMPT)
+
 # Import company data for ticker mapping
 try:
     from company_data import company_data
@@ -27,304 +29,6 @@ chat = ChatOpenAI(
 # Fix path to conceptMap10K.json
 CONCEPT_MAP_PATH = Path(__file__).resolve().parent / "conceptMap10K.json"
 
-# Step 1: Extract information needs with available concepts shown
-INFORMATION_EXTRACTION_PROMPT = """
-You are a financial data analyst. Given a user query and the available financial concepts and labels for the mentioned companies, identify exactly which data fields are needed to answer the question.
-
-User Query:
-{user_query}
-
-Available Financial Concepts for Mentioned Companies:
-{available_concepts}
-
-Guidelines:
-1. **Statement Prioritization**
-   - Income Statement → revenue, net income, profit, earnings, EPS, operating income, expenses.
-   - Balance Sheet → assets, liabilities, equity, debt, cash, receivables, inventory.
-   - Cash Flow Statement → operating cash flow, cash from operations, investing, financing, dividends, capital expenditures.
-
-2. **Common Phrase Interpretation**
-   - “Generated from operations” → Cash Flow Statement → Net Cash Provided by Operating Activities.
-   - “Income from operations” → Income Statement → Operating Income.
-   - “Cash position” → Balance Sheet → Cash and Cash Equivalents.
-   - “Financial performance” → Income Statement (revenue, net income).
-   - “Liquidity” → Balance Sheet (current assets/liabilities).
-   - “Leverage” → Balance Sheet (debt, equity).
-   - “Profitability” → Income Statement (margins, income).
-   - “Growth” → year-over-year change.
-   - “Expenditures” → Cash Flow Statement.
-
-3. **Time Period**
-   - Use the explicit year or range (e.g., “2023” or “2020–2024”).
-   - If none specified, default to the most recent available year.
-
-4. **Calculations**
-   - Set `"calculation_needed": true` if the query asks for:
-     ratios, percentages, comparisons, changes, or trends.
-   - Describe the computation clearly in `"calculation_formula"`.
-     Example: "(Net Income 2023 - Net Income 2022) / Net Income 2022".
-
-5. **Multi-Company Comparisons**
-   - Include one metric per company for consistent comparison.
-   - Example: both companies’ “Net Income” for 2023.
-
-6. **Missing or Irrelevant Data**
-   - If a required metric isn’t in available_concepts, mark as “Data unavailable”.
-   - Ignore qualitative or narrative topics (strategy, management, sentiment).
-
-7. **Concept Selection Rules**
-   - Prefer standardized US-GAAP/IFRS labels.
-   - Prefer company-level totals (not segments).
-   - Prefer numeric values (no abstracts/members).
-
-8. **Language Patterns**
-   - “How much did X generate/spend/pay” → Cash Flow (Operating/Investing/Financing).
-   - “What were X’s total…” → Aggregate field.
-   - “By how much did X increase/decrease…” → Difference between years.
-   - “Compare X and Y” → same metric for both.
-   - "What is X's ratio…" → extract both numerator and denominator.
-
-Respond ONLY with valid JSON (no explanations, no extra text) in this structure:
-
-{{
-  "tickers": ["AAPL", "NVDA"],
-  "selected_concepts": ["us-gaap_NetCashProvidedByUsedInOperatingActivities"],
-  "selected_labels": ["Net Cash Provided by Operating Activities"],
-  "time_period": "2023",
-  "calculation_needed": false,
-  "calculation_formula": ""
-}}
-"""
-
-# Step 2: Cypher Generation Prompt (with financial data context)
-QUERY_PROMPT_TEMPLATE = """
-You are a Cypher expert for querying financial data from a Neo4j graph database.
-
-**Graph Schema:**
-
-Nodes:
-- (Company) - properties: company_name, company_ticker, industry
-- (FilingType) - properties: form_type ("10-K" or "10-Q"), company_ticker
-- (Year) - properties: filing_year, form_type, company_ticker
-- (Quarter) - properties: quarter ("Q1", "Q2", "Q3", "Q4"), filing_year, company_ticker
-- (IncomeStatement|BalanceSheet|CashFlowStatement) - properties: table_type, filing_year, company_ticker, form_type
-- (LineItem) - properties: label, value, concept, filing_year, company_ticker, form_type, table_type
-- (AssetToDebtRatio) - properties: ratio, company_ticker, year, form_type
-- (GrossProfitMargin) - properties: margin_percent, company_ticker, year, form_type
-- (EquityToAssetRatio) - properties: ratio, company_ticker, year, form_type
-
-Relationships:
-- (Company)-[:HAS_FILING]->(FilingType)
-- (FilingType)-[:HAS_YEAR]->(Year)
-- (FilingType)-[:HAS_QUARTER]->(Quarter)
-- (Year)-[:HAS_TABLE]->(IncomeStatement|BalanceSheet|CashFlowStatement)
-- (Quarter)-[:HAS_TABLE]->(IncomeStatement|BalanceSheet|CashFlowStatement)
-- (Table)-[:HAS_ITEM]->(LineItem)
-- (LineItem)-[:NEXT_YEAR]->(LineItem) // Links same metric across consecutive years
-- (Company)-[:PEER_IN_INDUSTRY {{industry: "..."}}>-(Company) // Links peer companies
-- (Company)-[:HAS_METRIC]->(AssetToDebtRatio|GrossProfitMargin|EquityToAssetRatio)
-- (Year)-[:HAS_METRIC]->(AssetToDebtRatio|GrossProfitMargin|EquityToAssetRatio)
-
-**Extracted Information:**
-{extracted_info}
-
-**User Query:** 
-{user_query}
-
-**Critical Instructions:**
-
-1. **Company Matching:** Use `c.company_ticker = "TICKER"` or `toUpper(c.company_ticker) = "TICKER"`
-
-2. **LineItem Matching (Choose ONE approach):**
-   - PRIMARY: Match by concept (most reliable): `li.concept = "us-gaap_ConceptName"`
-   - FALLBACK: If concept not in extracted info, use label with flexible matching:
-     `(li.label = "Exact Label" OR toUpper(li.label) CONTAINS toUpper("keyword"))`
-
-3. **Year Matching:** 
-   - Use `y.filing_year = "2023"` (string comparison)
-   - For comparisons, fetch multiple years: `y.filing_year IN ["2022", "2023"]`
-
-4. **Table Types:** 
-   - Net Income, Revenue, Gross Profit → IncomeStatement
-   - Assets, Liabilities, Equity → BalanceSheet  
-   - Operating Cash Flow, Free Cash Flow → CashFlowStatement
-
-5. **Form Type:** Default to `form_type: "10-K"` unless quarters mentioned
-
-6. **Calculated Metrics:**
-   - Gross Profit Margin → Check GrossProfitMargin nodes first
-   - Asset to Debt Ratio → Check AssetToDebtRatio nodes first
-   - Free Cash Flow = Operating Cash Flow - Capital Expenditures
-   - Free Cash Flow Yield = Free Cash Flow / Market Cap (NOTE: Market cap is NOT in database - answer with absolute FCF instead)
-   - If pre-calculated nodes don't exist, fetch LineItems and calculate in query
-
-7. **Data Limitations - IMPORTANT:**
-   - Market capitalization is NOT stored in the database (external market data)
-   - Stock prices, P/E ratios, and market-based metrics are NOT available
-   - If query asks for market-based ratios (like FCF yield), return the underlying metrics instead
-   - Let the answer generation explain what data is available vs unavailable
-
-8. **WITH Clauses - CRITICAL:**
-   - When using WITH, you MUST carry forward ALL variables you need later
-   - If you match a node (like `t:CashFlowStatement`) and use it in RETURN, include it in WITH
-   - Example: `WITH c, f, y, t, li` NOT just `WITH c, f, y, li`
-   - Each WITH clause drops variables not explicitly listed
-
-9. **Return Clause:** Always return:
-   ```
-   c.company_ticker AS ticker, c.company_name AS name,
-   f.form_type AS filing_type, y.filing_year AS year,
-   li.label AS line_item, li.concept AS concept, li.value AS value,
-   t.table_type AS source_table
-   ```
-
-10. **Multi-Company Queries:** Use UNION or multiple MATCH clauses, ensure both companies return data
-
-11. **Complex Queries with Multiple Metrics:**
-    - AVOID using multiple WITH clauses that need to reference early nodes
-    - PREFER: Use OPTIONAL MATCH for additional data instead of WITH chains
-    - OR: Simplify to return just the essential LineItems and let the answer generation do calculations
-
-**Example Query Pattern (Net Income for multiple companies):**
-
-```
-MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {{form_type: "10-K"}})
-      -[:HAS_YEAR]->(y:Year {{filing_year: "2023"}})
-      -[:HAS_TABLE]->(t:IncomeStatement)-[:HAS_ITEM]->(li:LineItem)
-WHERE c.company_ticker IN ["AAPL", "NVDA"]
-  AND li.concept = "us-gaap_NetIncomeLoss"
-RETURN c.company_ticker AS ticker, c.company_name AS name,
-       f.form_type AS filing_type, y.filing_year AS year,
-       li.label AS line_item, li.concept AS concept, li.value AS value,
-       t.table_type AS source_table
-ORDER BY c.company_ticker
-```
-
-**Example Query Pattern (Gross Profit Margin from pre-calculated node):**
-
-```
-MATCH (c:Company)-[:HAS_METRIC]->(m:GrossProfitMargin {{year: "2024"}})
-WHERE c.company_ticker = "NVDA"
-RETURN c.company_ticker AS ticker, c.company_name AS name,
-       m.year AS year, m.margin_percent AS value,
-       "GrossProfitMargin" AS line_item,
-       "Pre-calculated metric" AS source_table
-```
-
-**Example Query Pattern (Multiple metrics - using OPTIONAL MATCH, NOT WITH chains):**
-
-```
-MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {{form_type: "10-K"}})
-      -[:HAS_YEAR]->(y:Year {{filing_year: "2022"}})
-      -[:HAS_TABLE]->(t1:CashFlowStatement)-[:HAS_ITEM]->(li1:LineItem)
-WHERE c.company_ticker IN ["MCHP", "MRVL"]
-  AND li1.concept = "us-gaap_NetCashProvidedByUsedInOperatingActivities"
-OPTIONAL MATCH (c)-[:HAS_FILING]->(:FilingType {{form_type: "10-K"}})
-      -[:HAS_YEAR]->(:Year {{filing_year: "2022"}})
-      -[:HAS_TABLE]->(t2:BalanceSheet)-[:HAS_ITEM]->(li2:LineItem)
-WHERE li2.concept = "us-gaap_Assets"
-RETURN c.company_ticker AS ticker, c.company_name AS name,
-       y.filing_year AS year,
-       li1.label AS operating_cash_flow_label, li1.value AS operating_cash_flow,
-       li2.label AS assets_label, li2.value AS total_assets
-ORDER BY c.company_ticker
-```
-
-**Example Query Pattern (Free Cash Flow - Operating CF minus CapEx):**
-
-```
-MATCH (c:Company)-[:HAS_FILING]->(f:FilingType {{form_type: "10-K"}})
-      -[:HAS_YEAR]->(y:Year {{filing_year: "2022"}})
-      -[:HAS_TABLE]->(t_op:CashFlowStatement)-[:HAS_ITEM]->(li_op:LineItem)
-WHERE c.company_ticker IN ["MCHP", "MRVL"]
-  AND li_op.concept = "us-gaap_NetCashProvidedByUsedInOperatingActivities"
-OPTIONAL MATCH (c)-[:HAS_FILING]->(f)-[:HAS_YEAR]->(y)
-      -[:HAS_TABLE]->(:CashFlowStatement)-[:HAS_ITEM]->(li_cap:LineItem)
-WHERE li_cap.concept = "us-gaap_PaymentsToAcquirePropertyPlantAndEquipment"
-RETURN c.company_ticker AS ticker, c.company_name AS name,
-       y.filing_year AS year,
-       li_op.value AS operating_cash_flow,
-       li_cap.value AS capex,
-       (toFloat(li_op.value) - toFloat(li_cap.value)) AS free_cash_flow
-ORDER BY c.company_ticker
-```
-
-**Example Query Pattern (Temporal comparison - multiple years):**
-
-```
-MATCH (c:Company)-[:HAS_METRIC]->(m:GrossProfitMargin)
-WHERE c.company_ticker = "NVDA"
-  AND m.year IN ["2022", "2023"]
-RETURN c.company_ticker AS ticker, c.company_name AS name,
-       m.year AS year, m.margin_percent AS margin
-ORDER BY m.year
-```
-
-Generate ONLY the Cypher query, no explanations or markdown formatting.
-
-Cypher Query:
-"""
-
-# Step 3: Generate final answer
-ANSWER_GENERATION_PROMPT = """
-You are a financial analyst expert. Using the retrieved financial data, answer the user's query directly, clearly, and with visible numeric reasoning.
-
-User Query:
-{user_query}
-
-Graph Database Query Results:
-{query_results}
-
-Instructions:
-1. Write your answer in the style of a concise financial report statement.
-2. When the answer involves **derived values or ratios**, always show the **calculation explicitly** in the text.
-   - Example formats:
-     - "84,946M / 30,425M ≈ 2.79"
-     - "$96,995,000,000 - $72,361,000,000 = $24,634,000,000 higher"
-     - "($3,485M – $2,970M) / $2,970M ≈ 17.3% increase"
-3. Use the same clear, factual tone as these examples:
-   - "$10,742,000,000"
-   - "$391,000,000"
-   - "Decreased"
-   - "The ratio was above 1 in 2020, dipped below 1 in 2021, then stayed slightly above 1 through 2024."
-   - "Payments of Dividends is the largest."
-4. If multiple companies are mentioned, perform an **explicit comparison**:
-   - State who had the higher or lower value.
-   - Include the difference or ratio, e.g.:
-     - "Apple's net income ($96,995M) was higher than NVIDIA's ($72,361M) by $24,634M in 2023."
-5. **Handling Partial Data - CRITICAL:**
-   - If the query asks for a market-based metric (like "FCF yield") but only operating metrics are available, answer with the available data
-   - Example: Query asks "Which had higher FCF yield?" but only FCF values available → Compare FCF values and note yield requires market cap
-   - DO NOT say "Data unavailable" if you have the underlying metrics needed to answer the comparison
-   - Focus on answering what CAN be answered from the available data
-6. Avoid commentary, repetition of the question, or qualitative opinions.
-7. Use correct units (M = million, B = billion) consistently.
-8. Only say "Data unavailable" if NO relevant data exists at all (not if just one component is missing).
-
-Final Output:
-Provide only the concise, calculation-backed answer text (no JSON, no commentary).
-"""
-
-# ANSWER_GENERATION_PROMPT = """
-# You are a financial analyst expert. Using the retrieved financial data, answer the user's query comprehensively.
-
-# User Query: {user_query}
-
-# Graph Database Query Results:
-# {query_results}
-
-# Instructions:
-# 1. Provide specific numbers and calculations
-# 2. Compare across companies if multiple are mentioned
-# 3. Highlight trends and insights
-# 4. Include data sources (tickers, years, filing types)
-# 5. If calculations are needed, show your work
-# 6. Be concise but thorough
-# 7. Format numbers appropriately (use commas, dollar signs, percentages)
-
-# Generate a clear, professional answer based on the data.
-# """
-
 def extract_companies_from_query(user_query: str) -> List[str]:
     """
     Extract company tickers from user query using regex and company_data mapping
@@ -339,22 +43,47 @@ def extract_companies_from_query(user_query: str) -> List[str]:
             continue
         
         # Check 1: Exact ticker match (e.g., AAPL, GOOGL)
-        if re.search(rf'\b{ticker}\b', query_upper):
-            mentioned_tickers.append(ticker)
-            continue
+        # Skip tickers that are common English words - they'll be matched by company name only
+        if ticker not in ['ON', 'COST']:
+            if re.search(rf'\b{ticker}\b', query_upper):
+                mentioned_tickers.append(ticker)
+                continue
         
         # Check 2: Full company name match
-        # Remove legal suffixes for matching
+        # Remove legal suffixes and trailing punctuation for matching
         clean_name = re.sub(r'\s+(Inc\.|Corp\.|Corporation|Ltd\.|LLC|PLC|Class [A-Z]).*$', '', company_name, flags=re.IGNORECASE)
+        clean_name = re.sub(r'[,\.]+$', '', clean_name)  # Remove trailing commas and periods
         
         if clean_name and re.search(rf'\b{re.escape(clean_name)}\b', user_query, re.IGNORECASE):
             mentioned_tickers.append(ticker)
             continue
         
+        # Check 2b: Common alternate names (e.g., "Google" for "Alphabet Inc.", "Amazon" for "Amazon.com")
+        alternate_names = {
+            'GOOGL': ['Google', 'Alphabet'],
+            'AMZN': ['Amazon']
+        }
+        if ticker in alternate_names:
+            for alt_name in alternate_names[ticker]:
+                if re.search(rf'\b{alt_name}\'?s?\b', user_query, re.IGNORECASE):
+                    mentioned_tickers.append(ticker)
+                    break
+            if ticker in mentioned_tickers:
+                continue
+        
         # Check 3: Single-word company names (e.g., Apple, Amazon, Netflix, Microsoft)
         first_word = clean_name.split()[0] if clean_name else ""
-        if first_word and len(first_word) > 4 and re.search(rf'\b{first_word}\b', user_query, re.IGNORECASE):
+        if first_word and len(first_word) > 3 and re.search(rf'\b{first_word}\'?s?\b', user_query, re.IGNORECASE):
             mentioned_tickers.append(ticker)
+            continue
+        
+        # Check 4: Two-word company names (e.g., "Old Dominion")
+        words = clean_name.split()
+        if len(words) >= 2:
+            first_two = f"{words[0]} {words[1]}"
+            if re.search(rf'\b{re.escape(first_two)}\'?s?\b', user_query, re.IGNORECASE):
+                mentioned_tickers.append(ticker)
+                continue
     
     return mentioned_tickers
 

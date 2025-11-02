@@ -265,5 +265,5 @@ def load_10Q_from_json(driver, directory=JSON_DIR):
 
 if __name__ == "__main__":
     load_10K_from_json(driver, directory=JSON_DIR)
-    load_10Q_from_json(driver, directory=JSON_DIR)
+    #load_10Q_from_json(driver, directory=JSON_DIR)
     driver.close()
