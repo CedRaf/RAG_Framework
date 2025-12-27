@@ -3,12 +3,18 @@ import json
 from pymilvus import MilvusClient, DataType, Function, FunctionType
 from tqdm import tqdm
 import csv
+from dotenv import load_dotenv
+
+load_dotenv()
+
 #os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 COLLECTION_NAME = "sec_chunks_sparse"
 CHUNK_BASE_DIR = "chunked_sparse"
 MAX_TEXT_LENGTH = 10000
 
-client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
+MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")
+client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)
 
 # --- DEFINE SCHEMA WITH METADATA ---
 if COLLECTION_NAME not in client.list_collections():

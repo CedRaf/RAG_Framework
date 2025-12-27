@@ -3,6 +3,10 @@ import json
 from pymilvus import MilvusClient, DataType, Function, FunctionType
 from tqdm import tqdm
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()
+
 os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 
@@ -12,7 +16,9 @@ NEWS_DIR = "./finnhub_news/"
 COLLECTION_NAME = "news_articles"
 EMBEDDING_DIM = 1024  
 
-client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
+MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")
+client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)
 # --- DEFINE SCHEMA WITH METADATA ---
 if COLLECTION_NAME not in client.list_collections():
     schema = client.create_schema()

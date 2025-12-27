@@ -1,7 +1,13 @@
 from pymilvus import MilvusClient
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Connect
-client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
+MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")
+client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)
 
 # Load collection into memory
 client.load_collection("news_articles")

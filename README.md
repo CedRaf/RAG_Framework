@@ -22,7 +22,12 @@ NEO4J_URI=
 NEO4J_USER=
 NEO4J_PASS=
 PERPLEXITY_API_KEY=
+FINNHUB_API_KEY=
+MILVUS_URI=http://localhost:19530
+MILVUS_TOKEN=root:Milvus
 ```
+
+**Note:** The `MILVUS_URI` and `MILVUS_TOKEN` values shown above are default values for local development. Adjust them according to your Milvus configuration.
 
 ## 3. Initial Framework Setup
 

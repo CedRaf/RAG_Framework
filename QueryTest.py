@@ -9,7 +9,9 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
 from queryExpansion import expand_query, sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
+from dotenv import load_dotenv
 
+load_dotenv()
 
 embedding_model = None
 reranker_tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-reranker-v2-m3") 
@@ -23,7 +25,9 @@ reranker_model = AutoModelForSequenceClassification.from_pretrained("BAAI/bge-re
 
 reranker_model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
 
-client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
+MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")
+client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)
 connections.connect(host="localhost", ports="19530")
 
 

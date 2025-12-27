@@ -5,6 +5,9 @@ import time
 import os
 import pandas as pd
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # New folder to store retreived data from SEC EDGAR
 
@@ -12,7 +15,12 @@ output_dir = "C:\\Users\\Rhenz\\Documents\\School\\CodeFolders\\Thesis\\RAG\\fin
 os.makedirs(output_dir, exist_ok=True)
 # print(os.path.abspath(output_dir))
 # print(os.getcwd())
-finnhub_client = finnhub.Client(api_key="d10m0n1r01qlsac9ukpgd10m0n1r01qlsac9ukq0")
+
+FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY")
+if not FINNHUB_API_KEY:
+    raise ValueError("FINNHUB_API_KEY environment variable is not set")
+
+finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
 
 nasdaq_100_tickers = [
     'AAPL', 'MSFT', 'NVDA', 'AMZN', 'META', 'GOOGL', 'GOOG', 'TSLA', 'ADBE', 'AMD',
