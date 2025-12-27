@@ -17,7 +17,7 @@ EMBEDDING_DIM = 1024
 MAIN_DIR = "dense_embeddings"
 MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
 MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
-connections.connect(host=MILVUS_HOST, ports=MILVUS_PORT)
+connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
 
 def insert_dense_embedding_milvus():
     # schema creation, can add fields later on
