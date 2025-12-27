@@ -5,9 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 COLLECTION_NAME = "sec_chunks_dense"
+MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
+MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
 connections.disconnect("default")
 
-connections.connect("default", host="localhost", port="19530")
+connections.connect("default", host=MILVUS_HOST, port=MILVUS_PORT)
 
 MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
 MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")

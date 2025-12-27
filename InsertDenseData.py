@@ -5,13 +5,19 @@ import torch
 from sentence_transformers import SentenceTransformer
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import csv
+from dotenv import load_dotenv
+
+load_dotenv()
+
 #os.chdir(r"c:\Users\Rhenz\Documents\School\CodeFolders\Thesis\RAG")
 
 # <---------- CONFIGURATIONS ---------->
 COLLECTION_NAME = "sec_chunks_dense"
 EMBEDDING_DIM = 1024
 MAIN_DIR = "dense_embeddings"
-connections.connect(host="localhost", ports="19530")
+MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
+MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
+connections.connect(host=MILVUS_HOST, ports=MILVUS_PORT)
 
 def insert_dense_embedding_milvus():
     # schema creation, can add fields later on

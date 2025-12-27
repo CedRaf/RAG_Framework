@@ -27,8 +27,10 @@ reranker_model.eval().to("cuda" if torch.cuda.is_available() else "cpu")
 
 MILVUS_URI = os.getenv("MILVUS_URI", "http://localhost:19530")
 MILVUS_TOKEN = os.getenv("MILVUS_TOKEN", "root:Milvus")
+MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
+MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
 client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)
-connections.connect(host="localhost", ports="19530")
+connections.connect(host=MILVUS_HOST, ports=MILVUS_PORT)
 
 
 
