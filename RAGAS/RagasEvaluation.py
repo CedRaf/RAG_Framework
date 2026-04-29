@@ -283,7 +283,7 @@ def prepare_evaluation_dataset_with_ground_truth():
     """
     # Load test cases from EvaluationDataset.json
     json_path = Path(__file__).parent / "EvaluationDataset.json"
-    with open(json_path, 'r') as f:
+    with open(json_path, 'r', encoding='utf-8') as f:
         test_cases = json.load(f)
     
     # Checkpoint file path
@@ -506,11 +506,20 @@ def evaluate_with_ground_truth():
         answer_similarity        # Needs ground_truth
     ]
     
+    # Configure LLM with longer timeout and retries
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        timeout=180,  # 3 minutes timeout
+        max_retries=3,  # Retry failed requests
+        request_timeout=180
+    )
+    
     results = evaluate(
         dataset,
         metrics=metrics,
-        llm=ChatOpenAI(model="gpt-4"),
-        embeddings=OpenAIEmbeddings()
+        llm=llm,
+        embeddings=OpenAIEmbeddings(),
+        raise_exceptions=False  # Don't stop evaluation on individual failures
     )
     
     return results
@@ -567,11 +576,20 @@ if __name__ == "__main__":
         answer_similarity        # Needs ground_truth
     ]
     
+    # Configure LLM with longer timeout and retries
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        timeout=180,  # 3 minutes timeout
+        max_retries=3,  # Retry failed requests
+        request_timeout=180
+    )
+    
     results = evaluate(
         dataset,
         metrics=metrics,
-        llm=ChatOpenAI(model="gpt-4"),
-        embeddings=OpenAIEmbeddings()
+        llm=llm,
+        embeddings=OpenAIEmbeddings(),
+        raise_exceptions=False  # Don't stop evaluation on individual failures
     )
     
     # Display results

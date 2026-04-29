@@ -25,4 +25,12 @@ AutomatedTesting.py
 test/
 edgar-tools/10-K
 edgar-tools/10-Q
+edgar-tools/flattened_json
+edgar-tools/embeddings
 Graph/testScript.py
+RAGAS/initialEval/
+RAGAS/dataset_before_ragas.json
+RAGAS/evaluation_checkpoint.json
+RAGAS/EvaluationDataset.json
+RAGAS/flattened_dataset_before_ragas.json
+RAGAS/ragas_evaluation_checkpoint.json

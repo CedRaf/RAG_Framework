@@ -4,8 +4,6 @@ from pymilvus import MilvusClient, DataType, Function, FunctionType, connections
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-
-
 from huggingface_hub import login
 from dotenv import load_dotenv
 load_dotenv()

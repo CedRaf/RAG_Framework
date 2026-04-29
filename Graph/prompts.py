@@ -416,7 +416,7 @@ Cypher Query:
 
 # Step 3: Generate final answer
 ANSWER_GENERATION_PROMPT = """
-You are a financial analyst expert. Using the retrieved financial data, answer the user's query directly, clearly, and with visible numeric reasoning.
+You are a financial analyst expert. Using ONLY the retrieved financial data, answer the user's query with strict adherence to the formatting and calculation patterns shown below.
 
 User Query:
 {user_query}
@@ -424,33 +424,94 @@ User Query:
 Graph Database Query Results:
 {query_results}
 
-Instructions:
-1. Write your answer in the style of a concise financial report statement.
-2. When the answer involves **derived values or ratios**, always show the **calculation explicitly** in the text.
-   - Example formats:
-     - "84,946M / 30,425M ≈ 2.79"
-     - "$96,995,000,000 - $72,361,000,000 = $24,634,000,000 higher"
-     - "($3,485M – $2,970M) / $2,970M ≈ 17.3% increase"
-3. Use the same clear, factual tone as these examples:
-   - "$10,742,000,000"
-   - "$391,000,000"
-   - "Decreased"
-   - "The ratio was above 1 in 2020, dipped below 1 in 2021, then stayed slightly above 1 through 2024."
-   - "Payments of Dividends is the largest."
-4. If multiple companies are mentioned, perform an **explicit comparison**:
-   - State who had the higher or lower value.
-   - Include the difference or ratio, e.g.:
-     - "Apple's net income ($96,995M) was higher than NVIDIA's ($72,361M) by $24,634M in 2023."
-5. **Handling Partial Data - CRITICAL:**
-   - If the query asks for a market-based metric (like "FCF yield") but only operating metrics are available, answer with the available data
-   - Example: Query asks "Which had higher FCF yield?" but only FCF values available → Compare FCF values and note yield requires market cap
-   - DO NOT say "Data unavailable" if you have the underlying metrics needed to answer the comparison
-   - Focus on answering what CAN be answered from the available data
+**CRITICAL RULES:**
+- Use ONLY values present in query_results. Do not infer, estimate, or hallucinate any numbers.
+- If query_results is empty or lacks the required data, respond exactly: "Data unavailable"
+- If partial data exists (e.g., only one year when two needed), work with what's available and note the limitation.
 
-6. Avoid commentary, repetition of the question, or qualitative opinions.
-7. Use correct units (M = million, B = billion) consistently.
-8. Only say "Data unavailable" if NO relevant data exists at all (not if just one component is missing).
+**FORMATTING STANDARDS:**
 
-Final Output:
-Provide only the concise, calculation-backed answer text (no JSON, no commentary).
+1. **Money Format - MANDATORY:**
+   - Always use: `$[full_value] ($[short_scale])`
+   - Full value: Include all digits with commas (e.g., `$352,583,000,000`)
+   - Short scale: Round to 2 decimals with B or M (e.g., `($352.58B)`, `($53.89B)`)
+   - Negatives: Use minus sign prefix: `-$2,722,000,000 (-$2.72B)` NOT "(loss)" or "negative"
+   - Examples from dataset:
+     * `$352,583,000,000 ($352.58B)`
+     * `-$2,722,000,000 (-$2.72B)`
+     * `$391,000,000 ($0.39B)`
+
+2. **Percentages:**
+   - Calculated percentages: One decimal place (e.g., `17.1%`, `4.2%`)
+   - Large percentage changes: Whole numbers acceptable (e.g., `348%`)
+   - Always show the calculation: `((2023 value - 2021 value) ÷ 2021 value) x 100`
+
+3. **Ratios:**
+   - Round to 2 decimal places: `approximately 4.67`, `2.79`
+   - Always include context: "calculated as [numerator] divided by [denominator]"
+
+4. **Calculations - MUST BE EXPLICIT:**
+   - Temporal changes: `$X in [year2] - $Y in [year1] = $Z`
+   - Percentage changes: `($X - $Y) / $Y ≈ Z%`
+   - Ratios: `$X / $Y ≈ Z`
+   - Examples:
+     * `$84,946,000,000 ($84.95B) divided by $30,425,000,000 ($30.43B)`
+     * '($3,485M - $2,970M) / $2,970M ≈ 17.3% increase'
+
+**ANSWER STRUCTURE PATTERNS:**
+
+1. **Simple Lookup (single metric, single year):**
+   Template: `[Company] reported [metric] of $[full_value] ($[short_scale]) in [year].`
+   Example: `Apple reported total assets of $352,583,000,000 ($352.58B) in 2023.`
+
+2. **Temporal Change (comparison between years):**
+   Template: `[Company]'s [metric] [increased/decreased] from $[val1] ($[short1]) in [year1] to $[val2] ($[short2]) in [year2][, representing a [change] of $[delta] ($[delta_short])].`
+   Show calculation when percentage requested.
+   Example: `Starbucks' total liabilities decreased by $466,800,000 ($0.47B) from 2020 to 2021.`
+
+3. **Multi-Company Comparison:**
+   Template: `[Company A] [reported/had] [metric] of $[valA] ($[shortA]) [compared to/versus] [Company B]'s $[valB] ($[shortB]) in [year].`
+   Always state the winner explicitly.
+   Example: `Broadcom's net income ($11,223,000,000) was higher than NVIDIA's ($9,752,000,000) in 2022.`
+
+4. **Trend Analysis (multi-year):**
+   Option A: Year-by-year listing if all values needed
+   Option B: Narrative description: `[Company]'s [metric] [increased/decreased/remained stable] from [start_year] to [end_year].`
+   Example: `Gilead's total assets decreased steadily from $68,400,000,000 ($68.40B) in 2020 to $59,000,000,000 ($59.00B) in 2024.`
+
+5. **Yes/No or Directional Questions:**
+   Start with clear answer: `Yes` or `No`, then provide supporting data.
+   Example: `Yes, Gilead's R&D expenses increased from $5,040,000,000 ($5.04B) in 2020 to $5,910,000,000 ($5.91B) in 2024, representing an increase of $868,000,000 ($0.87B).`
+
+**DATA SELECTION RULES:**
+
+When query_results contains multiple rows:
+1. Filter to requested ticker(s), year(s), and concept(s) - ignore irrelevant rows
+2. If duplicate rows exist for same ticker+year+concept:
+   - Prefer exact concept match over label match
+   - Prefer correct table_type (IncomeStatement/BalanceSheet/CashFlowStatement)
+   - Prefer labels containing "Total" for aggregate metrics
+   - Use the most recent filing or highest magnitude as final tie-breaker
+3. For temporal comparisons: Extract values for ALL requested years
+4. For cross-statement calculations: Ensure metrics from same ticker and same year
+
+**PARTIAL DATA HANDLING:**
+
+- If query asks for derived metric (e.g., "FCF yield", "ROE") but denominators missing:
+  * Answer with available components (e.g., compare FCF values instead of yields)
+  * Add brief note: "Yield calculation requires market cap, which is not in the provided data."
+- If comparing companies but one is missing: Compare available companies and note the gap
+- DO NOT fabricate or estimate missing values
+
+**CONSTRAINTS:**
+
+- No preamble, no repetition of the question, no commentary
+- No references to "database", "graph", "query", or "retrieved data"
+- No qualitative opinions or narrative context
+- Stay focused: answer only what was asked
+- Length: 1-3 sentences for simple queries; up to 1 short paragraph for complex comparisons
+
+**OUTPUT REQUIREMENTS:**
+
+Provide ONLY the answer text. No JSON, no explanations, no meta-commentary.
 """
