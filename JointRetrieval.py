@@ -1,5 +1,5 @@
 from QueryRouting import classify_query
-from GraphQueryTest import execute_graph_retrieval_process, close_drivers
+from Graph.GraphQueryTest import execute_graph_retrieval_process, close_drivers
 from QueryTest import execute_vector_retrieval
 from HybridRetrieval import hybrid_retrieval_test
 from fastapi import FastAPI, HTTPException
@@ -15,6 +15,7 @@ class QueryResponse(BaseModel):
      cypher_query: str | None = None
      graph_results: list | None = None
      textual_results: dict | None = None
+     final_answer: str | None = None
 
 FORCE_TEXTUAL_ONLY = True
 
@@ -44,14 +45,10 @@ def handle_textual(query):
 
 classification_handlers = {
     "TEXTUAL": handle_textual_hybrid,
-    "TABLE": handle_tabular
+    "TABULAR": handle_tabular
 }
 
 def route_based_on_classification(classification: str, query: str):
-    orig_classification = classification
-    if FORCE_TEXTUAL_ONLY:
-        print(f"TEMP: Original classification was {classification}, forcing TEXTUAL")
-        classification = "TEXTUAL"
     handler = classification_handlers.get(classification.upper())
     if handler:
         return handler(query), classification
@@ -61,15 +58,14 @@ def route_based_on_classification(classification: str, query: str):
 def query_endpoint(request: QueryRequest):
     try:
         classification = classify_query(request.user_query)
-        result = route_based_on_classification(classification, request.user_query)
-
         result, used_classification = route_based_on_classification(classification, request.user_query)
 
         response_data = {
             "classification": used_classification,
             "cypher_query": result.get("cypher_query"),
-            "graph_results": result.get("results") if used_classification.upper() == "TABLE" else result.get("graph_results"),
+            "graph_results": result.get("results") if used_classification.upper() == "TABULAR" else result.get("graph_results"),
             "textual_results": result if used_classification.upper() == "TEXTUAL" else result.get("textual_results"),
+            "final_answer": result.get("final_answer"),
         }
         #print("response data:", response_data)        
         return QueryResponse(**response_data)

@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 import os
-from queryExpansion import expand_query, sparse_formatting, dense_formatting
+from queryExpansion import sparse_formatting, dense_formatting
 from QueryTest import sparse_retrieval_test, dense_retrieval_test, fetch_text, rerank
 
 client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")

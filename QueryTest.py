@@ -7,7 +7,7 @@ import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn.functional as F
-from queryExpansion import expand_query, sparse_formatting, dense_formatting
+from queryExpansion import sparse_formatting, dense_formatting
 from TickerFilter import get_tickers
 
 embedding_model = None
@@ -170,9 +170,8 @@ def rerank(query, passages, top_k=5):
             torch.cuda.empty_cache()
 
 def vector_retrieval_test(user_query:str):
-    psuedo_doc= expand_query(user_query)
-    sparse_query= sparse_formatting(user_query, psuedo_doc)
-    dense_query= dense_formatting(user_query, psuedo_doc)
+    sparse_query= sparse_formatting(user_query)
+    dense_query= dense_formatting(user_query)
 
     sparse_results= sparse_retrieval_test(sparse_query)
     dense_results= dense_retrieval_test(dense_query)
@@ -195,7 +194,6 @@ def vector_retrieval_test(user_query:str):
     reranked = rerank(user_query, compiled_results, top_k=5)
 
     print("\nFinal Reranked Results:")
-    print(f"Appended psuedo doc: {psuedo_doc}") 
     for i, (text, score) in enumerate(reranked):
         print(f"Rank {i+1} - Score: {score:.4f}")
         print(text[:300], "...\n", "-"*60)
@@ -253,9 +251,8 @@ def vector_retrieval_test(user_query:str):
 # Same logic as 'vector_retrieval_test' just used as a callable function for other files
 def execute_vector_retrieval(user_query:str):
     try:
-        psuedo_doc= expand_query(user_query)
-        sparse_query= sparse_formatting(user_query, psuedo_doc)
-        dense_query= dense_formatting(user_query, psuedo_doc)
+        sparse_query= sparse_formatting(user_query)
+        dense_query= dense_formatting(user_query)
 
         sparse_results= sparse_retrieval_test(sparse_query)
         dense_results= dense_retrieval_test(dense_query)

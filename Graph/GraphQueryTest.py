@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
 from neo4j import GraphDatabase, basic_auth
-from SmartQueryRouter import SmartQueryRouter
-from query_processing import process_query, generate_cypher_from_query, generate_answer
+from .SmartQueryRouter import SmartQueryRouter
+from .query_processing import process_query, generate_cypher_from_query, generate_answer
 
 load_dotenv()
 
@@ -145,6 +145,18 @@ def execute_graph_retrieval_with_rag(user_query: str):
         "query_results": query_results,
         "final_answer": final_answer
     }
+
+# Alias for compatibility with JointRetrieval.py
+def execute_graph_retrieval_process(user_query: str):
+    """Wrapper function for execute_graph_retrieval_with_rag"""
+    return execute_graph_retrieval_with_rag(user_query)
+
+# Function to close the driver
+def close_drivers():
+    """Close the Neo4j driver connection"""
+    global driver
+    if driver:
+        driver.close()
 
 if __name__ == "__main__":
     test_queries = [

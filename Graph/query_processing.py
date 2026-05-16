@@ -8,11 +8,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from pathlib import Path
 
-from prompts import (INFORMATION_EXTRACTION_PROMPT, QUERY_PROMPT_TEMPLATE, ANSWER_GENERATION_PROMPT)
+from .prompts import (INFORMATION_EXTRACTION_PROMPT, QUERY_PROMPT_TEMPLATE, ANSWER_GENERATION_PROMPT)
 
 # Import company data for ticker mapping
 try:
-    from company_data import company_data
+    from .company_data import company_data
 except ImportError:
     company_data = {}
 

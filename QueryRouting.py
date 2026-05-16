@@ -1,68 +1,69 @@
 import os
-from dotenv import load_dotenv
-from langchain_perplexity import ChatPerplexity
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+import pickle
 
-# Load environment variables
-load_dotenv()
+# Classifier globals (will be loaded from sec_classifier_model.pkl)
+_vectorizer = None
+_classifier = None
+_reverse_mapping = None
 
-URI = os.getenv("NEO4J_URI")
-username = os.getenv("NEO4J_USER")
-password = os.getenv("NEO4J_PASS")
-PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
-# LLM setup
-chat = ChatPerplexity(
-    temperature=0,
-    model="sonar-pro",
-    pplx_api_key=PERPLEXITY_API_KEY,
-)
+def _load_classifier(model_path: str | None = None):
+    global _vectorizer, _classifier, _reverse_mapping
+    if model_path is None:
+        cwd_path = os.getcwd()
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        candidates = [
+            os.path.join(cwd_path, "sec_classifier_model.pkl"),
+            os.path.join(script_dir, "sec_classifier_model.pkl"),
+            os.path.join(script_dir, "..", "sec_classifier_model.pkl"),
+        ]
+        for p in candidates:
+            if os.path.exists(p):
+                model_path = p
+                break
 
-# Prompt template
-QUERY_PROMPT_TEMPLATE = """
-You are a classification assistant designed to decide the best source for answering a financial question. You must classify the following **user query** into one of two categories:
+    if model_path is None or not os.path.exists(model_path):
+        raise FileNotFoundError(
+            f"sec_classifier_model.pkl not found. Checked locations: cwd and {os.path.dirname(os.path.abspath(__file__))}"
+        )
 
-1. **TEXTUAL** — Narrative sections from SEC filings (10-K, 10-Q, 8-K), such as risk factors, business overviews, management discussions, disclosures, etc.  
-2. **TABLE** — Structured financial data from statements (e.g., income statements, balance sheets, cash flow statements, or segment revenue tables).
+    with open(model_path, "rb") as f:
+        model_data = pickle.load(f)
 
-### Rules:
-- Classify as **TABLE** only if the query explicitly requests numerical/structured data found in income statements, balance sheets, cash flow statements, or related financial tables.  
-- Otherwise, classify as **TEXTUAL**.  
+    _vectorizer = model_data.get("vectorizer")
+    _classifier = model_data.get("classifier")
+    # reverse_mapping maps numeric label -> label name
+    _reverse_mapping = model_data.get("reverse_mapping") or model_data.get("label_mapping")
 
-### Classification Examples:
 
-**Example 1:**  
-Q: "What risks did Apple mention in its 2020 10-K filing?"  
-A: TEXTUAL  
+# Attempt to load classifier at import time; swallow errors to keep module importable
+try:
+    _load_classifier()
+except Exception:
+    _vectorizer = None
+    _classifier = None
+    _reverse_mapping = None
 
-**Example 2:**  
-Q: "Show me the net sales of iPhones from 2018 to 2020."  
-A: TABLE  
 
-**Example 3:**  
-Q: "List all the subsidiaries of Microsoft mentioned in its latest 10-K."  
-A: TEXTUAL  
 
-**Example 4:**  
-Q: "Give me the total R&D expenses over the last three years."  
-A: TABLE  
+def classify_query(user_query: str) -> str:
+    """Classify a user query using the saved scikit-learn classifier.
 
----
+    Returns the label name (e.g., 'TEXTUAL' or 'TABLE').
+    """
+    if _classifier is None or _vectorizer is None or _reverse_mapping is None:
+        raise RuntimeError("Classifier model not loaded. Ensure 'sec_classifier_model.pkl' is available.")
 
-### Now classify this query and return only the classification. NO ADDITIONAL TEXT:
-
-Q: "{user_query}"
-
-"""
-
-def classify_query(user_query: str)-> str:
-    prompt = ChatPromptTemplate.from_template(QUERY_PROMPT_TEMPLATE)
-    chain = prompt | chat | StrOutputParser()
-    classification = chain.invoke({"user_query":user_query})
-    return classification.strip()
+    X = _vectorizer.transform([user_query])
+    pred = _classifier.predict(X)[0]
+    # if reverse mapping keyed by int labels
+    label = _reverse_mapping.get(pred, str(pred)) if isinstance(_reverse_mapping, dict) else str(pred)
+    return label
 
 if __name__ == "__main__":
-    user_query = input("Input the user query: ")
-    classification = classify_query(user_query)
-    print(classification)
+    try:
+        user_query = input("Input the user query: ")
+        classification = classify_query(user_query)
+        print(classification)
+    except Exception as e:
+        print("Error classifying query:", e)

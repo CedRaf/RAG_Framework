@@ -1,20 +1,14 @@
-from pymilvus import connections, Collection
+from pymilvus import connections, MilvusClient
 
-# Connect to your Milvus instance (adjust host/port if needed)
-connections.connect(host="localhost", port="19530")
+COLLECTION_NAME = "sec_chunks_hybrid"
 
-# Name of your collection
-collection_name = "sec_chunks_hybrid"
+connections.disconnect("default")
+connections.connect("default", host="localhost", port="19530")
 
-# Load the collection
-collection = Collection(collection_name)
+client = MilvusClient("http://localhost:19530", token="root:Milvus")
 
-# Print schema for all fields
-print("Collection fields and types:")
-for field in collection.schema.fields:
-    print(f"Field: {field.name}, Type: {field.dtype}, Params: {field.params}")
-
-# Specifically print the dimension of the dense_vector field
-for field in collection.schema.fields:
-    if field.name == "dense_vector":
-        print(f"\nDense vector dimension: {field.params.get('dim')}")
+# Check if collection exists
+if client.has_collection(COLLECTION_NAME):
+    print(f"Collection '{COLLECTION_NAME}' exists.")
+else:
+    print(f"Collection '{COLLECTION_NAME}' does not exist.")
